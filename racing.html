@@ -45,7 +45,7 @@
     border-radius: 2px;
   }
   
-  /* REAL CAR DESIGN */
+  /* CAR DESIGN */
   .car {
     width: 45px;
     height: 85px;
@@ -57,9 +57,6 @@
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
-    border: 2px solid #3b82f6;
-    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
   }
   /* Windshield */
   #player::before {
@@ -71,7 +68,7 @@
     height: 20px;
     background: rgba(0,0,0,0.6);
     border-radius: 6px;
-    border: 1px solid #1e3a8a;
+    border: 1px solid #000;
   }
   /* Headlights */
   #player::after {
@@ -91,7 +88,6 @@
     border: 2px solid #f87171;
     box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
   }
-  /* Enemy windshield */
   .enemy::before {
     content: '';
     position: absolute;
@@ -103,7 +99,6 @@
     border-radius: 6px;
     border: 1px solid #7f1d1d;
   }
-  /* Enemy taillights */
   .enemy::after {
     content: '';
     position: absolute;
@@ -116,6 +111,13 @@
     box-shadow: 25px 0 0 #ff0000;
   }
   
+  /* COLOR CLASSES */
+  .blue { background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%); border: 2px solid #3b82f6; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4); }
+  .red { background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%); border: 2px solid #f87171; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
+  .green { background: linear-gradient(180deg, #10b981 0%, #059669 100%); border: 2px solid #34d399; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
+  .yellow { background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%); border: 2px solid #fcd34d; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4); }
+  .purple { background: linear-gradient(180deg, #a855f7 0%, #9333ea 100%); border: 2px solid #c084fc; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4); }
+  
   #score {
     position: absolute;
     top: 20px;
@@ -125,6 +127,27 @@
     font-weight: bold;
     text-shadow: 2px 2px 4px #000;
   }
+  
+  #colorPicker {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 8px;
+  }
+  
+  .colorBtn {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    cursor: pointer;
+  }
+  .c-blue { background: #2563eb; }
+  .c-red { background: #ef4444; }
+  .c-green { background: #10b981; }
+  .c-yellow { background: #fbbf24; }
+  .c-purple { background: #a855f7; }
   
   #controls {
     position: absolute;
@@ -183,7 +206,16 @@
   <div class="road-edge left"></div>
   <div class="road-edge right"></div>
   <div id="score">Score: 0</div>
-  <div id="player" class="car"></div>
+  
+  <div id="colorPicker">
+    <div class="colorBtn c-blue" onclick="changeColor('blue')"></div>
+    <div class="colorBtn c-red" onclick="changeColor('red')"></div>
+    <div class="colorBtn c-green" onclick="changeColor('green')"></div>
+    <div class="colorBtn c-yellow" onclick="changeColor('yellow')"></div>
+    <div class="colorBtn c-purple" onclick="changeColor('purple')"></div>
+  </div>
+  
+  <div id="player" class="car blue"></div>
   
   <div id="controls">
     <div class="btn" id="leftBtn">←</div>
@@ -218,6 +250,10 @@
   }
   function moveRight() {
     if(playerX < 190 && gameRunning) playerX += 30;
+  }
+  
+  function changeColor(color) {
+    player.className = 'car ' + color;
   }
   
   function createEnemy() {
