@@ -28,7 +28,7 @@
   
 .balance-card { background: #fff; margin: -30px 20px 20px; border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
 .balance-label { color: #64748b; font-size: 13px; }
-.balance { font-size: 36px; font-weight: 900; color: #2563eb; margin: 5px 0; }
+.balance { font-size: 36px; font-weight: 900; color: #22c55e; margin: 5px 0; text-shadow: 0 0 15px rgba(34,197,94,0.3); }
 .email { color: #64748b; font-size: 14px; }
 .balance-actions { display: flex; gap: 10px; margin-top: 15px; }
 .mini-btn { flex: 1; padding: 12px; background: #2563eb; color: #fff; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
@@ -95,7 +95,7 @@
 
   <div class="balance-card">
     <div class="balance-label">Available Balance</div>
-    <div class="balance">₦<span id="balance">49,145.00</span></div>
+    <div class="balance">USD $<span id="balance">49,145.00</span></div>
     <div class="email" id="userEmail">truesoul221@gmail.com</div>
     <div class="balance-actions">
       <button class="mini-btn" onclick="showAddMoney()">💰 Add Money</button>
@@ -139,7 +139,7 @@
     <h3>Transfer Money</h3>
     <input type="text" id="transferName" placeholder="Recipient Name">
     <input type="text" id="transferAcc" placeholder="Account Number">
-    <input type="number" id="transferAmount" placeholder="Amount ₦">
+    <input type="number" id="transferAmount" placeholder="Amount $">
     <button class="auth-btn" onclick="doTransfer()">Send Money</button>
   </div>
 </div>
@@ -193,7 +193,7 @@
     
     let newUser = {
       name, email, pass, 
-      balance: Math.floor(Math.random() * 100000) + 20000, // Random ₦20k-₦120k
+      balance: Math.floor(Math.random() * 100000) + 20000, // Random $20k-$120k
       account: "8" + Math.floor(Math.random() * 900000)
     };
     users.push(newUser);
@@ -251,7 +251,7 @@
     currentUser.balance -= amount;
     localStorage.setItem("cashflow_users", JSON.stringify(users));
     document.getElementById("balance").innerText = currentUser.balance.toLocaleString();
-    alert("Sent ₦" + amount.toLocaleString() + " successfully");
+    alert("Sent $" + amount.toLocaleString() + " successfully");
     closePopup('transferPopup');
   }
 
@@ -264,4 +264,4 @@
 </script>
 
 </body>
-       </html>
+</html>
