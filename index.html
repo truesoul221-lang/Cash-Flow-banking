@@ -4,78 +4,65 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cash Flow Banking</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script type="module">
-    // 1. IMPORT FIREBASE
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  <style>
+    body { font-family: Arial, sans-serif; background: #0a0a0a; color: white; text-align: center; padding-top: 100px; }
+   .balance { font-size: 48px; font-weight: bold; color: #00ff88; }
+   .label { font-size: 18px; color: #aaa; }
+   .loading { font-size: 20px; color: #888; }
+  </style>
+</head>
+<body>
 
-    // 2. YOUR FIREBASE CONFIG - PASTED
+  <div class="label">Available Balance</div>
+  <div id="balance" class="loading">Loading...</div>
+
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+    // Your web app's Firebase configuration
     const firebaseConfig = {
-      apiKey: "AIzaSyBmKHRkTXg5G-qaVqMIbn_80eKHieB_YrA",
-      authDomain: "cash-flow-banking.firebaseapp.com",
-      projectId: "cash-flow-banking",
-      storageBucket: "cash-flow-banking.firebasestorage.app",
-      messagingSenderId: "432592240036",
-      appId: "1:432592240036:web:7468c8e7a9277164785531",
-      measurementId: "G-9KSSLXX7TH"
+      apiKey: "AIzaSyCuVQe58hRBF4jYB2BJLDRV8MqIMnz_yfc",
+      authDomain: "cash-flow-banking-2.firebaseapp.com",
+      projectId: "cash-flow-banking-2",
+      storageBucket: "cash-flow-banking-2.firebasestorage.app",
+      messagingSenderId: "517775896753",
+      appId: "1:517775896753:web:40319058b329e3666af290",
+      measurementId: "G-PSLV9LLFQG"
     };
 
-    // 3. INIT FIREBASE
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // 4. LOAD USER DATA FROM FIRESTORE
-    async function loadUserData() {
+    // YOUR USER ID
+    const userId = "P2IAFNLfzMxtzsNxOOpwWK4Jji2";
+
+    // Fetch balance from Firestore
+    async function loadBalance() {
       try {
-        const docRef = doc(db, "users", "cn2IAFNLfzMxtzsNx00pwWK4Jji2");
+        const docRef = doc(db, "users", userId);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-          const user = docSnap.data();
-          const account = user.accounts[0];
-
-          const balance = account.balance; // This is 8000000
-          const name = account.name || "User";
-          const email = account.email || "";
-
-          document.getElementById('greeting').textContent = `Good evening, ${name.split(' ')[0]}`;
-          document.getElementById('balance').textContent = `USD ${balance.toLocaleString()}`;
-          document.getElementById('email').textContent = email;
-
+          const data = docSnap.data();
+          const balance = data.accounts[0].balance;
+          
+          // Format with commas and $
+          document.getElementById("balance").innerHTML = 
+            `<span class="balance">$${balance.toLocaleString()}</span>`;
         } else {
-          document.getElementById('balance').textContent = "User not found";
+          document.getElementById("balance").innerText = "No data found";
         }
       } catch (error) {
-        console.error("Error loading data: ", error);
-        document.getElementById('balance').textContent = "Error loading balance";
+        console.error("Error:", error);
+        document.getElementById("balance").innerText = "Error loading balance";
       }
     }
 
-    window.onload = loadUserData;
+    loadBalance();
   </script>
-</head>
-<body class="bg-[#0B0F1A] text-white min-h-screen p-6">
-
-  <div class="max-w-md mx-auto">
-    <div class="mb-8">
-      <h1 id="greeting" class="text-2xl font-bold">Loading...</h1>
-      <p id="email" class="text-gray-400 text-sm">Loading...</p>
-    </div>
-
-    <div class="bg-gradient-to-br from-blue-600 to-purple-700 p-6 rounded-3xl shadow-2xl">
-      <p class="text-blue-100 text-sm">Total Balance</p>
-      <h2 id="balance" class="text-4xl font-bold mt-2">USD 0</h2>
-      <p class="text-blue-100 text-xs mt-4">Account: •••• 2222</p>
-    </div>
-
-    <div class="grid grid-cols-4 gap-4 mt-8">
-      <div class="text-center"><div class="bg-gray-800 p-4 rounded-2xl">📤</div><p class="text-xs mt-2">Send</p></div>
-      <div class="text-center"><div class="bg-gray-800 p-4 rounded-2xl">📥</div><p class="text-xs mt-2">Receive</p></div>
-      <div class="text-center"><div class="bg-gray-800 p-4 rounded-2xl">💳</div><p class="text-xs mt-2">Cards</p></div>
-      <div class="text-center"><div class="bg-gray-800 p-4 rounded-2xl">📊</div><p class="text-xs mt-2">Stats</p></div>
-    </div>
-  </div>
 
 </body>
 </html>
