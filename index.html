@@ -5,23 +5,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cash Flow Banking</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #0a0a0a; color: white; text-align: center; padding-top: 100px; }
-   .balance { font-size: 48px; font-weight: bold; color: #00ff88; }
-   .label { font-size: 18px; color: #aaa; }
-   .loading { font-size: 20px; color: #888; }
+    body { 
+      font-family: 'Segoe UI', Arial, sans-serif; 
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); 
+      color: white; 
+      text-align: center; 
+      padding-top: 80px;
+      margin: 0;
+      min-height: 100vh;
+    }
+  .card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(0,255,136,0.2);
+      border-radius: 20px;
+      padding: 40px 20px;
+      width: 90%;
+      max-width: 400px;
+      margin: 0 auto;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 30px rgba(0,255,136,0.1);
+    }
+  .name { font-size: 22px; color: #aaa; margin-bottom: 10px; }
+  .label { font-size: 16px; color: #888; margin-bottom: 15px; }
+  .balance { 
+      font-size: 52px; 
+      font-weight: bold; 
+      color: #00ff88; 
+      text-shadow: 0 0 20px rgba(0,255,136,0.5);
+    }
+  .loading { font-size: 20px; color: #888; }
   </style>
 </head>
 <body>
 
-  <div class="label">Available Balance</div>
-  <div id="balance" class="loading">Loading...</div>
+  <div class="card">
+    <div id="name" class="name">Loading...</div>
+    <div class="label">Available Balance</div>
+    <div id="balance" class="loading">Loading...</div>
+  </div>
 
   <script type="module">
-    // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
-    // Your web app's Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyCuVQe58hRBF4jYB2BJLDRV8MqIMnz_yfc",
       authDomain: "cash-flow-banking-2.firebaseapp.com",
@@ -32,15 +58,11 @@
       measurementId: "G-PSLV9LLFQG"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-
-    // YOUR USER ID
     const userId = "P2IAFNLfzMxtzsNxOOpwWK4Jji2";
 
-    // Fetch balance from Firestore
-    async function loadBalance() {
+    async function loadData() {
       try {
         const docRef = doc(db, "users", userId);
         const docSnap = await getDoc(docRef);
@@ -48,8 +70,9 @@
         if (docSnap.exists()) {
           const data = docSnap.data();
           const balance = data.accounts[0].balance;
+          const name = data.accountName || "Account Holder";
           
-          // Format with commas and $
+          document.getElementById("name").innerText = name;
           document.getElementById("balance").innerHTML = 
             `<span class="balance">$${balance.toLocaleString()}</span>`;
         } else {
@@ -61,7 +84,7 @@
       }
     }
 
-    loadBalance();
+    loadData();
   </script>
 
 </body>
