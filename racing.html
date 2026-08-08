@@ -3,58 +3,117 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Street Racer</title>
+<title>Street Racer Pro</title>
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: #111; overflow: hidden; font-family: 'Arial'; }
+  body { background: #0a0a0a; overflow: hidden; font-family: 'Arial'; }
   
   #gameArea {
     width: 100vw;
     height: 100vh;
-    background: #333;
+    background: linear-gradient(#1a1a1a 0%, #2a2a2a 100%);
     position: relative;
     overflow: hidden;
   }
   
   .road {
-    width: 300px;
+    width: 320px;
     height: 100%;
-    background: #444;
+    background: #3a3a3a;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    border-left: 4px dashed #fff;
-    border-right: 4px dashed #fff;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
   }
   
+  .road-edge {
+    position: absolute;
+    width: 8px;
+    height: 100%;
+    background: #ffcc00;
+  }
+  .left { left: calc(50% - 160px); }
+  .right { right: calc(50% - 160px); }
+  
   .line {
-    width: 4px;
-    height: 80px;
+    width: 6px;
+    height: 60px;
     background: #fff;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+    border-radius: 2px;
+  }
+  
+  /* REAL CAR DESIGN */
+  .car {
+    width: 45px;
+    height: 85px;
+    position: absolute;
+    border-radius: 12px 12px 4px 4px;
   }
   
   #player {
-    width: 40px;
-    height: 70px;
-    background: #2563eb;
-    position: absolute;
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    border-radius: 8px;
-    border: 2px solid #fff;
+    background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+    border: 2px solid #3b82f6;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+  }
+  /* Windshield */
+  #player::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 5px;
+    width: 35px;
+    height: 20px;
+    background: rgba(0,0,0,0.6);
+    border-radius: 6px;
+    border: 1px solid #1e3a8a;
+  }
+  /* Headlights */
+  #player::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    width: 10px;
+    height: 8px;
+    background: #ffff99;
+    border-radius: 3px;
+    box-shadow: 25px 0 0 #ffff99;
   }
   
   .enemy {
-    width: 40px;
-    height: 70px;
-    background: #ef4444;
+    background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+    border: 2px solid #f87171;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+  }
+  /* Enemy windshield */
+  .enemy::before {
+    content: '';
     position: absolute;
-    border-radius: 8px;
-    border: 2px solid #fff;
+    top: 12px;
+    left: 5px;
+    width: 35px;
+    height: 20px;
+    background: rgba(0,0,0,0.6);
+    border-radius: 6px;
+    border: 1px solid #7f1d1d;
+  }
+  /* Enemy taillights */
+  .enemy::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 10px;
+    height: 8px;
+    background: #ff0000;
+    border-radius: 3px;
+    box-shadow: 25px 0 0 #ff0000;
   }
   
   #score {
@@ -64,6 +123,7 @@
     color: #fff;
     font-size: 24px;
     font-weight: bold;
+    text-shadow: 2px 2px 4px #000;
   }
   
   #controls {
@@ -78,14 +138,15 @@
   .btn {
     width: 80px;
     height: 80px;
-    background: rgba(255,255,255,0.2);
-    border: 2px solid #fff;
+    background: rgba(37, 99, 235, 0.3);
+    border: 3px solid #2563eb;
     border-radius: 50%;
     color: #fff;
     font-size: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
+    backdrop-filter: blur(5px);
   }
   
   #gameOver {
@@ -93,16 +154,17 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(0,0,0,0.9);
+    background: rgba(0,0,0,0.95);
     color: #fff;
     padding: 30px;
     border-radius: 20px;
     text-align: center;
     display: none;
+    border: 2px solid #2563eb;
   }
   
   #restart {
-    background: #2563eb;
+    background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
     border: none;
     color: #fff;
     padding: 12px 30px;
@@ -110,6 +172,7 @@
     font-size: 18px;
     margin-top: 15px;
     cursor: pointer;
+    font-weight: bold;
   }
 </style>
 </head>
@@ -117,8 +180,10 @@
 
 <div id="gameArea">
   <div class="road"></div>
+  <div class="road-edge left"></div>
+  <div class="road-edge right"></div>
   <div id="score">Score: 0</div>
-  <div id="player"></div>
+  <div id="player" class="car"></div>
   
   <div id="controls">
     <div class="btn" id="leftBtn">←</div>
@@ -141,7 +206,6 @@
   let gameRunning = true;
   let enemies = [];
   
-  // Move player
   document.getElementById('leftBtn').addEventListener('touchstart', () => moveLeft());
   document.getElementById('rightBtn').addEventListener('touchstart', () => moveRight());
   document.addEventListener('keydown', (e) => {
@@ -156,37 +220,32 @@
     if(playerX < 190 && gameRunning) playerX += 30;
   }
   
-  // Create enemy cars
   function createEnemy() {
     const enemy = document.createElement('div');
-    enemy.classList.add('enemy');
+    enemy.classList.add('enemy', 'car');
     enemy.style.left = Math.random() > 0.5 ? '130px' : '190px';
     enemy.style.top = '-100px';
     gameArea.appendChild(enemy);
     enemies.push(enemy);
   }
   
-  // Game loop
   function gameLoop() {
     if(!gameRunning) return;
     
     player.style.left = playerX + 'px';
     
-    // Move enemies
     enemies.forEach((enemy, i) => {
       let enemyTop = parseInt(enemy.style.top) + speed;
       enemy.style.top = enemyTop + 'px';
       
-      // Remove enemy if off screen
       if(enemyTop > window.innerHeight) {
         enemy.remove();
         enemies.splice(i, 1);
         score++;
         document.getElementById('score').innerText = 'Score: ' + score;
-        if(score % 5 === 0) speed += 0.5; // Game gets harder
+        if(score % 5 === 0) speed += 0.5;
       }
       
-      // Collision detection
       let playerRect = player.getBoundingClientRect();
       let enemyRect = enemy.getBoundingClientRect();
       if(playerRect.left < enemyRect.right &&
@@ -197,7 +256,6 @@
       }
     });
     
-    // Move road lines
     document.querySelectorAll('.line').forEach(line => {
       let top = parseInt(line.style.top) + speed;
       line.style.top = top + 'px';
@@ -207,7 +265,6 @@
     requestAnimationFrame(gameLoop);
   }
   
-  // Create road lines
   for(let i = 0; i < 10; i++) {
     const line = document.createElement('div');
     line.classList.add('line');
@@ -215,7 +272,6 @@
     gameArea.appendChild(line);
   }
   
-  // Spawn enemies
   setInterval(() => {
     if(gameRunning) createEnemy();
   }, 1500);
@@ -241,4 +297,4 @@
 </script>
 
 </body>
-                    </html>
+</html>
