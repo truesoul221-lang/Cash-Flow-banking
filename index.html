@@ -8,66 +8,56 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial; }
   body { background: #f5f7fa; color: #111; }
 .hidden { display: none!important; }
-  
+
 .auth { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; background: #fff; }
 .logo { font-size: 36px; font-weight: 900; color: #2563eb; margin-bottom: 5px; }
 .auth-box { background: #f5f7fa; padding: 30px 20px; border-radius: 20px; width: 100%; max-width: 360px; }
 .auth-box input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1px solid #ddd; background: #fff; color: #111; font-size: 15px; }
 .auth-btn { width: 100%; padding: 14px; background: #2563eb; color: #fff; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
-.switch { text-align: center; margin-top: 15px; color: #64748b; }
+.switch { text-align: center; margin-top: 15px; color: #64748b; font-size: 14px; }
 .switch span { color: #2563eb; cursor: pointer; font-weight: bold; }
+.forgot { text-align: right; font-size: 13px; color: #2563eb; cursor: pointer; margin-top: -5px; }
 
 .dashboard { background: #fff; min-height: 100vh; padding-bottom: 80px; }
 .header { background: linear-gradient(135deg, #2563eb, #1e40af); padding: 20px; color: #fff; border-radius: 0 0 30px 30px; }
 .topbar { display: flex; justify-content: space-between; align-items: center; }
 .avatar { width: 45px; height: 45px; background: #fff; color: #2563eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; cursor: pointer; }
 .greeting { font-size: 22px; font-weight: 700; margin-top: 15px; }
-.subtitle { font-size: 13px; opacity: 0.9; }
-  
-.balance-card { background: #fff; margin: -30px 20px 20px; border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-.balance-label { color: #64748b; font-size: 13px; }
-.balance { font-size: 36px; font-weight: 900; color: #22c55e; margin: 5px 0; text-shadow: 0 0 15px rgba(34,197,94,0.3); }
-.email { color: #64748b; font-size: 14px; }
-.balance-actions { display: flex; gap: 10px; margin-top: 15px; }
-.mini-btn { flex: 1; padding: 12px; background: #2563eb; color: #fff; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
-.mini-btn.white { background: #f1f5f9; color: #2563eb; }
-.mini-btn.red { background: #ef4444; }
 
-.section-title { font-weight: 700; font-size: 16px; margin: 20px 20px 10px; }
+.balance-card { background: #fff; margin: -30px 20px 20px; border-radius: 20px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+.balance { font-size: 36px; font-weight: 900; color: #22c55e; text-shadow: 0 0 15px rgba(34,197,94,0.3); }
+.mini-btn { flex: 1; padding: 12px; background: #2563eb; color: #fff; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
+
 .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; padding: 0 20px; }
 .quick-item { text-align: center; cursor: pointer; }
 .quick-icon { width: 55px; height: 55px; background: #e0e7ff; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 5px; }
-.quick-item p { font-size: 12px; color: #475569; }
 
 .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #e2e8f0; }
 .nav-item { text-align: center; color: #94a3b8; cursor: pointer; font-size: 11px; }
 .nav-item.active { color: #2563eb; }
-.nav-icon { font-size: 24px; margin-bottom: 2px; }
+.nav-icon { font-size: 24px; }
 
 .popup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999; }
-.popup-content { background: #fff; border-radius: 20px 20px 0 0; padding: 20px; position: absolute; bottom: 0; width: 100%; max-height: 90vh; overflow-y: auto; }
-.popup h3 { margin-bottom: 15px; color: #111; }
-.popup input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1px solid #ddd; background: #f5f7fa; color: #111; }
+.popup-content { background: #fff; border-radius: 20px 20px 0 0; padding: 20px; position: absolute; bottom: 0; width: 100%; }
 .close { float: right; font-size: 24px; cursor: pointer; color: #64748b; }
 .acc-number { font-size: 28px; font-weight: 900; color: #2563eb; letter-spacing: 2px; margin: 15px 0; }
 
-  /* ADMIN PANEL */
 .admin-users { margin: 20px; }
-.user-row { background: #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-.user-row b { color: #2563eb; }
+.user-row { background: #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; }
 </style>
 </head>
 <body>
 
-<!-- LOGIN / SIGNUP -->
+<!-- LOGIN / SIGNUP / FORGOT -->
 <div class="auth" id="authScreen">
   <div class="logo">Cash Flow</div>
   <p style="color:#64748b; margin-bottom:30px;" id="modeText">Secure Digital Banking</p>
-  
+
   <div class="auth-box" id="loginBox">
     <h3 style="color:#111;">Login</h3>
     <input type="email" id="loginEmail" placeholder="Email">
     <input type="password" id="loginPass" placeholder="Password">
+    <div class="forgot" onclick="showForgot()">Forgot Password?</div>
     <button class="auth-btn" onclick="login()">Login</button>
     <div class="switch">No account? <span onclick="toggleAuth()">Sign Up</span></div>
   </div>
@@ -80,6 +70,14 @@
     <button class="auth-btn" onclick="signup()">Create Account</button>
     <div class="switch">Have account? <span onclick="toggleAuth()">Login</span></div>
   </div>
+
+  <div class="auth-box hidden" id="forgotBox">
+    <h3 style="color:#111;">Reset Password</h3>
+    <input type="email" id="forgotEmail" placeholder="Enter your Email">
+    <input type="password" id="newPass" placeholder="New Password">
+    <button class="auth-btn" onclick="resetPassword()">Reset Password</button>
+    <div class="switch">Remembered? <span onclick="showLogin()">Back to Login</span></div>
+  </div>
 </div>
 
 <!-- DASHBOARD -->
@@ -90,26 +88,24 @@
       <button onclick="logout()" style="background:#ef4444; border:none; color:#fff; padding:8px 16px; border-radius:8px; font-weight:bold;">Logout</button>
     </div>
     <div class="greeting" id="greeting">Good evening Maro</div>
-    <div class="subtitle" id="subtitle">At a glance summary of your account</div>
   </div>
 
-  <!-- ADMIN PANEL - ONLY SHOWS FOR ADMIN -->
   <div class="admin-users hidden" id="adminPanel">
-    <div class="section-title">All Users - Admin Panel</div>
+    <div style="font-weight:700; font-size:16px; margin-bottom:10px;">All Users - Admin Panel</div>
     <div id="allUsersList"></div>
   </div>
 
-  <div class="balance-card" id="userCard">
-    <div class="balance-label">Available Balance</div>
+  <div class="balance-card">
+    <div style="color:#64748b; font-size:13px;">Available Balance</div>
     <div class="balance">USD $<span id="balance">49,145.00</span></div>
-    <div class="email" id="userEmail">truesoul221@gmail.com</div>
-    <div class="balance-actions">
+    <div style="color:#64748b; font-size:14px;" id="userEmail">email@gmail.com</div>
+    <div style="display:flex; gap:10px; margin-top:15px;">
       <button class="mini-btn" onclick="showAddMoney()">💰 Add Money</button>
-      <button class="mini-btn white" onclick="showTransfer()">↗️ Transfer</button>
+      <button class="mini-btn" style="background:#f1f5f9; color:#2563eb;" onclick="showTransfer()">↗️ Transfer</button>
     </div>
   </div>
 
-  <div class="section-title">Quick Actions</div>
+  <div style="font-weight:700; font-size:16px; margin:20px 20px 10px;">Quick Actions</div>
   <div class="quick-grid">
     <div class="quick-item" onclick="showTransfer()"><div class="quick-icon">💸</div><p>Transfer</p></div>
     <div class="quick-item" onclick="showAddMoney()"><div class="quick-icon">🏦</div><p>Deposit</p></div>
@@ -125,7 +121,7 @@
   </div>
 </div>
 
-<!-- POPUPS SAME AS BEFORE -->
+<!-- POPUPS -->
 <div class="popup" id="addMoneyPopup">
   <div class="popup-content">
     <span class="close" onclick="closePopup('addMoneyPopup')">×</span>
@@ -169,26 +165,12 @@
   </div>
 </div>
 
-  <!-- ADMIN EDIT BALANCE POPUP -->
-<div class="popup" id="adminEditPopup">
-  <div class="popup-content">
-    <span class="close" onclick="closePopup('adminEditPopup')">×</span>
-    <h3>Edit User Balance</h3>
-    <p id="editUserName"></p>
-    <input type="number" id="newBalance" placeholder="New Balance $">
-    <button class="auth-btn" onclick="saveNewBalance()">Save Balance</button>
-  </div>
-</div>
-
 <script>
   let currentUser = null;
   let users = JSON.parse(localStorage.getItem("cashflow_users")) || [];
-  let isAdmin = window.location.search.includes("admin=true"); // CHECK URL
-  let editingUserEmail = null;
+  let isAdmin = window.location.search.includes("admin=true");
 
-  if(isAdmin) {
-    document.getElementById("modeText").innerText = "ADMIN MODE";
-  }
+  if(isAdmin) document.getElementById("modeText").innerText = "ADMIN MODE";
 
   let logged = localStorage.getItem("cashflow_loggedin");
   if(logged) {
@@ -200,6 +182,15 @@
     document.getElementById("loginBox").classList.toggle("hidden");
     document.getElementById("signupBox").classList.toggle("hidden");
   }
+  function showForgot() {
+    document.getElementById("loginBox").classList.add("hidden");
+    document.getElementById("forgotBox").classList.remove("hidden");
+  }
+  function showLogin() {
+    document.getElementById("forgotBox").classList.add("hidden");
+    document.getElementById("signupBox").classList.add("hidden");
+    document.getElementById("loginBox").classList.remove("hidden");
+  }
 
   function signup() {
     let name = document.getElementById("signupName").value;
@@ -207,9 +198,9 @@
     let pass = document.getElementById("signupPass").value;
     if(!name ||!email ||!pass) return alert("Fill all fields");
     if(users.find(u => u.email === email)) return alert("Email exists");
-    
+
     let newUser = {
-      name, email, pass, 
+      name, email, pass,
       balance: Math.floor(Math.random() * 100000) + 20000,
       account: "8" + Math.floor(Math.random() * 900000)
     };
@@ -228,7 +219,22 @@
       currentUser = user;
       localStorage.setItem("cashflow_loggedin", email);
       showDashboard();
-    } else alert("Wrong details");
+    } else alert("Wrong email or password");
+  }
+
+  function resetPassword() {
+    let email = document.getElementById("forgotEmail").value;
+    let newPass = document.getElementById("newPass").value;
+    let user = users.find(u => u.email === email);
+
+    if(user && newPass) {
+      user.pass = newPass;
+      localStorage.setItem("cashflow_users", JSON.stringify(users));
+      alert("Password reset successful! Login now");
+      showLogin();
+    } else {
+      alert("Email not found");
+    }
   }
 
   function showDashboard() {
@@ -240,9 +246,8 @@
     document.getElementById("balance").innerText = currentUser.balance.toLocaleString();
     document.getElementById("myAccount").innerText = currentUser.account;
 
-    if(isAdmin) { // SHOW ADMIN STUFF
+    if(isAdmin) {
       document.getElementById("adminPanel").classList.remove("hidden");
-      document.getElementById("subtitle").innerText = "ADMIN - You can edit all users";
       loadAllUsers();
     }
   }
@@ -250,30 +255,9 @@
   function loadAllUsers() {
     let html = "";
     users.forEach(u => {
-      html += `<div class="user-row">
-        <div><b>${u.name}</b><br>$${u.balance.toLocaleString()}<br>${u.email}</div>
-        <button class="mini-btn red" onclick="editUser('${u.email}')">Edit $</button>
-      </div>`;
+      html += `<div class="user-row"><div><b>${u.name}</b><br>$${u.balance.toLocaleString()}</div></div>`;
     });
     document.getElementById("allUsersList").innerHTML = html;
-  }
-
-  function editUser(email) {
-    editingUserEmail = email;
-    let user = users.find(u => u.email === email);
-    document.getElementById("editUserName").innerText = "Editing: " + user.name;
-    document.getElementById("newBalance").value = user.balance;
-    document.getElementById("adminEditPopup").style.display = "block";
-  }
-
-  function saveNewBalance() {
-    let newBal = parseFloat(document.getElementById("newBalance").value);
-    let user = users.find(u => u.email === editingUserEmail);
-    user.balance = newBal;
-    localStorage.setItem("cashflow_users", JSON.stringify(users));
-    loadAllUsers();
-    closePopup('adminEditPopup');
-    alert("Balance updated");
   }
 
   function logout() {
@@ -283,11 +267,11 @@
 
   function showAddMoney() { document.getElementById("addMoneyPopup").style.display = "block"; }
   function showTransfer() { document.getElementById("transferPopup").style.display = "block"; }
-  function showProfile() { 
+  function showProfile() {
     document.getElementById("profileName").innerText = currentUser.name;
     document.getElementById("profileEmail").innerText = currentUser.email;
     document.getElementById("profileAcc").innerText = currentUser.account;
-    document.getElementById("profilePopup").style.display = "block"; 
+    document.getElementById("profilePopup").style.display = "block";
   }
   function showChat() { document.getElementById("chatPopup").style.display = "block"; }
   function closePopup(id) { document.getElementById(id).style.display = "none"; }
