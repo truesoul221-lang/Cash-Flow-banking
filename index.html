@@ -4,63 +4,51 @@
   <title>Cash Flow Banking</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { 
-      font-family: Arial; 
-      text-align: center; 
-      padding: 50px 20px; 
-      background: linear-gradient(135deg, #1e3a8a, #2563eb); 
-      margin: 0; 
-      min-height: 100vh;
-    }
-    .card { 
-      background: white; 
-      padding: 40px 30px; 
-      border-radius: 20px; 
-      max-width: 400px; 
-      margin: 0 auto; 
-      box-shadow: 0 8px 30px rgba(0,0,0,0.3); 
-    }
-    h1 { 
-      color: #2563eb; 
-      font-size: 28px; 
-      margin-bottom: 10px; 
-    }
-    .balance-label {
-      font-size: 16px;
-      color: #666;
-      margin-top: 20px;
-    }
-    .balance { 
-      font-size: 52px; 
-      font-weight: bold; 
-      color: #16a34a; 
-      margin: 15px 0 30px 0; 
-    }
-    button { 
-      background: #2563eb; 
-      color: white; 
-      padding: 16px 24px; 
-      border: none; 
-      border-radius: 10px; 
-      margin: 8px 0; 
-      font-size: 16px; 
-      font-weight: bold; 
-      width: 100%; 
-      cursor: pointer;
-    }
-    button:active {
-      background: #1d4ed8;
-    }
+    body { font-family: Arial; text-align: center; padding: 50px 20px; background: linear-gradient(135deg, #1e3a8a, #2563eb); margin: 0; min-height: 100vh; }
+    .card { background: white; padding: 40px 30px; border-radius: 20px; max-width: 400px; margin: 0 auto; box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+    h1 { color: #2563eb; font-size: 28px; margin-bottom: 10px; }
+    p { color: #666; }
+    .balance { font-size: 52px; font-weight: bold; color: #16a34a; margin: 15px 0 30px 0; }
+    button { background: #2563eb; color: white; padding: 16px 24px; border: none; border-radius: 10px; margin: 8px 0; font-size: 16px; font-weight: bold; width: 100%; cursor: pointer; }
+    button:active { background: #1d4ed8; }
+    input { padding: 14px; margin: 8px 0; width: 90%; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; }
+    #dashboard { display: none; }
+    .logout { background: #ef4444; margin-top: 20px; }
   </style>
+  <script>
+    function login() {
+      document.getElementById('login').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+    }
+    function createAccount() {
+      alert('Account Created! Now Sign In');
+    }
+    function logout() {
+      document.getElementById('dashboard').style.display = 'none';
+      document.getElementById('login').style.display = 'block';
+    }
+  </script>
 </head>
 <body>
-  <div class="card">
+  <!-- LOGIN PAGE -->
+  <div class="card" id="login">
+    <h1>Banking Made Simple</h1>
+    <p>Secure, fast, and reliable banking for everyone.</p>
+    <input type="text" placeholder="Username">
+    <input type="password" placeholder="Password">
+    <button onclick="login()">Sign In</button>
+    <button onclick="createAccount()">Create Account</button>
+  </div>
+
+  <!-- DASHBOARD PAGE -->
+  <div class="card" id="dashboard">
     <h1>Cash Flow Banking</h1>
-    <p class="balance-label">Your Available Balance</p>
+    <p>Your Available Balance</p>
     <div class="balance">$8,000,000.00</div>
     <button>Send Money</button>
     <button>Deposit</button>
     <button>Withdraw</button>
+    <button class="logout" onclick="logout()">Logout</button>
   </div>
 </body>
 </html>
