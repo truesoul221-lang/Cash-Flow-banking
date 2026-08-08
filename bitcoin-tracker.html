@@ -3,55 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bitcoin Tracker Pro - Live BTC + TX Checker</title>
+<title>Bitcoin Tracker Pro</title>
 <style>
-  body { 
-    margin:0; background:#0a0a0a; color:#fff; font-family:'Arial', sans-serif; 
-    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-  }
+  body { margin:0; background:#0a0a0a; color:#fff; font-family:'Arial', sans-serif; }
   .container { max-width:900px; margin:0 auto; padding:20px; }
   .header { text-align:center; padding:20px; }
   .header h1 { color:#F7931A; font-size:32px; margin:0; }
-  .card { 
-    background:#1e1e1e; padding:25px; border-radius:15px; margin:20px 0; 
-    border:2px solid #F7931A; 
-  }
+  .card { background:#1e1e1e; padding:25px; border-radius:15px; margin:20px 0; border:2px solid #F7931A; }
   .btc-price { font-size:42px; font-weight:bold; color:#F7931A; text-align:center; }
   .change { font-size:18px; margin-top:10px; text-align:center; }
-  .green { color:#00ff88; }
-  .red { color:#ff4444; }
-  input { 
-    width:100%; padding:12px; background:#2a2a2a; border:1px solid #444; 
-    color:#fff; border-radius:8px; margin:10px 0; font-size:16px; box-sizing:border-box;
-  }
-  button { 
-    width:100%; padding:15px; background:#F7931A; border:none; color:#000; 
-    font-weight:bold; font-size:18px; border-radius:8px; cursor:pointer;
-  }
-  button:hover { background:#ffb347; }
+  .green { color:#00ff88; } .red { color:#ff4444; }
+  input { width:100%; padding:12px; background:#2a2a2a; border:1px solid #444; color:#fff; border-radius:8px; margin:10px 0; font-size:16px; box-sizing:border-box; }
+  button { width:100%; padding:15px; background:#F7931A; border:none; color:#000; font-weight:bold; font-size:18px; border-radius:8px; cursor:pointer; }
   .info-box { margin-top:15px; padding:15px; background:#2a2a2a; border-radius:10px; }
-  .confirmed { color:#00ff88; font-weight:bold; }
-  .pending { color:#ffaa00; font-weight:bold; }
-  #chart { width:100%; height:250px; background:#1e1e1e; border-radius:15px; margin:20px 0; }
+  .confirmed { color:#00ff88; font-weight:bold; } .pending { color:#ffaa00; font-weight:bold; }
 </style>
 </head>
 <body>
 
 <div class="container">
-  <div class="header">
-    <h1>₿ BITCOIN TRACKER PRO</h1>
-    <p>Live Price + Wallet + Transaction Checker</p>
-  </div>
+  <div class="header"><h1>₿ BITCOIN TRACKER PRO</h1></div>
 
-  <!-- PRICE CARD -->
   <div class="card">
     <div>Bitcoin Price USD</div>
     <div class="btc-price" id="btcPrice">Loading...</div>
-    <div class="change" id="btcChange">Loading...</div>
+    <div class="change" id="btcChange">-</div>
     <div style="margin-top:10px; color:#888; text-align:center;">Updated: <span id="lastUpdate">-</span></div>
   </div>
 
-  <!-- WALLET CHECKER -->
   <div class="card">
     <h2>1. Check Wallet Balance</h2>
     <input type="text" id="walletAddress" placeholder="Enter BTC Wallet Address: bc1q...">
@@ -63,7 +42,6 @@
     </div>
   </div>
 
-  <!-- TRANSACTION CHECKER - NEW -->
   <div class="card">
     <h2>2. Check Transaction Status</h2>
     <input type="text" id="txid" placeholder="Enter BTC Transaction ID/TXID">
@@ -75,45 +53,50 @@
       <div>Confirmations: <span id="txConf">0</span></div>
       <div>From: <span id="txFrom">-</span></div>
       <div>To: <span id="txTo">-</span></div>
-      <div style="margin-top:10px; font-size:12px; color:#888;">View on Blockchain: <a id="txLink" href="#" target="_blank" style="color:#F7931A;">Open</a></div>
+      <div style="margin-top:10px; font-size:12px;"><a id="txLink" href="#" target="_blank" style="color:#F7931A;">View on Blockchain</a></div>
     </div>
-  </div>
-
-  <canvas id="chart"></canvas>
-
-  <div style="text-align:center; padding:20px; color:#666; font-size:12px;">
-    Data from CoinGecko + Blockchain.com | Real Blockchain Data Only
   </div>
 </div>
 
 <script>
 let btcPriceUSD = 0;
 
-// 1. GET LIVE BTC PRICE
+// FIXED: Try 2 APIs. If one fails, use the other
 async function getBTCPrice() {
   try {
-    const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true');
-    const data = await res.json();
+    // Try CoinGecko first
+    let res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true');
+    if(!res.ok) throw new Error();
+    let data = await res.json();
     btcPriceUSD = data.bitcoin.usd;
-    const change = data.bitcoin.usd_24h_change;
-    
-    document.getElementById('btcPrice').innerText = '$' + btcPriceUSD.toLocaleString();
-    document.getElementById('btcChange').innerText = (change > 0 ? '+' : '') + change.toFixed(2) + '%';
-    document.getElementById('btcChange').className = 'change ' + (change > 0 ? 'green' : 'red');
-    document.getElementById('lastUpdate').innerText = new Date().toLocaleTimeString();
+    let change = data.bitcoin.usd_24h_change;
+    updatePriceUI(change);
   } catch(e) {
-    document.getElementById('btcPrice').innerText = 'Error';
+    try {
+      // Backup: Binance API
+      let res2 = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT');
+      let data2 = await res2.json();
+      btcPriceUSD = parseFloat(data2.lastPrice);
+      let change = parseFloat(data2.priceChangePercent);
+      updatePriceUI(change);
+    } catch(e2) {
+      document.getElementById('btcPrice').innerText = 'API Error - Refresh';
+    }
   }
 }
 
-// 2. CHECK WALLET
+function updatePriceUI(change){
+  document.getElementById('btcPrice').innerText = '$' + btcPriceUSD.toLocaleString();
+  document.getElementById('btcChange').innerText = (change > 0 ? '+' : '') + change.toFixed(2) + '%';
+  document.getElementById('btcChange').className = 'change ' + (change > 0 ? 'green' : 'red');
+  document.getElementById('lastUpdate').innerText = new Date().toLocaleTimeString();
+}
+
 async function checkWallet() {
   const address = document.getElementById('walletAddress').value;
   if(!address) return alert('Enter wallet address');
-  
   document.getElementById('walletInfo').style.display = 'block';
   document.getElementById('balance').innerText = 'Loading...';
-  
   try {
     const res = await fetch(`https://blockchain.info/rawaddr/${address}`);
     const data = await res.json();
@@ -121,64 +104,31 @@ async function checkWallet() {
     document.getElementById('balance').innerText = balanceBTC.toFixed(8);
     document.getElementById('usdValue').innerText = (balanceBTC * btcPriceUSD).toLocaleString();
     document.getElementById('txCount').innerText = data.n_tx;
-  } catch(e) {
-    alert('Invalid wallet address');
-  }
+  } catch(e) { alert('Invalid wallet address or API down'); }
 }
 
-// 3. CHECK TRANSACTION - NEW
 async function checkTX() {
   const txid = document.getElementById('txid').value;
   if(!txid) return alert('Enter TXID');
-  
   document.getElementById('txInfo').style.display = 'block';
-  document.getElementById('txStatus').innerText = 'Loading...';
-  
   try {
     const res = await fetch(`https://blockchain.info/rawtx/${txid}`);
     const data = await res.json();
-    
     const amountBTC = data.out.reduce((sum, o) => sum + o.value, 0) / 100000000;
-    const confirmations = data.block_height ? '6+' : '0';
     const status = data.block_height ? 'Confirmed' : 'Pending';
-    
     document.getElementById('txStatus').innerText = status;
     document.getElementById('txStatus').className = data.block_height ? 'confirmed' : 'pending';
     document.getElementById('txAmount').innerText = amountBTC.toFixed(8);
     document.getElementById('txUSD').innerText = (amountBTC * btcPriceUSD).toLocaleString();
-    document.getElementById('txConf').innerText = confirmations;
+    document.getElementById('txConf').innerText = data.block_height ? '6+' : '0';
     document.getElementById('txFrom').innerText = data.inputs[0]?.prev_out?.addr || 'Unknown';
     document.getElementById('txTo').innerText = data.out[0]?.addr || 'Unknown';
     document.getElementById('txLink').href = `https://www.blockchain.com/btc/tx/${txid}`;
-    
-  } catch(e) {
-    alert('Invalid TXID or transaction not found');
-  }
-}
-
-function drawChart() {
-  const canvas = document.getElementById('chart');
-  const ctx = canvas.getContext('2d');
-  canvas.width = canvas.offsetWidth;
-  canvas.height = 250;
-  ctx.strokeStyle = '#F7931A';
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  for(let i=0; i<24; i++){
-    const x = (i/23) * canvas.width;
-    const y = canvas.height/2 + Math.sin(i/3) * 40 + Math.random()*15;
-    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-  }
-  ctx.stroke();
-  ctx.fillStyle = '#888';
-  ctx.font = '14px Arial';
-  ctx.fillText('24H Price Chart', 10, 20);
+  } catch(e) { alert('Invalid TXID'); }
 }
 
 getBTCPrice();
-drawChart();
 setInterval(getBTCPrice, 30000);
 </script>
-
 </body>
 </html>
