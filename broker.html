@@ -11,11 +11,19 @@ body { margin:0; background:#0B0E11; color:#EAECEF; font-family:Arial; }
 .balance { background:#181A20; padding:20px; margin:15px; border-radius:8px; }
 .btn { background:#F0B90B; color:#000; border:none; padding:12px; border-radius:4px; font-weight:bold; width:48%; cursor:pointer; }
 .btn-sell { background:#F6465D; color:#fff; }
+.btn-deposit { background:#00C853; color:#fff; width:100%; margin-top:10px; }
 .input { width:100%; padding:10px; background:#2B3139; border:1px solid #444; color:#fff; border-radius:4px; margin:10px 0; box-sizing:border-box; }
+.price { color:#0ECB81; font-size:20px; }
 </style>
+<script src="https://js.paystack.co/v1/inline.js"></script>
 </head>
 <body>
-<div class="header"><div class="logo">TRUESOUL</div><div id="userEmail">Guest</div></div>
+
+<div class="header">
+  <div class="logo">TRUESOUL</div>
+  <div id="userEmail">Guest</div>
+</div>
+
 <div id="loginBox" style="padding:20px;">
   <h2>Login / Register</h2>
   <input class="input" id="email" placeholder="Email">
@@ -23,26 +31,136 @@ body { margin:0; background:#0B0E11; color:#EAECEF; font-family:Arial; }
   <button class="btn" onclick="register()">REGISTER</button>
   <button class="btn" onclick="login()">LOGIN</button>
 </div>
+
 <div id="brokerBox" style="display:none;">
-  <div class="balance"><div>Portfolio</div><h1>$<span id="usdtBal">0.00</span> USDT</h1><div>BTC: <span id="btcBal">0.00000</span></div></div>
-  <div style="padding:15px;"><h3>BTC/USDT: $<span id="btcPrice">Loading...</span></h3>
-  <input class="input" id="tradeAmount" type="number" placeholder="Amount in USDT">
-  <div style="display:flex; gap:10px;"><button class="btn" onclick="buy()">BUY BTC</button><button class="btn btn-sell" onclick="sell()">SELL BTC</button></div></div>
+  <div class="balance">
+    <div>Portfolio</div>
+    <h1>$<span id="usdtBal">0.00</span> USDT</h1>
+    <div>BTC: <span id="btcBal">0.00000</span></div>
+    <button class="btn-deposit" onclick="deposit()">DEPOSIT ₦ NAIRA</button>
+  </div>
+  
+  <div style="padding:15px;">
+    <h3>BTC/USDT: $<span class="price" id="btcPrice">Loading...</span></h3>
+    <input class="input" id="tradeAmount" type="number" placeholder="Amount in USDT">
+    <div style="display:flex; gap:10px;">
+      <button class="btn" onclick="buy()">BUY BTC</button>
+      <button class="btn btn-sell" onclick="sell()">SELL BTC</button>
+    </div>
+  </div>
   <button class="btn" style="margin:15px; width:calc(100% - 30px);" onclick="logout()">LOGOUT</button>
 </div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, set, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-const firebaseConfig = {apiKey: "AIzaSyA3lpkv0zgWaeXupRi0EwasM93v540tbhc",authDomain: "truesoul1-broker.firebaseapp.com",databaseURL: "https://truesoul1-broker-default-rtdb.firebaseio.com",projectId: "truesoul1-broker"};
-const app = initializeApp(firebaseConfig); const db = getDatabase(app); let currentUser = null;
-window.register = async () => {const email = document.getElementById('email').value; const pass = document.getElementById('password').value; const userId = email.replace(/[.@]/g, '_'); await set(ref(db, 'users/' + userId), {email: email, password: pass, assets: {usdt: 10000, btc: 0, eth: 0}, history: []}); alert('Registered! $10,000 USDT credited'); loadUser(userId);}
-window.login = async () => {const email = document.getElementById('email').value; const pass = document.getElementById('password').value; const userId = email.replace(/[.@]/g, '_'); const snap = await get(ref(db, 'users/' + userId)); if(snap.exists() && snap.val().password === pass){loadUser(userId);} else alert('Invalid login');}
-function loadUser(userId){currentUser = userId; document.getElementById('loginBox').style.display = 'none'; document.getElementById('brokerBox').style.display = 'block'; document.getElementById('userEmail').innerText = userId; onValue(ref(db, 'users/' + userId), (snap) => {const data = snap.val(); document.getElementById('usdtBal').innerText = data.assets.usdt.toFixed(2); document.getElementById('btcBal').innerText = data.assets.btc.toFixed(8);});}
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA3lpkv0zgWaeXupRi0EwasM93v540tbhc",
+  authDomain: "truesoul1-broker.firebaseapp.com",
+  databaseURL: "https://truesoul1-broker-default-rtdb.firebaseio.com",
+  projectId: "truesoul1-broker"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+let currentUser = null;
+
+window.register = async () => {
+  const email = document.getElementById('email').value;
+  const pass = document.getElementById('password').value;
+  const userId = email.replace(/[.@]/g, '_');
+  await set(ref(db, 'users/' + userId), {
+    email: email, password: pass,
+    assets: {usdt: 10000, btc: 0, eth: 0},
+    history: []
+  });
+  alert('Registered! $10,000 USDT credited');
+  loadUser(userId);
+}
+
+window.login = async () => {
+  const email = document.getElementById('email').value;
+  const pass = document.getElementById('password').value;
+  const userId = email.replace(/[.@]/g, '_');
+  const snap = await get(ref(db, 'users/' + userId));
+  if(snap.exists() && snap.val().password === pass){
+    loadUser(userId);
+  } else alert('Invalid login');
+}
+
+function loadUser(userId){
+  currentUser = userId;
+  document.getElementById('loginBox').style.display = 'none';
+  document.getElementById('brokerBox').style.display = 'block';
+  document.getElementById('userEmail').innerText = userId;
+  
+  onValue(ref(db, 'users/' + userId), (snap) => {
+    const data = snap.val();
+    document.getElementById('usdtBal').innerText = data.assets.usdt.toFixed(2);
+    document.getElementById('btcBal').innerText = data.assets.btc.toFixed(8);
+  });
+}
+
 window.logout = () => { currentUser = null; location.reload(); }
-async function getPrice(){const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'); const data = await res.json(); document.getElementById('btcPrice').innerText = parseFloat(data.price).toFixed(2); return parseFloat(data.price);}
-window.buy = async () => {const amount = parseFloat(document.getElementById('tradeAmount').value); const price = await getPrice(); const snap = await get(ref(db, 'users/' + currentUser)); const user = snap.val(); if(user.assets.usdt >= amount){user.assets.usdt -= amount; user.assets.btc += amount / price; await update(ref(db, 'users/' + currentUser), {assets: user.assets}); alert('Bought BTC!');} else alert('Insufficient USDT');}
-window.sell = async () => {const amount = parseFloat(document.getElementById('tradeAmount').value); const price = await getPrice(); const btcAmount = amount / price; const snap = await get(ref(db, 'users/' + currentUser)); const user = snap.val(); if(user.assets.btc >= btcAmount){user.assets.btc -= btcAmount; user.assets.usdt += amount; await update(ref(db, 'users/' + currentUser), {assets: user.assets}); alert('Sold BTC!');} else alert('Insufficient BTC');}
-getPrice(); setInterval(getPrice, 5000);
+
+async function getPrice(){
+  try {
+    const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
+    const data = await res.json();
+    document.getElementById('btcPrice').innerText = parseFloat(data.bitcoin.usd).toFixed(2);
+    return parseFloat(data.bitcoin.usd);
+  } catch(e){ return 65000; }
+}
+
+window.buy = async () => {
+  const amount = parseFloat(document.getElementById('tradeAmount').value);
+  const price = await getPrice();
+  const snap = await get(ref(db, 'users/' + currentUser));
+  const user = snap.val();
+  if(user.assets.usdt >= amount){
+    user.assets.usdt -= amount;
+    user.assets.btc += amount / price;
+    await update(ref(db, 'users/' + currentUser), {assets: user.assets});
+    alert('Bought BTC!');
+  } else alert('Insufficient USDT');
+}
+
+window.sell = async () => {
+  const amount = parseFloat(document.getElementById('tradeAmount').value);
+  const price = await getPrice();
+  const btcAmount = amount / price;
+  const snap = await get(ref(db, 'users/' + currentUser));
+  const user = snap.val();
+  if(user.assets.btc >= btcAmount){
+    user.assets.btc -= btcAmount;
+    user.assets.usdt += amount;
+    await update(ref(db, 'users/' + currentUser), {assets: user.assets});
+    alert('Sold BTC!');
+  } else alert('Insufficient BTC');
+}
+
+window.deposit = () => {
+  const email = document.getElementById('userEmail').innerText.replace('_', '@') + ".com";
+  const handler = PaystackPop.setup({
+    key: 'pk_test_YOUR_PAYSTACK_TEST_KEY', // CHANGE THIS TO YOUR PAYSTACK KEY
+    email: email,
+    amount: 100000, // 1000 Naira
+    currency: "NGN",
+    callback: function(response){
+      alert('Payment Successful! +10 USDT Credited');
+      get(ref(db, 'users/' + currentUser)).then(snap => {
+        const user = snap.val();
+        user.assets.usdt += 10; // 1000 Naira = 10 USDT
+        update(ref(db, 'users/' + currentUser), {assets: user.assets});
+      })
+    }
+  });
+  handler.openIframe();
+}
+
+getPrice();
+setInterval(getPrice, 5000);
 </script>
 </body>
-    </html>
+</html>
