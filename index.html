@@ -6,173 +6,175 @@
 <title>Cash Flow</title>
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial; }
-  body { background: #0a0e1a; color: #fff; padding: 15px; min-height: 100vh; }
+  body { background: #0a0e1a; color: #fff; }
   
-  .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-  .menu { font-size: 24px; cursor: pointer; }
-  .avatar { width: 40px; height: 40px; background: #2563eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; }
-  
-  .logo { font-size: 24px; font-weight: bold; color: #2563eb; margin-bottom: 10px; letter-spacing: 1px; }
-  
+  /* LOGIN SCREEN */
+ .auth-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+ .logo-big { font-size: 36px; font-weight: bold; color: #2563eb; margin-bottom: 10px; }
+ .auth-box { background: #1e293b; padding: 30px 20px; border-radius: 20px; width: 100%; max-width: 350px; }
+ .auth-box h2 { text-align: center; margin-bottom: 20px; }
+ .auth-box input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 10px; border: none; background: #0a0e1a; color: #fff; font-size: 15px; }
+ .auth-btn { width: 100%; padding: 14px; background: #2563eb; color: #fff; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
+ .switch { text-align: center; margin-top: 15px; color: #94a3b8; font-size: 14px; }
+ .switch span { color: #2563eb; cursor: pointer; font-weight: bold; }
+ .hidden { display: none; }
+
+  /* DASHBOARD */
+ .dashboard { display: none; padding: 15px; min-height: 100vh; }
+ .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+ .menu { font-size: 24px; cursor: pointer; }
+ .avatar { width: 40px; height: 40px; background: #2563eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; }
+ .logo { font-size: 24px; font-weight: bold; color: #2563eb; margin-bottom: 10px; }
   h2 { font-size: 22px; margin-bottom: 5px; }
-  .subtitle { color: #94a3b8; font-size: 14px; margin-bottom: 20px; }
+ .subtitle { color: #94a3b8; font-size: 14px; margin-bottom: 20px; }
+ .btn-row { display: flex; gap: 10px; margin-bottom: 25px; }
+ .btn { padding: 12px 20px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 15px; }
+ .btn-blue { background: #2563eb; color: #fff; }
+ .btn-dark { background: #1e293b; color: #fff; }
+ .overview-card { background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 20px; padding: 20px; margin-bottom: 25px; box-shadow: 0 8px 20px rgba(37,99,235,0.3); }
+ .overview-top { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+ .profile-pic { width: 50px; height: 50px; border-radius: 50%; }
+ .balance-text { color: #bfdbfe; font-size: 12px; }
+ .balance-amount { font-size: 32px; font-weight: bold; color: #22c55e; text-shadow: 0 0 10px rgba(34,197,94,0.4); }
+ .email { color: #bfdbfe; font-size: 14px; }
+ .logout { width: 100%; padding: 15px; background: #ef4444; color: #fff; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 20px; }
   
-  .btn-row { display: flex; gap: 10px; margin-bottom: 25px; }
-  .btn { padding: 12px 20px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 15px; }
-  .btn-blue { background: #2563eb; color: #fff; }
-  .btn-dark { background: #1e293b; color: #fff; }
-  
-  .overview-card { 
-    background: linear-gradient(135deg, #2563eb, #1d4ed8); 
-    border-radius: 20px; 
-    padding: 20px; 
-    margin-bottom: 25px;
-    box-shadow: 0 8px 20px rgba(37,99,235,0.3);
-  }
-  .overview-top { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
-  .profile-pic { width: 50px; height: 50px; border-radius: 50%; background: #ccc; }
-  .balance-text { color: #bfdbfe; font-size: 12px; }
-  .balance-amount { font-size: 32px; font-weight: bold; color: #22c55e; text-shadow: 0 0 10px rgba(34,197,94,0.4); }
-  .email { color: #bfdbfe; font-size: 14px; }
-  .overview-bottom { display: flex; justify-content: space-between; font-size: 12px; color: #bfdbfe; margin-top: 15px; }
-  
-  .section { margin-bottom: 20px; }
-  .section h3 { margin-bottom: 10px; }
-  .link { color: #2563eb; text-decoration: none; }
-  
-  .logout { width: 100%; padding: 15px; background: #ef4444; color: #fff; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
-  
-  /* POPUP STYLES */
-  .popup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; z-index: 999; overflow-y: auto; }
-  .popup-content { background: #0a0e1a; padding: 20px; border-radius: 20px 20px 0 0; width: 100%; max-width: 450px; position: absolute; bottom: 0; }
-  .popup-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
-  .popup-header h3 { font-size: 20px; }
-  .close-btn { font-size: 24px; cursor: pointer; }
-  
-  .card { background: #1e293b; border-radius: 15px; padding: 15px; margin-bottom: 15px; cursor: pointer; }
-  .card-top { display: flex; align-items: center; gap: 10px; }
-  .icon { width: 35px; height: 35px; background: #2563eb; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-  .card-title { font-weight: bold; font-size: 16px; }
-  .card-sub { color: #94a3b8; font-size: 12px; }
-  
-  .acc-number { font-size: 28px; font-weight: bold; letter-spacing: 2px; margin: 15px 0; }
-  
-  .btn-row { display: flex; gap: 10px; }
-  .btn-green { background: #22c55e; color: #fff; flex: 1; }
-  .btn-light { background: #2563eb; color: #fff; flex: 1; }
-  
-  .divider { text-align: center; color: #64748b; margin: 20px 0; }
+  /* ADD MONEY POPUP */
+ .popup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; z-index: 999; }
+ .popup-content { background: #0a0e1a; padding: 20px; border-radius: 20px 20px 0 0; width: 100%; max-width: 450px; position: absolute; bottom: 0; }
+ .card { background: #1e293b; border-radius: 15px; padding: 15px; margin-bottom: 15px; }
+ .acc-number { font-size: 28px; font-weight: bold; letter-spacing: 2px; margin: 15px 0; color: #a855f7; }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div class="menu">☰</div>
-  <div class="avatar">M</div>
+<!-- LOGIN / SIGNUP SCREEN -->
+<div class="auth-screen" id="authScreen">
+  <div class="logo-big">Cash Flow</div>
+  <p style="color:#94a3b8; margin-bottom:30px;">Secure Banking</p>
+  
+  <div class="auth-box" id="loginBox">
+    <h2>Login</h2>
+    <input type="email" id="loginEmail" placeholder="Email">
+    <input type="password" id="loginPass" placeholder="Password">
+    <button class="auth-btn" onclick="login()">Login</button>
+    <div class="switch">Don't have an account? <span onclick="showSignup()">Create Account</span></div>
+  </div>
+
+  <div class="auth-box hidden" id="signupBox">
+    <h2>Create Account</h2>
+    <input type="text" id="signupName" placeholder="Full Name">
+    <input type="email" id="signupEmail" placeholder="Email">
+    <input type="password" id="signupPass" placeholder="Password">
+    <button class="auth-btn" onclick="signup()">Create Account</button>
+    <div class="switch">Already have an account? <span onclick="showLogin()">Login</span></div>
+  </div>
 </div>
 
-<div class="logo">Cash Flow</div>
 
-<h2>Good evening Maro</h2>
-<p class="subtitle">At a glance summary of your account!</p>
+<!-- DASHBOARD SCREEN -->
+<div class="dashboard" id="dashboard">
+  <div class="topbar">
+    <div class="menu">☰</div>
+    <div class="avatar" id="avatar">M</div>
+  </div>
 
-<div class="btn-row">
-  <button class="btn btn-blue" onclick="showAddMoney()">Deposit →</button>
-  <button class="btn btn-dark">Transfer Fund</button>
-</div>
+  <div class="logo">Cash Flow</div>
+  <h2 id="greeting">Good evening Maro</h2>
+  <p class="subtitle">At a glance summary of your account!</p>
 
-<h3>Overview</h3>
-<div class="overview-card">
-  <div class="overview-top">
-    <img src="https://i.pravatar.cc/50?u=maro" class="profile-pic">
-    <div>
-      <div class="balance-text">Available balance</div>
-      <div class="balance-amount">USD <span id="balance">10,000,050</span></div>
-      <div class="email">maroejiata02@gmail.com</div>
+  <div class="btn-row">
+    <button class="btn btn-blue" onclick="showAddMoney()">Deposit →</button>
+    <button class="btn btn-dark">Transfer Fund</button>
+  </div>
+
+  <h3>Overview</h3>
+  <div class="overview-card">
+    <div class="overview-top">
+      <img src="https://i.pravatar.cc/50" class="profile-pic">
+      <div>
+        <div class="balance-text">Available balance</div>
+        <div class="balance-amount">USD <span id="balance">10,000,050</span></div>
+        <div class="email" id="userEmail">maroejiata02@gmail.com</div>
+      </div>
     </div>
   </div>
-  <div class="overview-bottom">
-    <div>Last Login<br>09 Jun 26, 18:52 pm</div>
-    <div>Your IP address<br>127.1.1.0</div>
-  </div>
-</div>
 
-<div class="section">
-  <h3>Checking Account</h3>
-  <a href="#" class="link">Transfer Fund</a>
+  <button class="logout" onclick="logout()">Logout</button>
 </div>
-
-<button class="logout">Logout</button>
 
 
 <!-- ADD MONEY POPUP -->
 <div class="popup" id="addMoneyPopup">
   <div class="popup-content">
-    <div class="popup-header">
-      <div class="close-btn" onclick="closeAddMoney()">←</div>
+    <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px;">
+      <div style="font-size:24px; cursor:pointer;" onclick="closeAddMoney()">←</div>
       <h3>Add Money</h3>
     </div>
-
     <div class="card">
-      <div class="card-top">
-        <div class="icon">🏦</div>
-        <div>
-          <div class="card-title">Bank Transfer</div>
-          <div class="card-sub">Add money via mobile or internet banking</div>
-        </div>
-      </div>
-      
-      <div style="color: #94a3b8; font-size: 12px; margin-top: 10px;">Cash Flow Account Number</div>
+      <div><b>Bank Transfer</b></div>
+      <div style="color:#94a3b8; font-size:12px;">Cash Flow Account Number</div>
       <div class="acc-number">804 392 1675</div>
-      
-      <div class="btn-row">
-        <button class="btn btn-green" onclick="copyNumber()">Copy Number</button>
-        <button class="btn btn-light" onclick="alert('Shared!')">Share Details</button>
-      </div>
+      <button class="btn btn-blue" style="width:100%" onclick="copyNumber()">Copy Number</button>
     </div>
-
-    <div class="divider">OR</div>
-
-    <div class="card">
-      <div class="card-top">
-        <div class="icon">💵</div>
-        <div>
-          <div class="card-title">Cash Deposit</div>
-          <div class="card-sub">Fund your account with nearby merchants</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-top">
-        <div class="icon">💳</div>
-        <div>
-          <div class="card-title">Top-up with Card/Account</div>
-          <div class="card-sub">Add money directly from your bank card</div>
-        </div>
-      </div>
-    </div>
-
   </div>
 </div>
 
 <script>
-  let balance = localStorage.getItem("cashflow_balance");
-  
-  if(balance === null) {
-    balance = 10000050;
-  } else {
-    balance = parseFloat(balance);
-  }
-  
-  updateUI();
-
-  function updateUI() {
-    document.getElementById("balance").innerText = balance.toLocaleString();
+  // Check if user is logged in
+  let currentUser = JSON.parse(localStorage.getItem("cashflow_user"));
+  if(currentUser) {
+    showDashboard(currentUser);
   }
 
-  function saveBalance() {
-    localStorage.setItem("cashflow_balance", balance);
+  function showSignup() {
+    document.getElementById("loginBox").classList.add("hidden");
+    document.getElementById("signupBox").classList.remove("hidden");
+  }
+  function showLogin() {
+    document.getElementById("signupBox").classList.add("hidden");
+    document.getElementById("loginBox").classList.remove("hidden");
+  }
+
+  function signup() {
+    let name = document.getElementById("signupName").value;
+    let email = document.getElementById("signupEmail").value;
+    let pass = document.getElementById("signupPass").value;
+    
+    if(name && email && pass) {
+      let user = {name, email, pass, balance: 10000050};
+      localStorage.setItem("cashflow_user", JSON.stringify(user));
+      alert("Account created!");
+      showDashboard(user);
+    } else {
+      alert("Fill all fields");
+    }
+  }
+
+  function login() {
+    let email = document.getElementById("loginEmail").value;
+    let pass = document.getElementById("loginPass").value;
+    let user = JSON.parse(localStorage.getItem("cashflow_user"));
+    
+    if(user && user.email === email && user.pass === pass) {
+      showDashboard(user);
+    } else {
+      alert("Wrong email or password");
+    }
+  }
+
+  function showDashboard(user) {
+    document.getElementById("authScreen").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+    document.getElementById("greeting").innerText = "Good evening " + user.name;
+    document.getElementById("userEmail").innerText = user.email;
+    document.getElementById("avatar").innerText = user.name[0].toUpperCase();
+    document.getElementById("balance").innerText = user.balance.toLocaleString();
+  }
+
+  function logout() {
+    localStorage.removeItem("cashflow_user");
+    location.reload();
   }
 
   function showAddMoney() {
@@ -181,12 +183,11 @@
   function closeAddMoney() {
     document.getElementById("addMoneyPopup").style.display = "none";
   }
-
   function copyNumber() {
     navigator.clipboard.writeText("8043921675");
-    alert("Account number 804 392 1675 copied!");
+    alert("Account number copied!");
   }
 </script>
 
 </body>
-       </html>
+</html>
