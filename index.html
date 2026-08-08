@@ -10,14 +10,15 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // 2. PASTE YOUR FIREBASE CONFIG HERE
+    // 2. YOUR FIREBASE CONFIG - PASTED
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_AUTH_DOMAIN",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_STORAGE_BUCKET",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyBmKHRkTXg5G-qaVqMIbn_80eKHieB_YrA",
+      authDomain: "cash-flow-banking.firebaseapp.com",
+      projectId: "cash-flow-banking",
+      storageBucket: "cash-flow-banking.firebasestorage.app",
+      messagingSenderId: "432592240036",
+      appId: "1:432592240036:web:7468c8e7a9277164785531",
+      measurementId: "G-9KSSLXX7TH"
     };
 
     // 3. INIT FIREBASE
@@ -27,24 +28,21 @@
     // 4. LOAD USER DATA FROM FIRESTORE
     async function loadUserData() {
       try {
-        // This is your doc ID from the screenshot
         const docRef = doc(db, "users", "cn2IAFNLfzMxtzsNx00pwWK4Jji2");
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
           const user = docSnap.data();
           const account = user.accounts[0];
-          
-          // KEY FIX: Read balance from Firestore instead of hardcoding
+
           const balance = account.balance; // This is 8000000
           const name = account.name || "User";
           const email = account.email || "";
 
-          // Update the page
           document.getElementById('greeting').textContent = `Good evening, ${name.split(' ')[0]}`;
           document.getElementById('balance').textContent = `USD ${balance.toLocaleString()}`;
           document.getElementById('email').textContent = email;
-          
+
         } else {
           document.getElementById('balance').textContent = "User not found";
         }
@@ -58,39 +56,24 @@
   </script>
 </head>
 <body class="bg-[#0B0F1A] text-white min-h-screen p-6">
-  
+
   <div class="max-w-md mx-auto">
-    <!-- Header -->
     <div class="mb-8">
-      <h1 id="greeting" class="text-2xl font-bold">Good evening, Sa...</h1>
-      <p id="email" class="text-gray-400 text-sm">test@test.com</p>
+      <h1 id="greeting" class="text-2xl font-bold">Loading...</h1>
+      <p id="email" class="text-gray-400 text-sm">Loading...</p>
     </div>
 
-    <!-- Balance Card -->
     <div class="bg-gradient-to-br from-blue-600 to-purple-700 p-6 rounded-3xl shadow-2xl">
       <p class="text-blue-100 text-sm">Total Balance</p>
       <h2 id="balance" class="text-4xl font-bold mt-2">USD 0</h2>
       <p class="text-blue-100 text-xs mt-4">Account: •••• 2222</p>
     </div>
 
-    <!-- Quick Actions -->
     <div class="grid grid-cols-4 gap-4 mt-8">
-      <div class="text-center">
-        <div class="bg-gray-800 p-4 rounded-2xl">📤</div>
-        <p class="text-xs mt-2">Send</p>
-      </div>
-      <div class="text-center">
-        <div class="bg-gray-800 p-4 rounded-2xl">📥</div>
-        <p class="text-xs mt-2">Receive</p>
-      </div>
-      <div class="text-center">
-        <div class="bg-gray-800 p-4 rounded-2xl">💳</div>
-        <p class="text-xs mt-2">Cards</p>
-      </div>
-      <div class="text-center">
-        <div class="bg-gray-800 p-4 rounded-2xl">📊</div>
-        <p class="text-xs mt-2">Stats</p>
-      </div>
+      <div class="text-center"><div class="bg-gray-800 p-4 rounded-2xl">📤</div><p class="text-xs mt-2">Send</p></div>
+      <div class="text-center"><div class="bg-gray-800 p-4 rounded-2xl">📥</div><p class="text-xs mt-2">Receive</p></div>
+      <div class="text-center"><div class="bg-gray-800 p-4 rounded-2xl">💳</div><p class="text-xs mt-2">Cards</p></div>
+      <div class="text-center"><div class="bg-gray-800 p-4 rounded-2xl">📊</div><p class="text-xs mt-2">Stats</p></div>
     </div>
   </div>
 
