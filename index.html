@@ -3,335 +3,291 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cash Flow Banking - Secure Online Banking</title>
+<title>Cash Flow Banking</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',sans-serif}
-body{background:#0a0f1a;color:#e6e9ef;min-height:100vh}
-.container{max-width:440px;margin:0 auto;padding:0 20px}
-.header{display:flex;justify-content:space-between;align-items:center;padding:18px 0;border-bottom:1px solid #1a2332}
-.logo{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:800;color:#00d4aa}
-.logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#00d4aa,#2563eb);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
-.auth-wrapper{min-height:80vh;display:flex;align-items:center;justify-content:center;padding:20px 0}
-.auth-box{background:#111827;border:1px solid #1f2937;border-radius:20px;padding:32px 24px;width:100%}
-.auth-header{text-align:center;margin-bottom:24px}
-.auth-header h1{font-size:24px;font-weight:800;margin-bottom:6px;color:#00d4aa}
-.auth-header p{font-size:13px;color:#9ca3af}
-input{width:100%;padding:14px 16px;background:#1a2332;border:1px solid #2a3441;border-radius:12px;color:#fff;margin-bottom:14px;font-size:15px}
-input:focus{outline:none;border-color:#2563eb}
-.btn{width:100%;padding:15px;border:none;border-radius:12px;font-weight:700;font-size:16px;cursor:pointer;transition:0.2s}
-.btn-primary{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff}
-.btn-primary:active{transform:scale(0.98)}
-.link-text{color:#00d4aa;text-align:center;margin-top:16px;font-size:14px;cursor:pointer;font-weight:600}
+:root{--bg:#0B0F1A;--card:#121827;--border:#1F2A3D;--text:#E5E7EB;--muted:#94A3B8;--green:#10B981;--blue:#3B82F6;--gold:#F59E0B}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif}
+body{background:var(--bg);color:var(--text);min-height:100vh}
+.container{max-width:480px;margin:0 auto;padding:0 20px}
+.header{display:flex;justify-content:space-between;align-items:center;padding:20px 0;border-bottom:1px solid var(--border)}
+.logo{font-size:20px;font-weight:800;color:var(--green);display:flex;gap:8px;align-items:center}
+.logo::before{content:'$';width:32px;height:32px;background:linear-gradient(135deg,var(--green),var(--blue));border-radius:10px;display:flex;align-items:center;justify-content:center;color:#000;font-weight:900}
+.btn-logout{background:var(--card);border:1px solid var(--border);color:var(--text);padding:8px 16px;border-radius:10px;font-weight:600;cursor:pointer}
+.auth-wrap{display:flex;align-items:center;justify-content:center;min-height:85vh}
+.auth-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px;width:100%}
+.auth-title{font-size:26px;font-weight:800;margin-bottom:8px;text-align:center}
+.auth-sub{color:var(--muted);text-align:center;margin-bottom:24px;font-size:14px}
+input{width:100%;padding:14px 16px;background:#0F172A;border:1px solid var(--border);border-radius:12px;color:var(--text);margin-bottom:14px;font-size:15px}
+input:focus{outline:none;border-color:var(--blue)}
+.btn{width:100%;padding:15px;border:none;border-radius:12px;font-weight:700;font-size:16px;cursor:pointer}
+.btn-main{background:linear-gradient(135deg,var(--blue),#2563EB);color:#fff}
+.btn-main:active{transform:scale(0.98)}
+.link{color:var(--green);text-align:center;margin-top:16px;font-size:14px;cursor:pointer;font-weight:600}
 .hidden{display:none}
-.greet-box{background:#111827;border:1px solid #1f2937;border-radius:16px;padding:20px;margin:20px 0}
-.greet{font-size:20px;font-weight:700;color:#fff;margin-bottom:4px}
-.greet-sub{font-size:13px;color:#9ca3af}
-.btn-row{display:flex;gap:10px;margin-top:16px}
-.btn-sm{flex:1;padding:12px;border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer}
-.btn-deposit{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
-.btn-transfer{background:#1a2332;color:#fff;border:1px solid #2a3441}
-.balance-card{background:linear-gradient(135deg,#1e40af 0%,#2563eb 100%);border-radius:20px;padding:24px;margin:20px 0;position:relative;overflow:hidden}
-.balance-card::before{content:'';position:absolute;top:-50px;right:-50px;width:150px;height:150px;background:rgba(255,255,255,0.1);border-radius:50%}
-.avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#fbbf24,#f59e0b);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#111827}
-.balance-info{flex:1}
-.balance-label{font-size:12px;opacity:0.85;text-transform:uppercase;letter-spacing:0.5px}
-.balance{font-size:32px;font-weight:800;margin:6px 0}
-.balance-name{font-size:13px;opacity:0.9}
-.account-section{margin-top:24px}
-.section-title{font-size:16px;font-weight:700;color:#fff;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
-.account-item{background:#111827;border:1px solid #1f2937;padding:16px;border-radius:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
-.account-name{font-weight:600;font-size:14px}
-.account-balance{color:#10b981;font-weight:800;font-size:16px}
-.topbar{display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid #1f2937;margin-bottom:20px}
-.topbar h2{flex:1;text-align:center;font-size:18px;font-weight:700}
-.back-btn{background:none;border:none;color:#00d4aa;font-size:24px;cursor:pointer}
-.transfer-form{background:#111827;border:1px solid #1f2937;border-radius:14px;padding:18px;margin-bottom:16px}
-.form-label{font-size:12px;color:#9ca3af;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px}
-.form-value{font-size:15px;font-weight:600;color:#fff}
-.txn-item{display:flex;align-items:center;gap:14px;padding:16px;background:#111827;border:1px solid #1f2937;border-radius:14px;margin-bottom:10px}
-.txn-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;background:#ef444420}
-.txn-info{flex:1}
-.txn-title{font-weight:600;font-size:14px;margin-bottom:3px}
-.txn-date{font-size:12px;color:#9ca3af}
-.txn-amount{font-weight:800;font-size:15px;color:#ef4444}
-.txn-status{font-size:10px;padding:4px 8px;border-radius:6px;background:#10b98120;color:#10b981;font-weight:600}
-.recipient-card{background:#111827;border:1px solid #1f2937;border-radius:14px;padding:16px;margin-bottom:16px}
-.footer-note{text-align:center;font-size:11px;color:#6b7280;margin-top:20px}
+.welcome-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin:20px 0}
+.welcome-title{font-size:20px;font-weight:700;margin-bottom:4px}
+.welcome-sub{color:var(--muted);font-size:13px}
+.actions{display:flex;gap:12px;margin-top:16px}
+.btn-action{flex:1;padding:12px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
+.btn-deposit{background:linear-gradient(135deg,var(--green),#059669);color:#fff}
+.btn-transfer{background:var(--card);border:1px solid var(--border);color:var(--text)}
+.balance-box{background:linear-gradient(135deg,#1E3A8A,#3B82F6);border-radius:20px;padding:24px;margin:20px 0}
+.balance-label{font-size:12px;opacity:0.9;text-transform:uppercase;letter-spacing:1px}
+.balance-amount{font-size:36px;font-weight:800;margin:8px 0}
+.account-card{background:var(--card);border:1px solid var(--border);padding:16px;border-radius:14px;margin-bottom:10px;display:flex;justify-content:space-between}
+.page-title{display:flex;align-items:center;gap:16px;padding:20px 0;border-bottom:1px solid var(--border);margin-bottom:20px}
+.page-title h2{flex:1;text-align:center}
+.back{font-size:24px;color:var(--green);cursor:pointer;background:none;border:none}
+.form-group{margin-bottom:16px}
+.label{font-size:12px;color:var(--muted);margin-bottom:8px;text-transform:uppercase}
+.txn{background:var(--card);border:1px solid var(--border);padding:16px;border-radius:14px;margin-bottom:10px;display:flex;gap:12px;align-items:center}
+.txn-icon{width:44px;height:44px;border-radius:12px;background:#EF444420;display:flex;align-items:center;justify-content:center}
+.txn-amount{font-weight:800;color:#EF4444;margin-left:auto}
 </style>
 </head>
 <body>
 <div class="container">
   <div class="header">
-    <div class="logo"><div class="logo-icon">$</div>Cash Flow Banking</div>
-    <button id="logoutBtn" onclick="logout()" class="hidden" style="background:#1a2332;border:1px solid #2a3441;color:#fff;padding:8px 14px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px">Logout</button>
+    <div class="logo">Cash Flow Banking</div>
+    <button id="logoutBtn" onclick="logout()" class="btn-logout hidden">Logout</button>
   </div>
-  
-  <div id="auth" class="auth-wrapper">
-    <div class="auth-box">
-      <div class="auth-header">
-        <h1 id="authTitle">Welcome Back</h1>
-        <p id="authSub">Login to access your account</p>
-      </div>
-      <input type="text" id="fullname" placeholder="Full Name" class="hidden">
-      <input type="email" id="email" placeholder="Email Address">
+
+  <!-- LOGIN / SIGNUP -->
+  <div id="authPage" class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-title" id="authTitle">Welcome Back</div>
+      <div class="auth-sub" id="authSub">Sign in to your account</div>
+      <input type="text" id="fullName" placeholder="Full Name" class="hidden">
+      <input type="email" id="email" placeholder="Email">
       <input type="password" id="password" placeholder="Password">
-      <button class="btn btn-primary" id="authBtn">Login</button>
-      <p class="link-text" id="toggleAuth">Don't have an account? Sign up</p>
-      <p class="footer-note">Secured by 256-bit SSL Encryption</p>
+      <button class="btn btn-main" id="authBtn">Sign In</button>
+      <div class="link" id="toggleAuth">Don't have an account? Sign Up</div>
     </div>
   </div>
 
-  <div id="dashboard" class="hidden">
-    <div class="greet-box">
-      <div class="greet" id="greeting">Good evening</div>
-      <div class="greet-sub">Here's your financial overview</div>
-      <div class="btn-row">
-        <button class="btn-sm btn-deposit" onclick="alert('Deposit feature coming soon')">+ Deposit</button>
-        <button class="btn-sm btn-transfer" onclick="showTransferStep1()">Transfer →</button>
+  <!-- DASHBOARD -->
+  <div id="dashboardPage" class="hidden">
+    <div class="welcome-card">
+      <div class="welcome-title" id="welcomeName">Good evening</div>
+      <div class="welcome-sub">Here's your financial overview</div>
+      <div class="actions">
+        <button class="btn-action btn-deposit" onclick="alert('Deposit coming soon')">+ Deposit</button>
+        <button class="btn-action btn-transfer" onclick="showTransfer()">Transfer →</button>
       </div>
     </div>
 
-    <div class="section-title">
-      Overview
-      <span style="color:#00d4aa;font-size:13px;cursor:pointer;font-weight:600" onclick="showTransactions()">View All</span>
+    <div style="display:flex;justify-content:space-between;margin:20px 0">
+      <div style="font-weight:700;font-size:16px">Overview</div>
+      <div style="color:var(--green);font-weight:600;cursor:pointer" onclick="showTxns()">View All</div>
     </div>
 
-    <div class="balance-card">
-      <div style="display:flex;gap:16px;align-items:center;position:relative;z-index:2">
-        <div class="avatar">👤</div>
-        <div class="balance-info">
-          <div class="balance-label">Available Balance</div>
-          <div class="balance">USD <span id="totalBalance">0</span></div>
-          <div class="balance-name" id="userName">User</div>
-        </div>
+    <div class="balance-box">
+      <div class="balance-label">Available Balance</div>
+      <div class="balance-amount">USD <span id="balance">5,000</span></div>
+      <div style="font-size:13px;opacity:0.9" id="userDisplay">User</div>
+    </div>
+
+    <div style="font-weight:700;font-size:16px;margin-bottom:12px">Accounts</div>
+    <div id="accountList"></div>
+  </div>
+
+  <!-- TRANSFER STEP 1 -->
+  <div id="transfer1Page" class="hidden">
+    <div class="page-title">
+      <button onclick="closeTransfer()" class="back">←</button>
+      <h2>Transfer Money</h2>
+    </div>
+    <div class="form-group">
+      <div class="label">From Account</div>
+      <div style="background:var(--card);padding:16px;border-radius:12px;border:1px solid var(--border)">
+        Checking Account<br>
+        <span style="font-size:12px;color:var(--muted)">Available: USD <span id="availBal">5,000</span></span>
       </div>
     </div>
-
-    <div class="section-title">Accounts</div>
-    <div id="accountsList"></div>
+    <div class="form-group">
+      <div class="label">Amount</div>
+      <input type="number" id="amountInput" placeholder="Enter amount" min="5">
+    </div>
+    <button class="btn btn-main" onclick="goToStep2()">Continue</button>
   </div>
 
-  <div id="transferStep1" class="hidden">
-    <div class="topbar">
-      <button onclick="closeTransferStep1()" class="back-btn">←</button>
-      <h2>New Transfer</h2>
-    </div>
-    <div class="form-label">From Account</div>
-    <div class="transfer-form">
-      <div class="form-value">Checking Account (USD)</div>
-      <div style="font-size:12px;color:#9ca3af;margin-top:4px">Available: USD <span id="availBalance">0</span></div>
-    </div>
-    <div class="form-label">Amount</div>
-    <input type="number" id="transferAmount" placeholder="Enter amount" min="5">
-    <button class="btn btn-primary" onclick="goToTransferStep2()">Continue</button>
-  </div>
-
-  <div id="transferStep2" class="hidden">
-    <div class="topbar">
-      <button onclick="backToTransferStep1()" class="back-btn">←</button>
+  <!-- TRANSFER STEP 2 -->
+  <div id="transfer2Page" class="hidden">
+    <div class="page-title">
+      <button onclick="backToStep1()" class="back">←</button>
       <h2>Recipient Details</h2>
     </div>
-    <div class="form-label">Account Number</div>
-    <input type="text" id="recipientAccount" placeholder="Enter 10 digit account number" maxlength="10">
-    <div class="form-label">Account Name</div>
-    <input type="text" id="recipientName" placeholder="Enter recipient full name">
-    <div class="recipient-card">
-      <div style="display:flex;justify-content:space-between;margin-bottom:10px">
-        <span style="color:#9ca3af">Amount</span>
-        <span style="font-weight:800;color:#10b981;font-size:18px" id="confirmAmount">$0</span>
-      </div>
+    <div class="form-group">
+      <div class="label">Account Number</div>
+      <input type="text" id="recAccount" placeholder="10 digit account number" maxlength="10">
+    </div>
+    <div class="form-group">
+      <div class="label">Account Name</div>
+      <input type="text" id="recName" placeholder="Full name">
+    </div>
+    <div style="background:var(--card);padding:16px;border-radius:12px;border:1px solid var(--border);margin-bottom:16px">
       <div style="display:flex;justify-content:space-between">
-        <span style="color:#9ca3af">Fee</span>
-        <span style="font-weight:600">$0.00</span>
+        <span style="color:var(--muted)">Amount</span>
+        <span style="font-weight:800;font-size:18px;color:var(--green)" id="confirmAmt">$0</span>
       </div>
     </div>
-    <button class="btn btn-primary" onclick="makeTransfer()">Send Money Now</button>
+    <button class="btn btn-main" onclick="sendMoney()">Send Money Now</button>
   </div>
 
-  <div id="transactionsPage" class="hidden">
-    <div class="topbar">
-      <button onclick="closeTransactions()" class="back-btn">←</button>
-      <h2>Transaction History</h2>
+  <!-- TRANSACTIONS -->
+  <div id="txnPage" class="hidden">
+    <div class="page-title">
+      <button onclick="closeTxns()" class="back">←</button>
+      <h2>Transactions</h2>
     </div>
-    <div id="transactionsList"></div>
+    <div id="txnList"></div>
   </div>
 </div>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBmKHRkTXg5G-qaVqMIbn_80eKHieB_YrA",
-    authDomain: "cash-flow-banking.firebaseapp.com",
-    projectId: "cash-flow-banking",
-    storageBucket: "cash-flow-banking.firebasestorage.app",
-    messagingSenderId: "432592240036",
-    appId: "1:432592240036:web:7468c8e7a9277164785531",
-    measurementId: "G-9KSSLXX7TH"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyBmKHRkTXg5G-qaVqMIbn_80eKHieB_YrA",
+  authDomain: "cash-flow-banking.firebaseapp.com",
+  projectId: "cash-flow-banking",
+  storageBucket: "cash-flow-banking.firebasestorage.app",
+  messagingSenderId: "432592240036",
+  appId: "1:432592240036:web:7468c8e7a9277164785531"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+let currentUser = null;
+let isLogin = true;
+let transferAmt = 0;
+
+// TOGGLE LOGIN/SIGNUP
+document.getElementById('toggleAuth').onclick = () => {
+  isLogin =!isLogin;
+  document.getElementById('authTitle').innerText = isLogin? 'Welcome Back' : 'Create Account';
+  document.getElementById('authSub').innerText = isLogin? 'Sign in to your account' : 'Join us today';
+  document.getElementById('authBtn').innerText = isLogin? 'Sign In' : 'Sign Up';
+  document.getElementById('fullName').classList.toggle('hidden');
+}
+
+// AUTH
+document.getElementById('authBtn').onclick = async () => {
+  const name = document.getElementById('fullName').value;
+  const email = document.getElementById('email').value;
+  const pass = document.getElementById('password').value;
+  if(!email ||!pass) return alert('Fill all fields');
+  if(!isLogin &&!name) return alert('Enter full name');
   
-  let currentUser = null;
-  let isLogin = true;
-
-  document.getElementById('toggleAuth').onclick = () => {
-    isLogin =!isLogin;
-    document.getElementById('authTitle').innerText = isLogin? 'Welcome Back' : 'Create Account';
-    document.getElementById('authSub').innerText = isLogin? 'Login to access your account' : 'Join Cash Flow Banking today';
-    document.getElementById('authBtn').innerText = isLogin? 'Login' : 'Sign Up';
-    document.getElementById('fullname').classList.toggle('hidden');
-  }
-
-  document.getElementById('authBtn').onclick = async () => {
-    const fullname = document.getElementById('fullname').value;
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    if(!email ||!password) return alert("Please fill all required fields");
-    if(!isLogin &&!fullname) return alert("Please enter your full name");
-    
-    try {
-      if(isLogin){
-        await signInWithEmailAndPassword(auth, email, password);
-      } else {
-        const userCred = await createUserWithEmailAndPassword(auth, email, password);
-        const accountNum = "91" + Math.floor(Math.random() * 9000000 + 1000000);
-        await setDoc(doc(db, "users", userCred.user.uid), {
-          fullname: fullname,
-          email: email,
-          accountNumber: accountNum,
-          accounts: [{name: "Checking Account", balance: 5000, id: Date.now()}], // NEW USERS GET $5000
-          transactions: []
-        });
-        alert(`Account created successfully!\nYour Account Number: ${accountNum}\nStarting Balance: $5,000`);
-      }
-    } catch(e){ alert(e.message) }
-  }
-
-  onAuthStateChanged(auth, async (user) => {
-    if(user){
-      currentUser = user;
-      document.getElementById('auth').classList.add('hidden');
-      document.getElementById('dashboard').classList.remove('hidden');
-      document.getElementById('logoutBtn').classList.remove('hidden');
-      const docSnap = await getDoc(doc(db, "users", user.uid));
-      const name = docSnap.data().fullname || user.email.split('@')[0];
-      document.getElementById('greeting').innerText = `Good evening, ${name}`;
-      document.getElementById('userName').innerText = name;
-      loadAccounts(user.uid);
-      loadTransactions(user.uid);
-    }
-  });
-
-  // v28 FIX: AUTO GIVE $5000 TO OLD ACCOUNTS
-  async function loadAccounts(uid){
-    const docRef = doc(db, "users", uid);
-    const docSnap = await getDoc(docRef);
-    if(docSnap.exists()){
-      const data = docSnap.data();
-      let accounts = data.accounts;
-      
-      // IF BALANCE IS 0, GIVE $5000
-      if(accounts[0].balance === 0){
-        accounts[0].balance = 5000;
-        await updateDoc(docRef, {accounts});
-      }
-      
-      let total = 0;
-      let html = '';
-      accounts.forEach(acc => {
-        total += acc.balance;
-        html += `<div class="account-item"><div><div class="account-name">${acc.name}</div><div style="font-size:12px;color:#9ca3af">****${data.accountNumber.slice(-4)}</div></div><div class="account-balance">$${acc.balance.toLocaleString()}</div></div>`;
+  try{
+    if(isLogin){
+      await signInWithEmailAndPassword(auth, email, pass);
+    }else{
+      const cred = await createUserWithEmailAndPassword(auth, email, pass);
+      const accNum = '91' + Math.floor(Math.random()*90000000 + 10000000);
+      await setDoc(doc(db, "users", cred.user.uid), {
+        name: name,
+        email: email,
+        accountNumber: accNum,
+        balance: 5000, // EVERYONE STARTS WITH $5000
+        transactions: []
       });
-      document.getElementById('accountsList').innerHTML = html;
-      document.getElementById('totalBalance').innerText = total.toLocaleString();
-      document.getElementById('availBalance').innerText = total.toLocaleString();
+      alert(`Account Created!\nAccount Number: ${accNum}\nBalance: $5,000`);
     }
-  }
+  }catch(e){ alert(e.message) }
+}
 
-  async function loadTransactions(uid){
-    const docSnap = await getDoc(doc(db, "users", uid));
-    if(docSnap.exists()){
-      const txns = docSnap.data().transactions || [];
-      let html = '';
-      txns.slice().reverse().forEach(txn => {
-        const recipient = txn.recipientName? `To: ${txn.recipientName}` : txn.title;
-        html += `<div class="txn-item">
-          <div class="txn-icon">⬆️</div>
-          <div class="txn-info">
-            <div class="txn-title">${txn.title}</div>
-            <div class="txn-date">${recipient} • ${txn.date}</div>
-          </div>
-          <div style="text-align:right">
-            <div class="txn-amount">-$${txn.amount.toLocaleString()}</div>
-            <div class="txn-status">Completed</div>
-          </div>
-        </div>`;
-      });
-      document.getElementById('transactionsList').innerHTML = html || '<p style="text-align:center;color:#9ca3af;padding:40px 0">No transactions yet</p>';
-    }
+// CHECK LOGIN
+onAuthStateChanged(auth, async (user) => {
+  if(user){
+    currentUser = user;
+    document.getElementById('authPage').classList.add('hidden');
+    document.getElementById('dashboardPage').classList.remove('hidden');
+    document.getElementById('logoutBtn').classList.remove('hidden');
+    loadUserData(user.uid);
   }
+});
 
-  window.showTransferStep1 = () => {document.getElementById('dashboard').classList.add('hidden'); document.getElementById('transferStep1').classList.remove('hidden');}
-  window.closeTransferStep1 = () => {document.getElementById('transferStep1').classList.add('hidden'); document.getElementById('dashboard').classList.remove('hidden');}
-  
-  window.goToTransferStep2 = () => {
-    const amount = parseFloat(document.getElementById('transferAmount').value);
-    if(!amount || amount < 5) return alert("Minimum transfer amount is $5");
-    document.getElementById('confirmAmount').innerText = `$${amount.toLocaleString()}`;
-    document.getElementById('transferStep1').classList.add('hidden');
-    document.getElementById('transferStep2').classList.remove('hidden');
-  }
-  
-  window.backToTransferStep1 = () => {document.getElementById('transferStep2').classList.add('hidden'); document.getElementById('transferStep1').classList.remove('hidden');}
-  window.showTransactions = () => {document.getElementById('dashboard').classList.add('hidden'); document.getElementById('transactionsPage').classList.remove('hidden');}
-  window.closeTransactions = () => {document.getElementById('transactionsPage').classList.add('hidden'); document.getElementById('dashboard').classList.remove('hidden');}
-
-  window.makeTransfer = async () => {
-    const amount = parseFloat(document.getElementById('transferAmount').value);
-    const recipientAccount = document.getElementById('recipientAccount').value;
-    const recipientName = document.getElementById('recipientName').value;
-    if(!recipientAccount ||!recipientName) return alert("Please enter recipient details");
-    if(recipientAccount.length < 10) return alert("Account number must be 10 digits");
+async function loadUserData(uid){
+  const snap = await getDoc(doc(db, "users", uid));
+  if(snap.exists()){
+    const data = snap.data();
+    document.getElementById('welcomeName').innerText = `Good evening, ${data.name}`;
+    document.getElementById('userDisplay').innerText = data.name;
+    document.getElementById('balance').innerText = data.balance.toLocaleString();
+    document.getElementById('availBal').innerText = data.balance.toLocaleString();
+    document.getElementById('accountList').innerHTML = `
+      <div class="account-card">
+        <div>Checking Account<br><span style="font-size:12px;color:var(--muted)">****${data.accountNumber.slice(-4)}</span></div>
+        <div style="color:var(--green);font-weight:700">$${data.balance.toLocaleString()}</div>
+      </div>
+    `;
     
-    const docRef = doc(db, "users", currentUser.uid);
-    const docSnap = await getDoc(docRef);
-    const accounts = docSnap.data().accounts;
-    const txns = docSnap.data().transactions || [];
-    
-    if(accounts[0].balance < amount) return alert("Insufficient balance");
-    accounts[0].balance -= amount;
-    
-    txns.push({
-      title: 'Bank Transfer',
-      amount: amount,
-      type: 'out',
-      recipientName: recipientName,
-      recipientAccount: recipientAccount,
-      date: new Date().toLocaleString('en-US', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'})
+    let txnHtml = '';
+    data.transactions.slice().reverse().forEach(t => {
+      txnHtml += `<div class="txn">
+        <div class="txn-icon">⬆️</div>
+        <div><div style="font-weight:600">${t.title}</div><div style="font-size:12px;color:var(--muted)">${t.date}</div></div>
+        <div class="txn-amount">-$${t.amount.toLocaleString()}</div>
+      </div>`;
     });
-    
-    await updateDoc(docRef, {accounts, transactions: txns});
-    document.getElementById('transferAmount').value = '';
-    document.getElementById('recipientAccount').value = '';
-    document.getElementById('recipientName').value = '';
-    loadAccounts(currentUser.uid);
-    loadTransactions(currentUser.uid);
-    alert(`Transfer Successful!\n$${amount.toLocaleString()} sent to ${recipientName}`);
-    document.getElementById('transferStep2').classList.add('hidden');
-    document.getElementById('dashboard').classList.remove('hidden');
+    document.getElementById('txnList').innerHTML = txnHtml || '<p style="text-align:center;color:var(--muted);padding:40px">No transactions yet</p>';
   }
+}
 
-  window.logout = async () => {
-    await signOut(auth);
-    document.getElementById('dashboard').classList.add('hidden');
-    document.getElementById('auth').classList.remove('hidden');
-    document.getElementById('logoutBtn').classList.add('hidden');
-  }
+// NAVIGATION
+window.showTransfer = () => {document.getElementById('dashboardPage').classList.add('hidden'); document.getElementById('transfer1Page').classList.remove('hidden');}
+window.closeTransfer = () => {document.getElementById('transfer1Page').classList.add('hidden'); document.getElementById('dashboardPage').classList.remove('hidden');}
+window.backToStep1 = () => {document.getElementById('transfer2Page').classList.add('hidden'); document.getElementById('transfer1Page').classList.remove('hidden');}
+window.showTxns = () => {document.getElementById('dashboardPage').classList.add('hidden'); document.getElementById('txnPage').classList.remove('hidden');}
+window.closeTxns = () => {document.getElementById('txnPage').classList.add('hidden'); document.getElementById('dashboardPage').classList.remove('hidden');}
+
+window.goToStep2 = () => {
+  const amt = parseFloat(document.getElementById('amountInput').value);
+  if(!amt || amt < 5) return alert('Minimum $5');
+  transferAmt = amt;
+  document.getElementById('confirmAmt').innerText = `$${amt.toLocaleString()}`;
+  document.getElementById('transfer1Page').classList.add('hidden');
+  document.getElementById('transfer2Page').classList.remove('hidden');
+}
+
+window.sendMoney = async () => {
+  const recAcc = document.getElementById('recAccount').value;
+  const recName = document.getElementById('recName').value;
+  if(!recAcc ||!recName) return alert('Enter recipient details');
+  if(recAcc.length < 10) return alert('Account number must be 10 digits');
+  
+  const ref = doc(db, "users", currentUser.uid);
+  const snap = await getDoc(ref);
+  const data = snap.data();
+  if(data.balance < transferAmt) return alert('Insufficient balance');
+  
+  const newBalance = data.balance - transferAmt;
+  const newTxns = [...data.transactions, {
+    title: 'Bank Transfer',
+    amount: transferAmt,
+    date: new Date().toLocaleString('en-US', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'})
+  }];
+  
+  await updateDoc(ref, {balance: newBalance, transactions: newTxns});
+  alert(`$${transferAmt.toLocaleString()} sent to ${recName}`);
+  document.getElementById('amountInput').value = '';
+  document.getElementById('recAccount').value = '';
+  document.getElementById('recName').value = '';
+  loadUserData(currentUser.uid);
+  document.getElementById('transfer2Page').classList.add('hidden');
+  document.getElementById('dashboardPage').classList.remove('hidden');
+}
+
+window.logout = async () => {
+  await signOut(auth);
+  document.getElementById('dashboardPage').classList.add('hidden');
+  document.getElementById('authPage').classList.remove('hidden');
+  document.getElementById('logoutBtn').classList.add('hidden');
+}
 </script>
 </body>
-            </html>
+        </html>
