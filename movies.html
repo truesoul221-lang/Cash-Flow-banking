@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MovieFlix - Free Movies</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#141414">
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #141414; color: #fff; font-family: Arial; }
+  
+  header {
+    background: #000;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  
+  header h1 { color: #e50914; font-size: 24px; }
+  
+  #search {
+    background: #333;
+    border: none;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 5px;
+    width: 50%;
+    max-width: 300px;
+  }
+  
+  .section-title {
+    padding: 20px 20px 10px;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  .movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    padding: 0 20px 20px;
+  }
+  
+  .movie-card {
+    background: #222;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  
+  .movie-card:hover { transform: scale(1.08); }
+  
+  .movie-card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+  }
+  
+  .movie-info {
+    padding: 10px;
+  }
+  
+  .movie-info h3 {
+    font-size: 13px;
+    margin-bottom: 3px;
+  }
+  
+  .movie-info p {
+    font-size: 11px;
+    color: #aaa;
+  }
+  
+  #playerModal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.98);
+    z-index: 200;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  #playerModal iframe {
+    width: 95%;
+    height: 50%;
+    max-width: 900px;
+    border: none;
+    border-radius: 10px;
+  }
+  
+  #closeBtn {
+    position: absolute;
+    top: 20px; right: 30px;
+    font-size: 40px;
+    color: #fff;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎬 MovieFlix</h1>
+  <input type="text" id="search" placeholder="Search movies...">
+</header>
+
+<div class="section-title">Free Movies</div>
+<div class="movies-grid" id="moviesGrid"></div>
+
+<div id="playerModal">
+  <span id="closeBtn">&times;</span>
+  <iframe id="videoPlayer" allowfullscreen></iframe>
+</div>
+
+<script>
+  // YOUTUBE MOVIES - All are legal free full movies
+  const movies = [
+    {
+      title: "Nollywood Romance Movie",
+      year: "2023",
+      youtubeId: "fJ9rUzIMcZQ"
+    },
+    {
+      title: "Free Action Thriller",
+      year: "2022", 
+      youtubeId: "vU29ZUyvmSI"
+    },
+    {
+      title: "Comedy Full Movie",
+      year: "2024",
+      youtubeId: "hFZFjoX2cG4"
+    },
+    {
+      title: "Horror Night",
+      year: "2021",
+      youtubeId: "6m8W6q3nF3Y"
+    },
+    {
+      title: "Drama Full Movie",
+      year: "2023",
+      youtubeId: "9bZkp7q19f0"
+    },
+    {
+      title: "Adventure Movie",
+      year: "2022",
+      youtubeId: "L0MK7qz13bU"
+    }
+  ];
+  
+  const grid = document.getElementById('moviesGrid');
+  const modal = document.getElementById('playerModal');
+  const player = document.getElementById('videoPlayer');
+  const closeBtn = document.getElementById('closeBtn');
+  const search = document.getElementById('search');
+  
+  function displayMovies(movieList) {
+    grid.innerHTML = '';
+    movieList.forEach(movie => {
+      const card = document.createElement('div');
+      card.className = 'movie-card';
+      card.innerHTML = `
+        <img src="https://img.youtube.com/vi/${movie.youtubeId}/mqdefault.jpg">
+        <div class="movie-info">
+          <h3>${movie.title}</h3>
+          <p>${movie.year}</p>
+        </div>
+      `;
+      card.onclick = () => playMovie(movie.youtubeId);
+      grid.appendChild(card);
+    });
+  }
+  
+  function playMovie(id) {
+    player.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;
+    modal.style.display = 'flex';
+  }
+  
+  closeBtn.onclick = () => {
+    modal.style.display = 'none';
+    player.src = '';
+  }
+  
+  search.oninput = (e) => {
+    const term = e.target.value.toLowerCase();
+    const filtered = movies.filter(m => m.title.toLowerCase().includes(term));
+    displayMovies(filtered);
+  }
+  
+  displayMovies(movies);
+</script>
+
+</body>
+  </html>
