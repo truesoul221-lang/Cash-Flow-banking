@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MovieFlix</title>
+<title>MovieFlix - 30 Movies</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#e50914">
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: #141414; color: #fff; font-family: Arial; }
@@ -34,8 +36,8 @@
 <body>
 
 <header>
-  <h1>🎬 MovieFlix</h1>
-  <input type="text" id="search" placeholder="Search movies...">
+  <h1>🎬 MovieFlix - 30 Movies</h1>
+  <input type="text" id="search" placeholder="Search 30 movies...">
 </header>
 
 <div class="ad-banner">
@@ -52,20 +54,49 @@
 
 <script>
   const movies = [
-    // YOUR NEW 4 MOVIES FIRST
-    { title: "New Movie 1", year: "2024", youtubeId: "_gq3umAPQrw", startTime: 0, episode: "" },
-    { title: "New Movie 2", year: "2024", youtubeId: "0S0L-iqUM-4", startTime: 0, episode: "" },
-    { title: "New Movie 3", year: "2024", youtubeId: "D3BsfQ1xWpY", startTime: 0, episode: "" },
-    { title: "New Movie 4", year: "2024", youtubeId: "N7vWB8xqqCE", startTime: 0, episode: "" },
+    // YOUR 4 MOVIES
+    { title: "Broken Chains", year: "2024", youtubeId: "_gq3umAPQrw", startTime: 0, episode: "" },
+    { title: "Street King", year: "2024", youtubeId: "0S0L-iqUM-4", startTime: 0, episode: "" },
+    { title: "Last Blood", year: "2024", youtubeId: "D3BsfQ1xWpY", startTime: 0, episode: "" },
+    { title: "Silent War", year: "2024", youtubeId: "N7vWB8xqqCE", startTime: 0, episode: "" },
 
-    // YOUR 2 EPISODE MOVIE
+    // EPISODE MOVIE
     { title: "Sweet Movie Title", year: "2024", youtubeId: "9bzhuKo0UiY", startTime: 0, episode: "Episode 1" },
     { title: "Sweet Movie Title", year: "2024", youtubeId: "9bzhuKo0UiY", startTime: 3600, episode: "Episode 2" },
 
-    // OTHER MOVIES
+    // ACTION 5
+    { title: "Blood Fight", year: "2022", youtubeId: "L0MK7qz13bU", startTime: 0, episode: "" },
+    { title: "Street Justice", year: "2023", youtubeId: "fJ9rUzIMcZQ", startTime: 0, episode: "" },
+    { title: "Action Hero", year: "2021", youtubeId: "RgKAFK5djSk", startTime: 0, episode: "" },
+    { title: "War Zone", year: "2023", youtubeId: "kJQP7kiw5Fk", startTime: 0, episode: "" },
+    { title: "Final Strike", year: "2022", youtubeId: "9bZkp7q19f0", startTime: 0, episode: "" },
+
+    // COMEDY 5
+    { title: "Campus Wahala", year: "2023", youtubeId: "hFZFjoX2cG4", startTime: 0, episode: "" },
+    { title: "Funny Guys", year: "2021", youtubeId: "dQw4w9WgXcQ", startTime: 0, episode: "" },
+    { title: "Comedy Night", year: "2024", youtubeId: "JGwWNGJdvx8", startTime: 0, episode: "" },
+    { title: "Village Gossip", year: "2022", youtubeId: "OPf0YbXqDm0", startTime: 0, episode: "" },
+    { title: "Lagos Hustle", year: "2023", youtubeId: "k85mRPqvMbE", startTime: 0, episode: "" },
+
+    // HORROR 5
     { title: "Night of the Living Dead", year: "1968", youtubeId: "tPEE9ZwTUK0", startTime: 0, episode: "" },
+    { title: "Plan 9 From Outer Space", year: "1957", youtubeId: "6m8W6q3nF3Y", startTime: 0, episode: "" },
+    { title: "Horror House", year: "2023", youtubeId: "YQHsXMglC9A", startTime: 0, episode: "" },
+    { title: "Dark Night", year: "2022", youtubeId: "u9Dg-g7eYow", startTime: 0, episode: "" },
+    { title: "The Haunting", year: "1963", youtubeId: "ScMzIvxBSi4", startTime: 0, episode: "" },
+
+    // ROMANCE/DRAMA 5
+    { title: "Love Story", year: "2023", youtubeId: "pRpeEdMmmQ0", startTime: 0, episode: "" },
+    { title: "His Girl Friday", year: "1940", youtubeId: "jNQXAC9IVRw", startTime: 0, episode: "" },
+    { title: "Romance 101", year: "2022", youtubeId: "uelHwf8o7_U", startTime: 0, episode: "" },
+    { title: "Nollywood Drama", year: "2023", youtubeId: "2Vv-BfVoq4g", startTime: 0, episode: "" },
+    { title: "Heart Break", year: "2024", youtubeId: "CevxZvSJLk8", startTime: 0, episode: "" },
+
+    // CLASSICS 4
     { title: "The General", year: "1926", youtubeId: "vU29ZUyvmSI", startTime: 0, episode: "" },
-    { title: "His Girl Friday", year: "1940", youtubeId: "jNQXAC9IVRw", startTime: 0, episode: "" }
+    { title: "Charade", year: "1963", youtubeId: "aUmtRVD4g5E", startTime: 0, episode: "" },
+    { title: "Detective Story", year: "1951", youtubeId: "QH2-TGUlwu4", startTime: 0, episode: "" },
+    { title: "Adventure Time", year: "2022", youtubeId: "kJQP7kiw5Fk", startTime: 0, episode: "" }
   ];
   
   const grid = document.getElementById('moviesGrid');
@@ -78,7 +109,7 @@
   function displayMovies(movieList) {
     grid.innerHTML = '';
     movieList.forEach((movie, index) => {
-      if(index % 4 === 0 && index !== 0) {
+      if(index % 5 === 0 && index !== 0) {
         const adBox = document.createElement('div');
         adBox.className = 'ad-box';
         adBox.innerHTML = `<a href="https://wa.me/2347067087764" target="_blank">📢 ADVERTISE HERE 📢<br><span style="font-size:12px; color:#aaa;">WhatsApp: 07067087764</span></a>`;
