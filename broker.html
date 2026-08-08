@@ -3,139 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ADMIN PANEL - TRUESOUL BROKER</title>
+<title>TRUESOUL BROKER</title>
 <style>
-  body { margin:0; background:#0B0E11; color:#EAECEF; font-family:Arial; padding:20px; }
-  .header { background:#181A20; padding:20px; border-radius:8px; border:1px solid #F0B90B; margin-bottom:20px; }
-  .header h1 { color:#F0B90B; margin:0; }
-  .stats { display:flex; gap:15px; margin:20px 0; }
-  .stat-card { background:#181A20; padding:15px; border-radius:8px; flex:1; border:1px solid #2B3139; }
-  .stat-num { font-size:24px; color:#00D395; font-weight:bold; }
-  table { width:100%; background:#181A20; border-radius:8px; border-collapse:collapse; }
-  th { background:#2B3139; padding:12px; text-align:left; color:#F0B90B; }
-  td { padding:12px; border-bottom:1px solid #2B3139; }
-  .btn { padding:6px 12px; background:#F6465D; border:none; color:#fff; border-radius:4px; cursor:pointer; }
-  .btn-green { background:#00D395; color:#000; }
-  input { padding:8px; background:#2B3139; border:1px solid #444; color:#fff; border-radius:4px; }
+body { margin:0; background:#0B0E11; color:#EAECEF; font-family:Arial; }
+.header { background:#181A20; padding:15px; display:flex; justify-content:space-between; border-bottom:1px solid #2B3139; }
+.logo { color:#F0B90B; font-weight:bold; font-size:18px; }
+.balance { background:#181A20; padding:20px; margin:15px; border-radius:8px; }
+.btn { background:#F0B90B; color:#000; border:none; padding:12px; border-radius:4px; font-weight:bold; width:48%; cursor:pointer; }
+.btn-sell { background:#F6465D; color:#fff; }
+.input { width:100%; padding:10px; background:#2B3139; border:1px solid #444; color:#fff; border-radius:4px; margin:10px 0; box-sizing:border-box; }
 </style>
 </head>
 <body>
-
-<div class="header">
-  <h1>🔒 TRUESOUL ADMIN PANEL</h1>
-  <p>Manage all users and balances</p>
+<div class="header"><div class="logo">TRUESOUL</div><div id="userEmail">Guest</div></div>
+<div id="loginBox" style="padding:20px;">
+  <h2>Login / Register</h2>
+  <input class="input" id="email" placeholder="Email">
+  <input class="input" id="password" type="password" placeholder="Password">
+  <button class="btn" onclick="register()">REGISTER</button>
+  <button class="btn" onclick="login()">LOGIN</button>
 </div>
-
-<div class="stats">
-  <div class="stat-card">
-    <div>Total Users</div>
-    <div class="stat-num" id="totalUsers">0</div>
-  </div>
-  <div class="stat-card">
-    <div>Total USDT</div>
-    <div class="stat-num">$<span id="totalUSDT">0</span></div>
-  </div>
-  <div class="stat-card">
-    <div>Total BTC</div>
-    <div class="stat-num" id="totalBTC">0</div>
-  </div>
+<div id="brokerBox" style="display:none;">
+  <div class="balance"><div>Portfolio</div><h1>$<span id="usdtBal">0.00</span> USDT</h1><div>BTC: <span id="btcBal">0.00000</span></div></div>
+  <div style="padding:15px;"><h3>BTC/USDT: $<span id="btcPrice">Loading...</span></h3>
+  <input class="input" id="tradeAmount" type="number" placeholder="Amount in USDT">
+  <div style="display:flex; gap:10px;"><button class="btn" onclick="buy()">BUY BTC</button><button class="btn btn-sell" onclick="sell()">SELL BTC</button></div></div>
+  <button class="btn" style="margin:15px; width:calc(100% - 30px);" onclick="logout()">LOGOUT</button>
 </div>
-
-<div style="background:#181A20; padding:15px; border-radius:8px; margin-bottom:20px;">
-  <h3>Edit User Balance</h3>
-  <input type="text" id="editUser" placeholder="Enter Username">
-  <input type="number" id="addUSDT" placeholder="Add $USDT">
-  <button class="btn-green" onclick="addBalance()">ADD BALANCE</button>
-  <button class="btn" onclick="resetUser()">RESET USER</button>
-</div>
-
-<table>
-  <thead>
-    <tr>
-      <th>Username</th>
-      <th>USDT Balance</th>
-      <th>BTC</th>
-      <th>ETH</th>
-      <th>Orders</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody id="userTable">
-    <tr><td colspan="6">No users yet. Users save to their browser.</td></tr>
-  </tbody>
-</table>
-
-<script>
-function loadAdmin(){
-  // This reads all users from localStorage
-  // Note: localStorage is per-browser. For real broker we need database
-  let users = [];
-  for(let i=0; i<localStorage.length; i++){
-    const key = localStorage.key(i);
-    if(key.includes('brokerUser')){
-      users.push(JSON.parse(localStorage.getItem(key)));
-    }
-  }
-  
-  let totalUSDT = 0, totalBTC = 0;
-  let html = '';
-  
-  users.forEach(user => {
-    if(!user.assets) user.assets = {usdt:10000, btc:0, eth:0};
-    totalUSDT += user.assets.usdt;
-    totalBTC += user.assets.btc;
-    
-    html += `<tr>
-      <td>${user.username}</td>
-      <td>$${user.assets.usdt.toFixed(2)}</td>
-      <td>${user.assets.btc.toFixed(8)}</td>
-      <td>${user.assets.eth.toFixed(8)}</td>
-      <td>${user.history ? user.history.length : 0}</td>
-      <td><button class="btn" onclick="deleteUser('${user.username}')">DELETE</button></td>
-    </tr>`;
-  });
-  
-  document.getElementById('userTable').innerHTML = html || '<tr><td colspan="6">No users yet</td></tr>';
-  document.getElementById('totalUsers').innerText = users.length;
-  document.getElementById('totalUSDT').innerText = totalUSDT.toFixed(2);
-  document.getElementById('totalBTC').innerText = totalBTC.toFixed(8);
-}
-
-function addBalance(){
-  const username = document.getElementById('editUser').value;
-  const amount = parseFloat(document.getElementById('addUSDT').value);
-  const user = JSON.parse(localStorage.getItem('brokerUserPro'));
-  
-  if(user && user.username == username){
-    user.assets.usdt += amount;
-    localStorage.setItem('brokerUserPro', JSON.stringify(user));
-    alert(`Added $${amount} to ${username}`);
-    loadAdmin();
-  } else alert('User not found in this browser');
-}
-
-function deleteUser(username){
-  if(confirm('Delete this user?')){
-    localStorage.removeItem('brokerUserPro');
-    loadAdmin();
-  }
-}
-
-function resetUser(){
-  const username = document.getElementById('editUser').value;
-  const user = JSON.parse(localStorage.getItem('brokerUserPro'));
-  if(user && user.username == username){
-    user.assets = {usdt:10000, btc:0, eth:0};
-    user.history = [];
-    localStorage.setItem('brokerUserPro', JSON.stringify(user));
-    alert('User reset to $10,000');
-    loadAdmin();
-  }
-}
-
-loadAdmin();
-setInterval(loadAdmin, 5000); // auto refresh every 5s
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, set, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+const firebaseConfig = {apiKey: "AIzaSyA3lpkv0zgWaeXupRi0EwasM93v540tbhc",authDomain: "truesoul1-broker.firebaseapp.com",databaseURL: "https://truesoul1-broker-default-rtdb.firebaseio.com",projectId: "truesoul1-broker"};
+const app = initializeApp(firebaseConfig); const db = getDatabase(app); let currentUser = null;
+window.register = async () => {const email = document.getElementById('email').value; const pass = document.getElementById('password').value; const userId = email.replace(/[.@]/g, '_'); await set(ref(db, 'users/' + userId), {email: email, password: pass, assets: {usdt: 10000, btc: 0, eth: 0}, history: []}); alert('Registered! $10,000 USDT credited'); loadUser(userId);}
+window.login = async () => {const email = document.getElementById('email').value; const pass = document.getElementById('password').value; const userId = email.replace(/[.@]/g, '_'); const snap = await get(ref(db, 'users/' + userId)); if(snap.exists() && snap.val().password === pass){loadUser(userId);} else alert('Invalid login');}
+function loadUser(userId){currentUser = userId; document.getElementById('loginBox').style.display = 'none'; document.getElementById('brokerBox').style.display = 'block'; document.getElementById('userEmail').innerText = userId; onValue(ref(db, 'users/' + userId), (snap) => {const data = snap.val(); document.getElementById('usdtBal').innerText = data.assets.usdt.toFixed(2); document.getElementById('btcBal').innerText = data.assets.btc.toFixed(8);});}
+window.logout = () => { currentUser = null; location.reload(); }
+async function getPrice(){const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT'); const data = await res.json(); document.getElementById('btcPrice').innerText = parseFloat(data.price).toFixed(2); return parseFloat(data.price);}
+window.buy = async () => {const amount = parseFloat(document.getElementById('tradeAmount').value); const price = await getPrice(); const snap = await get(ref(db, 'users/' + currentUser)); const user = snap.val(); if(user.assets.usdt >= amount){user.assets.usdt -= amount; user.assets.btc += amount / price; await update(ref(db, 'users/' + currentUser), {assets: user.assets}); alert('Bought BTC!');} else alert('Insufficient USDT');}
+window.sell = async () => {const amount = parseFloat(document.getElementById('tradeAmount').value); const price = await getPrice(); const btcAmount = amount / price; const snap = await get(ref(db, 'users/' + currentUser)); const user = snap.val(); if(user.assets.btc >= btcAmount){user.assets.btc -= btcAmount; user.assets.usdt += amount; await update(ref(db, 'users/' + currentUser), {assets: user.assets}); alert('Sold BTC!');} else alert('Insufficient BTC');}
+getPrice(); setInterval(getPrice, 5000);
 </script>
-
 </body>
-</html>
+    </html>
