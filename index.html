@@ -4,16 +4,63 @@
   <title>Cash Flow Banking</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: Arial; text-align: center; padding: 50px 20px; background: #f0f9ff; margin: 0; }
-    h1 { color: #2563eb; font-size: 40px; }
-    p { font-size: 18px; color: #333; }
-    button { background: #2563eb; color: white; padding: 14px 28px; border: none; border-radius: 8px; margin: 10px; font-size: 16px; }
+    body { 
+      font-family: Arial; 
+      text-align: center; 
+      padding: 50px 20px; 
+      background: linear-gradient(135deg, #1e3a8a, #2563eb); 
+      margin: 0; 
+      min-height: 100vh;
+    }
+    .card { 
+      background: white; 
+      padding: 40px 30px; 
+      border-radius: 20px; 
+      max-width: 400px; 
+      margin: 0 auto; 
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3); 
+    }
+    h1 { 
+      color: #2563eb; 
+      font-size: 28px; 
+      margin-bottom: 10px; 
+    }
+    .balance-label {
+      font-size: 16px;
+      color: #666;
+      margin-top: 20px;
+    }
+    .balance { 
+      font-size: 52px; 
+      font-weight: bold; 
+      color: #16a34a; 
+      margin: 15px 0 30px 0; 
+    }
+    button { 
+      background: #2563eb; 
+      color: white; 
+      padding: 16px 24px; 
+      border: none; 
+      border-radius: 10px; 
+      margin: 8px 0; 
+      font-size: 16px; 
+      font-weight: bold; 
+      width: 100%; 
+      cursor: pointer;
+    }
+    button:active {
+      background: #1d4ed8;
+    }
   </style>
 </head>
 <body>
-  <h1>Banking Made Simple</h1>
-  <p>Secure, fast, and reliable banking for everyone.</p>
-  <button>Create Account</button>
-  <button>Sign In</button>
+  <div class="card">
+    <h1>Cash Flow Banking</h1>
+    <p class="balance-label">Your Available Balance</p>
+    <div class="balance">$8,000,000.00</div>
+    <button>Send Money</button>
+    <button>Deposit</button>
+    <button>Withdraw</button>
+  </div>
 </body>
 </html>
