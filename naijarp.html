@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Naija RP - Lagos</title>
+<style>
+  body { margin:0; background:#000; color:#fff; font-family:Arial; overflow:hidden; }
+  #hud { position:absolute; top:10px; left:10px; background:#000aa; padding:10px; border-radius:10px; z-index:10; }
+  #crosshair { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:30px; color:#00ff00; }
+  #money { position:absolute; top:10px; right:10px; color:#008751; font-size:20px; }
+  #info { position:absolute; bottom:10px; width:100%; text-align:center; font-size:12px; background:#000aa; }
+  canvas { display:block; }
+  #start { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); 
+    background:#008751; padding:20px; border-radius:10px; cursor:pointer; font-size:20px; }
+  .mobile-btn { position:absolute; bottom:80px; width:50px; height:50px; background:#ffffff33; 
+    border-radius:50%; border:2px solid white; display:none; }
+</style>
+<script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+  }
+}
+</script>
+</head>
+<body>
+
+<div id="hud">Wanted: <span id="wanted">0</span>★ | Health: <span id="health">100</span></div>
+<div id="money">₦<span id="cash">5000</span></div>
+<div id="crosshair">+</div>
+<div id="info">WASD = Walk | Mouse = Look | F = Enter Danfo | Click = Punch/Shoot | R = Rob</div>
+<div id="start" onclick="startGame()">🇳🇬 START LAGOS LIFE</div>
+
+<div class="mobile-btn" id="btnW" style="left:20px; bottom:150px;">W</div>
+<div class="mobile-btn" id="btnS" style="left:20px; bottom:90px;">S</div>
+<div class="mobile-btn" id="btnA" style="left:0px; bottom:120px;">A</div>
+<div class="mobile-btn" id="btnD" style="left:40px; bottom:120px;">D</div>
+
+<script type="module">
+import * as THREE from 'three';
+
+let scene, camera, renderer, player, cash=5000, wanted=0;
+let keys = {}, buildings = [], npcs = [];
+let gameStarted = false;
+
+function startGame() {
+  document.getElementById('start').style.display = 'none';
+  document.querySelectorAll('.mobile-btn').forEach(b => b.style.display = 'block');
+  gameStarted = true;
+  init();
+  animate();
+  document.body.requestPointerLock();
+}
+
+function init() {
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x87CEEB);
+  scene.fog = new THREE.Fog(0x87CEEB, 0, 200);
+
+  camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+  camera.position.set(0, 1.6, 0);
+
+  renderer = new THREE.WebGLRenderer();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+  const sun = new THREE.DirectionalLight(0xffffcc, 0.8);
+  sun.position.set(10,20,10);
+  scene.add(sun);
+
+  // ROAD - LAGOS MAINLAND STYLE
+  const road = new THREE.Mesh(
+    new THREE.PlaneGeometry(200, 20),
+    new THREE.MeshStandardMaterial({color:0x333333})
+  );
+  road.rotation.x = -Math.PI/2;
+  scene.add(road);
+
+  // YELLOW LINES
+  for(let i=-90; i<90; i+=10){
+    const line = new THREE.Mesh(
+      new THREE.BoxGeometry(5, 0.1, 0.3),
+      new THREE.MeshStandardMaterial({color:0xffff00})
+    );
+    line.position.set(i, 0.05, 0);
+    scene.add(line);
+  }
+
+  // BUILDINGS - LAGOS FACE ME I FACE YOU
+  for(let i=0; i<20; i++){
+    const height = Math.random()*15 + 5;
+    const building = new THREE.Mesh(
+      new THREE.BoxGeometry(8, height, 8),
+      new THREE.MeshStandardMaterial({color: 0xdddddd})
+    );
+    building.position.set(Math.random()*160-80, height/2, Math.random()*80-40);
+    if(Math.abs(building.position.z) > 15) scene.add(building);
+    
+    // SHOP SIGN
+    if(height < 8){
+      const sign = new THREE.Mesh(
+        new THREE.PlaneGeometry(6,2),
+        new THREE.MeshStandardMaterial({color:0x008751})
+      );
+      sign.position.set(building.position.x, height+1, building.position.z+4.1);
+      scene.add(sign);
+    }
+  }
+
+  // DANFO BUS
+  const danfo = new THREE.Mesh(
+    new THREE.BoxGeometry(6,3,3),
+    new THREE.MeshStandardMaterial({color:0xffff00})
+  );
+  danfo.position.set(10,1.5,0);
+  scene.add(danfo);
+
+  // NPCS - AREA BOYS
+  for(let i=0; i<5; i++){
+    const npc = new THREE.Mesh(
+      new THREE.CapsuleGeometry(0.3, 1.5, 4, 8),
+      new THREE.MeshStandardMaterial({color:0x8B4513})
+    );
+    npc.position.set(Math.random()*40-20, 0.75, Math.random()*40-20);
+    scene.add(npc);
+    npcs.push(npc);
+  }
+
+  // CONTROLS
+  document.addEventListener('keydown', e => {
+    keys[e.key.toLowerCase()] = true;
+    if(e.key.toLowerCase() === 'r') rob();
+    if(e.key.toLowerCase() === 'f') enterDanfo();
+  });
+  document.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
+  document.addEventListener('click', punch);
+}
+
+function punch() {
+  if(!gameStarted) return;
+  npcs.forEach(npc => {
+    if(camera.position.distanceTo(npc.position) < 2) {
+      scene.remove(npc);
+      cash += 500;
+      wanted += 1;
+      document.getElementById('cash').innerText = cash;
+      document.getElementById('wanted').innerText = wanted;
+    }
+  });
+}
+
+function rob() {
+  cash += 1000;
+  wanted += 2;
+  document.getElementById('cash').innerText = cash;
+  document.getElementById('wanted').innerText = wanted;
+  alert("You robbed someone! Police dey come! 🚨");
+}
+
+function enterDanfo() {
+  alert("You entered Danfo! Conductor: 'Owo bus 200 naira!' 😂");
+  cash -= 200;
+  document.getElementById('cash').innerText = cash;
+}
+
+function movePlayer() {
+  const speed = 0.15;
+  if(keys['w']) camera.position.z -= speed;
+  if(keys['s']) camera.position.z += speed;
+  if(keys['a']) camera.position.x -= speed;
+  if(keys['d']) camera.position.x += speed;
+}
+
+function animate() {
+  if(!gameStarted) return;
+  requestAnimationFrame(animate);
+  movePlayer();
+  renderer.render(scene, camera);
+}
+</script>
+
+</body>
+  </html>
