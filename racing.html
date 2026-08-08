@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Street Racer Pro</title>
+<title>Subway Runner</title>
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: #0a0a0a; overflow: hidden; font-family: 'Arial'; }
@@ -11,143 +11,111 @@
   #gameArea {
     width: 100vw;
     height: 100vh;
-    background: linear-gradient(#1a1a1a 0%, #2a2a2a 100%);
+    background: linear-gradient(#87CEEB 0%, #4682B4 100%);
     position: relative;
     overflow: hidden;
   }
   
-  .road {
-    width: 320px;
+  /* 3 TRAIN TRACKS */
+ .track {
+    width: 360px;
     height: 100%;
-    background: #3a3a3a;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    display: flex;
   }
   
-  .road-edge {
+ .lane {
+    flex: 1;
+    border-left: 2px solid #555;
+    border-right: 2px solid #555;
+    position: relative;
+    background: #2a2a2a;
+  }
+  
+ .rail {
     position: absolute;
-    width: 8px;
+    width: 4px;
     height: 100%;
-    background: #ffcc00;
-  }
-  .left { left: calc(50% - 160px); }
-  .right { right: calc(50% - 160px); }
-  
-  .line {
-    width: 6px;
-    height: 60px;
-    background: #fff;
-    position: absolute;
+    background: #666;
     left: 50%;
     transform: translateX(-50%);
-    border-radius: 2px;
   }
   
-  /* CAR DESIGN */
-  .car {
-    width: 45px;
-    height: 85px;
-    position: absolute;
-    border-radius: 12px 12px 4px 4px;
-  }
-  
+  /* PLAYER */
   #player {
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+    width: 40px;
+    height: 80px;
+    position: absolute;
+    bottom: 30px;
+    border-radius: 10px 10px 5px 5px;
+    transition: left 0.15s, bottom 0.2s;
+    z-index: 10;
   }
-  /* Windshield */
+  /* Head */
   #player::before {
     content: '';
     position: absolute;
-    top: 12px;
-    left: 5px;
-    width: 35px;
+    top: -15px;
+    left: 10px;
+    width: 20px;
     height: 20px;
-    background: rgba(0,0,0,0.6);
-    border-radius: 6px;
-    border: 1px solid #000;
-  }
-  /* Headlights */
-  #player::after {
-    content: '';
-    position: absolute;
-    bottom: 5px;
-    left: 5px;
-    width: 10px;
-    height: 8px;
-    background: #ffff99;
-    border-radius: 3px;
-    box-shadow: 25px 0 0 #ffff99;
+    background: #fdbcb4;
+    border-radius: 50%;
+    border: 2px solid #000;
   }
   
-  .enemy {
+  /* TRAIN */
+ .train {
+    width: 100%;
+    height: 100px;
     background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
-    border: 2px solid #f87171;
-    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+    position: absolute;
+    border-radius: 8px;
+    border: 3px solid #000;
   }
-  .enemy::before {
+ .train::before {
     content: '';
     position: absolute;
-    top: 12px;
+    top: 10px;
     left: 5px;
-    width: 35px;
+    width: 30px;
     height: 20px;
-    background: rgba(0,0,0,0.6);
-    border-radius: 6px;
-    border: 1px solid #7f1d1d;
-  }
-  .enemy::after {
-    content: '';
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    width: 10px;
-    height: 8px;
-    background: #ff0000;
+    background: rgba(255,255,255,0.8);
     border-radius: 3px;
-    box-shadow: 25px 0 0 #ff0000;
   }
   
-  /* COLOR CLASSES */
-  .blue { background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%); border: 2px solid #3b82f6; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4); }
-  .red { background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%); border: 2px solid #f87171; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
-  .green { background: linear-gradient(180deg, #10b981 0%, #059669 100%); border: 2px solid #34d399; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
-  .yellow { background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%); border: 2px solid #fcd34d; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4); }
-  .purple { background: linear-gradient(180deg, #a855f7 0%, #9333ea 100%); border: 2px solid #c084fc; box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4); }
+  /* COINS */
+ .coin {
+    width: 25px;
+    height: 25px;
+    background: radial-gradient(circle, #ffd700 0%, #ffaa00 100%);
+    border-radius: 50%;
+    position: absolute;
+    border: 2px solid #ffaa00;
+    box-shadow: 0 0 10px #ffd700;
+  }
   
   #score {
     position: absolute;
     top: 20px;
     left: 20px;
     color: #fff;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: bold;
     text-shadow: 2px 2px 4px #000;
   }
   
-  #colorPicker {
+  #coins {
     position: absolute;
-    top: 20px;
-    right: 20px;
-    display: flex;
-    gap: 8px;
+    top: 50px;
+    left: 20px;
+    color: #ffd700;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px #000;
   }
-  
-  .colorBtn {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    border: 3px solid #fff;
-    cursor: pointer;
-  }
-  .c-blue { background: #2563eb; }
-  .c-red { background: #ef4444; }
-  .c-green { background: #10b981; }
-  .c-yellow { background: #fbbf24; }
-  .c-purple { background: #a855f7; }
   
   #controls {
     position: absolute;
@@ -155,17 +123,17 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
-    padding: 0 40px;
+    padding: 0 30px;
   }
   
-  .btn {
-    width: 80px;
-    height: 80px;
-    background: rgba(37, 99, 235, 0.3);
-    border: 3px solid #2563eb;
+ .btn {
+    width: 70px;
+    height: 70px;
+    background: rgba(255,255,255,0.2);
+    border: 3px solid #fff;
     border-radius: 50%;
     color: #fff;
-    font-size: 30px;
+    font-size: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -183,11 +151,11 @@
     border-radius: 20px;
     text-align: center;
     display: none;
-    border: 2px solid #2563eb;
+    border: 2px solid #ffd700;
   }
   
   #restart {
-    background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+    background: linear-gradient(180deg, #10b981 0%, #059669 100%);
     border: none;
     color: #fff;
     padding: 12px 30px;
@@ -202,133 +170,169 @@
 <body>
 
 <div id="gameArea">
-  <div class="road"></div>
-  <div class="road-edge left"></div>
-  <div class="road-edge right"></div>
-  <div id="score">Score: 0</div>
-  
-  <div id="colorPicker">
-    <div class="colorBtn c-blue" onclick="changeColor('blue')"></div>
-    <div class="colorBtn c-red" onclick="changeColor('red')"></div>
-    <div class="colorBtn c-green" onclick="changeColor('green')"></div>
-    <div class="colorBtn c-yellow" onclick="changeColor('yellow')"></div>
-    <div class="colorBtn c-purple" onclick="changeColor('purple')"></div>
+  <div class="track">
+    <div class="lane"><div class="rail"></div></div>
+    <div class="lane"><div class="rail"></div></div>
+    <div class="lane"><div class="rail"></div></div>
   </div>
   
-  <div id="player" class="car blue"></div>
+  <div id="score">Score: 0</div>
+  <div id="coins">Coins: 0</div>
+  <div id="player" class="blue"></div>
   
   <div id="controls">
     <div class="btn" id="leftBtn">←</div>
+    <div class="btn" id="upBtn">↑</div>
+    <div class="btn" id="downBtn">↓</div>
     <div class="btn" id="rightBtn">→</div>
   </div>
   
   <div id="gameOver">
-    <h2>💥 CRASHED!</h2>
+    <h2>💥 GAME OVER!</h2>
     <p id="finalScore">Score: 0</p>
-    <button id="restart" onclick="restartGame()">Play Again</button>
+    <p id="finalCoins">Coins: 0</p>
+    <button id="restart" onclick="restartGame()">Run Again</button>
   </div>
 </div>
 
 <script>
   const player = document.getElementById('player');
   const gameArea = document.getElementById('gameArea');
-  let playerX = 150;
-  let speed = 5;
+  let currentLane = 1; // 0, 1, 2
+  let lanePositions = [60, 180, 300];
+  let speed = 6;
   let score = 0;
+  let coins = 0;
   let gameRunning = true;
-  let enemies = [];
+  let obstacles = [];
+  let isJumping = false;
   
-  document.getElementById('leftBtn').addEventListener('touchstart', () => moveLeft());
-  document.getElementById('rightBtn').addEventListener('touchstart', () => moveRight());
+  // Controls
+  document.getElementById('leftBtn').addEventListener('touchstart', () => moveLane(-1));
+  document.getElementById('rightBtn').addEventListener('touchstart', () => moveLane(1));
+  document.getElementById('upBtn').addEventListener('touchstart', () => jump());
+  document.getElementById('downBtn').addEventListener('touchstart', () => slide());
+  
   document.addEventListener('keydown', (e) => {
-    if(e.key === 'ArrowLeft') moveLeft();
-    if(e.key === 'ArrowRight') moveRight();
+    if(e.key === 'ArrowLeft') moveLane(-1);
+    if(e.key === 'ArrowRight') moveLane(1);
+    if(e.key === 'ArrowUp') jump();
+    if(e.key === 'ArrowDown') slide();
   });
   
-  function moveLeft() {
-    if(playerX > 110 && gameRunning) playerX -= 30;
-  }
-  function moveRight() {
-    if(playerX < 190 && gameRunning) playerX += 30;
-  }
-  
-  function changeColor(color) {
-    player.className = 'car ' + color;
+  function moveLane(dir) {
+    if(!gameRunning) return;
+    currentLane += dir;
+    if(currentLane < 0) currentLane = 0;
+    if(currentLane > 2) currentLane = 2;
+    player.style.left = lanePositions[currentLane] + 'px';
   }
   
-  function createEnemy() {
-    const enemy = document.createElement('div');
-    enemy.classList.add('enemy', 'car');
-    enemy.style.left = Math.random() > 0.5 ? '130px' : '190px';
-    enemy.style.top = '-100px';
-    gameArea.appendChild(enemy);
-    enemies.push(enemy);
+  function jump() {
+    if(isJumping ||!gameRunning) return;
+    isJumping = true;
+    player.style.bottom = '120px';
+    setTimeout(() => {
+      player.style.bottom = '30px';
+      isJumping = false;
+    }, 400);
+  }
+  
+  function slide() {
+    if(!gameRunning) return;
+    player.style.height = '40px';
+    setTimeout(() => {
+      player.style.height = '80px';
+    }, 500);
+  }
+  
+  function createObstacle() {
+    const type = Math.random();
+    const lane = Math.floor(Math.random() * 3);
+    const obj = document.createElement('div');
+    
+    if(type > 0.6) {
+      // COIN
+      obj.classList.add('coin');
+      obj.style.left = lanePositions[lane] + 17 + 'px';
+    } else {
+      // TRAIN
+      obj.classList.add('train');
+      obj.style.left = lanePositions[lane] - 20 + 'px';
+    }
+    
+    obj.style.top = '-120px';
+    obj.dataset.lane = lane;
+    gameArea.appendChild(obj);
+    obstacles.push(obj);
   }
   
   function gameLoop() {
     if(!gameRunning) return;
     
-    player.style.left = playerX + 'px';
-    
-    enemies.forEach((enemy, i) => {
-      let enemyTop = parseInt(enemy.style.top) + speed;
-      enemy.style.top = enemyTop + 'px';
+    obstacles.forEach((obj, i) => {
+      let top = parseInt(obj.style.top) + speed;
+      obj.style.top = top + 'px';
       
-      if(enemyTop > window.innerHeight) {
-        enemy.remove();
-        enemies.splice(i, 1);
-        score++;
-        document.getElementById('score').innerText = 'Score: ' + score;
-        if(score % 5 === 0) speed += 0.5;
+      if(top > window.innerHeight) {
+        obj.remove();
+        obstacles.splice(i, 1);
+        if(obj.classList.contains('train')) {
+          score++;
+          document.getElementById('score').innerText = 'Score: ' + score;
+          if(score % 5 === 0) speed += 0.5;
+        }
       }
       
+      // Collision
       let playerRect = player.getBoundingClientRect();
-      let enemyRect = enemy.getBoundingClientRect();
-      if(playerRect.left < enemyRect.right &&
-         playerRect.right > enemyRect.left &&
-         playerRect.top < enemyRect.bottom &&
-         playerRect.bottom > enemyRect.top) {
-        gameOver();
+      let objRect = obj.getBoundingClientRect();
+      if(playerRect.left < objRect.right &&
+         playerRect.right > objRect.left &&
+         playerRect.top < objRect.bottom &&
+         playerRect.bottom > objRect.top) {
+        
+        if(obj.classList.contains('coin')) {
+          coins++;
+          document.getElementById('coins').innerText = 'Coins: ' + coins;
+          obj.remove();
+          obstacles.splice(i, 1);
+        } else if(!isJumping) {
+          gameOver();
+        }
       }
-    });
-    
-    document.querySelectorAll('.line').forEach(line => {
-      let top = parseInt(line.style.top) + speed;
-      line.style.top = top + 'px';
-      if(top > window.innerHeight) line.style.top = '-80px';
     });
     
     requestAnimationFrame(gameLoop);
   }
   
-  for(let i = 0; i < 10; i++) {
-    const line = document.createElement('div');
-    line.classList.add('line');
-    line.style.top = i * 100 + 'px';
-    gameArea.appendChild(line);
-  }
-  
   setInterval(() => {
-    if(gameRunning) createEnemy();
-  }, 1500);
+    if(gameRunning) createObstacle();
+  }, 1200);
   
   function gameOver() {
     gameRunning = false;
     document.getElementById('finalScore').innerText = 'Score: ' + score;
+    document.getElementById('finalCoins').innerText = 'Coins: ' + coins;
     document.getElementById('gameOver').style.display = 'block';
   }
   
   function restartGame() {
-    enemies.forEach(e => e.remove());
-    enemies = [];
+    obstacles.forEach(o => o.remove());
+    obstacles = [];
     score = 0;
-    speed = 5;
+    coins = 0;
+    speed = 6;
     gameRunning = true;
+    currentLane = 1;
+    player.style.left = lanePositions[1] + 'px';
     document.getElementById('score').innerText = 'Score: 0';
+    document.getElementById('coins').innerText = 'Coins: 0';
     document.getElementById('gameOver').style.display = 'none';
     gameLoop();
   }
   
+  player.style.left = lanePositions[1] + 'px';
   gameLoop();
 </script>
 
