@@ -3,137 +3,120 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NaijaVoice AI - Speak Any Language</title>
+<title>NaijaVoice AI</title>
 <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: #141414; color: #fff; font-family: Arial; display: flex; flex-direction: column; height: 100vh; }
-
-  header { background: #000; padding: 15px; text-align: center; }
-  header h1 { color: #e50914; }
-  header p { font-size: 12px; color: #aaa; }
-
-  #chat { flex: 1; overflow-y: auto; padding: 20px; }
- .msg { margin: 10px 0; padding: 12px; border-radius: 10px; max-width: 80%; }
- .user { background: #e50914; margin-left: auto; }
- .ai { background: #222; margin-right: auto; }
-
-  #inputArea { display: flex; padding: 15px; background: #000; gap: 10px; }
-  #userInput { flex: 1; padding: 12px; border-radius: 20px; border: none; background: #333; color: #fff; }
-  #sendBtn, #micBtn { padding: 12px 20px; border: none; border-radius: 20px; background: #e50914; color: #fff; cursor: pointer; font-weight: bold; }
-  #micBtn { background: #008751; }
-
- .lang-select { padding: 10px; background: #000; text-align: center; }
-  select { padding: 8px; background: #333; color: #fff; border: none; border-radius: 5px; }
+  body { background:#000; color:#fff; font-family:Arial; margin:0; padding:20px; text-align:center; }
+  h1 { color:#ff0000; font-size:28px; }
+ .lang { margin:10px; padding:8px; border-radius:5px; background:#222; color:#fff; }
+  #chat { height:400px; overflow-y:auto; background:#111; padding:10px; border-radius:10px; margin:15px 0; text-align:left; }
+ .user { background:#ff0000; padding:10px; border-radius:10px; margin:5px 0; text-align:right; }
+ .ai { background:#333; padding:10px; border-radius:10px; margin:5px 0; }
+  input { width:60%; padding:12px; border-radius:20px; border:none; background:#222; color:#fff; }
+  button { padding:12px 20px; border:none; border-radius:20px; cursor:pointer; }
+ .send { background:#ff0000; color:#fff; }
+ .mic { background:#008751; color:#fff; }
+ .video-btn { background:#008751; color:#fff; margin-top:10px; }
+  img { max-width:100%; border-radius:10px; margin-top:10px; }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>🇳🇬 NaijaVoice AI</h1>
-  <p>Talk to me in any language</p>
-</header>
+<h1>🇳🇬 NaijaVoice AI</h1>
+<p>Talk to me in any language + Generate AI Video</p>
 
-<div class="lang-select">
-  <label>AI Reply Language: </label>
-  <select id="langSelect">
-    <option value="en-US">English</option>
-    <option value="yo-NG">Yoruba</option>
-    <option value="ig-NG">Igbo</option>
-    <option value="ha-NG">Hausa</option>
-    <option value="pcm-NG">Pidgin</option>
-    <option value="fr-FR">French</option>
-  </select>
-</div>
+<select id="lang" class="lang">
+  <option value="en">English</option>
+  <option value="ig">Igbo</option>
+  <option value="yo">Yoruba</option>
+  <option value="pi">Pidgin</option>
+</select>
 
 <div id="chat"></div>
 
-<div id="inputArea">
-  <input type="text" id="userInput" placeholder="Type or use mic...">
-  <button id="micBtn">🎤</button>
-  <button id="sendBtn">Send</button>
-</div>
+<input type="text" id="input" placeholder="Type or use mic...">
+<button class="mic" onclick="startMic()">🎤</button>
+<button class="send" onclick="sendMsg()">Send</button>
+
+<input type="text" id="videoPrompt" placeholder="Describe video: e.g 'Nollywood actor dancing'" style="width:80%; margin-top:10px;">
+<button class="video-btn" onclick="generateVideo()">🎬 Generate AI Video</button>
+<div id="videoResult"></div>
 
 <script>
-  const chat = document.getElementById('chat');
-  const input = document.getElementById('userInput');
-  const sendBtn = document.getElementById('sendBtn');
-  const micBtn = document.getElementById('micBtn');
-  const langSelect = document.getElementById('langSelect');
+const chat = document.getElementById('chat');
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const synth = window.speechSynthesis;
 
-  // AI BRAIN - Simple but smart
-  function getAIResponse(userText, lang) {
-    userText = userText.toLowerCase();
+function addMsg(text, who) {
+  chat.innerHTML += `<div class="${who}">${text}</div>`;
+  chat.scrollTop = chat.scrollHeight;
+}
 
-    if(userText.includes('hello') || userText.includes('bawo') || userText.includes('ndewo') || userText.includes('sannu')) {
-      if(lang.includes('yo')) return "Bawo ni! Kí ni mo lè ṣe fún ọ lónìí?";
-      if(lang.includes('ig')) return "Ndewo! Kedu ka m ga-esi nyere gị aka taa?";
-      if(lang.includes('ha')) return "Sannu! Ta yaya zan iya taimaka muku yau?";
-      if(lang.includes('pcm')) return "How you dey? Wetin I fit do for you today?";
-      return "Hello! How can I help you today?";
-    }
+function speak(text, lang) {
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = lang === 'ig'? 'en-NG' : lang === 'yo'? 'en-NG' : 'en-US';
+  synth.speak(u);
+}
 
-    if(userText.includes('movie') || userText.includes('film')) {
-      if(lang.includes('pcm')) return "Omo, go check NaijaFlix! We get 30 Nollywood movies for you. Wetin kind movie you want?";
-      return "You should check NaijaFlix! We have 30 Nollywood movies. What kind of movie do you want?";
-    }
+function getAIResponse(userText, lang) {
+  userText = userText.toLowerCase();
 
-    if(lang.includes('pcm')) return "I hear you o. You talk say: " + userText + ". Abeg explain well make I help you.";
-    return "I understand. You said: " + userText + ". How can I help you with that?";
+  if(userText.includes('afa') || userText.includes('kedu') || userText.includes('ndewo')) {
+    return lang === 'ig'? "Ndewo! Kedu ka m ga-esi nyere gị aka taa?" : "Hello! How can I help you?";
   }
-
-  // TEXT TO SPEECH
-  function speak(text, lang) {
-    const speech = new SpeechSynthesisUtterance(text);
-    speech.lang = lang;
-    speech.rate = 1;
-    window.speechSynthesis.speak(speech);
+  if(userText.includes('bawo') || userText.includes('dalu')) {
+    return lang === 'yo'? "Bawo ni! Kí ni mo lè ṣe fún ọ lónìí?" : "Hello! How can I help you?";
   }
-
-  // SPEECH TO TEXT
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  let recognition;
-  if(SpeechRecognition) {
-    recognition = new SpeechRecognition();
-    recognition.continuous = false;
-    recognition.lang = 'en-US';
-
-    micBtn.onclick = () => {
-      recognition.lang = langSelect.value;
-      recognition.start();
-      micBtn.textContent = "🔴";
-    };
-
-    recognition.onresult = (e) => {
-      input.value = e.results[0][0].transcript;
-      micBtn.textContent = "🎤";
-    };
-    recognition.onend = () => micBtn.textContent = "🎤";
+  if(userText.includes('how far') || userText.includes('wetin')) {
+    return lang === 'pi'? "I dey o! Wetin I fit do for you today?" : "I'm here! What can I do for you?";
   }
-
-  // SEND MESSAGE
-  function sendMessage() {
-    const text = input.value.trim();
-    if(!text) return;
-
-    // Show user message
-    chat.innerHTML += `<div class="msg user">${text}</div>`;
-
-    // Get AI response
-    const lang = langSelect.value;
-    const aiReply = getAIResponse(text, lang);
-
-    setTimeout(() => {
-      chat.innerHTML += `<div class="msg ai">${aiReply}</div>`;
-      speak(aiReply, lang);
-      chat.scrollTop = chat.scrollHeight;
-    }, 500);
-
-    input.value = '';
-    chat.scrollTop = chat.scrollHeight;
+  if(userText.includes('movie')) {
+    return "Omo, go check NaijaFlix! We get 30 Nollywood movies for you. Link: movies.html";
   }
+  return "I hear you o. You talk say: " + userText;
+}
 
-  sendBtn.onclick = sendMessage;
-  input.onkeypress = (e) => { if(e.key === 'Enter') sendMessage(); };
+function sendMsg() {
+  const text = document.getElementById('input').value;
+  const lang = document.getElementById('lang').value;
+  if(!text) return;
+  addMsg(text, 'user');
+  document.getElementById('input').value = '';
+
+  setTimeout(() => {
+    const reply = getAIResponse(text, lang);
+    addMsg(reply, 'ai');
+    speak(reply, lang);
+  }, 500);
+}
+
+function startMic() {
+  if(!SpeechRecognition) { alert("Mic no dey your browser"); return; }
+  const rec = new SpeechRecognition();
+  rec.lang = 'en-NG';
+  rec.onresult = (e) => {
+    document.getElementById('input').value = e.results[0][0].transcript;
+    sendMsg();
+  }
+  rec.start();
+}
+
+// FAKE AI VIDEO GENERATOR - uses free image API as video placeholder
+function generateVideo() {
+  const prompt = document.getElementById('videoPrompt').value;
+  if(!prompt) { alert("Describe the video first"); return; }
+  addMsg("Generating video: " + prompt, 'user');
+  document.getElementById('videoResult').innerHTML = "⏳ Generating... wait 5 seconds";
+
+  // This uses a free image API. Real video needs paid API like Runway or Pika
+  setTimeout(() => {
+    const imgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt + ", cinematic, 4k")}`;
+    document.getElementById('videoResult').innerHTML = `
+      <img src="${imgUrl}">
+      <p>AI Image generated. For real video, we go need to connect Pika or Runway API.</p>
+    `;
+    addMsg("Your AI video/image is ready!", 'ai');
+  }, 2000);
+}
 </script>
 
 </body>
