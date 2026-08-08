@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Street Racer</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #111; overflow: hidden; font-family: 'Arial'; }
+  
+  #gameArea {
+    width: 100vw;
+    height: 100vh;
+    background: #333;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .road {
+    width: 300px;
+    height: 100%;
+    background: #444;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 4px dashed #fff;
+    border-right: 4px dashed #fff;
+  }
+  
+  .line {
+    width: 4px;
+    height: 80px;
+    background: #fff;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  #player {
+    width: 40px;
+    height: 70px;
+    background: #2563eb;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 8px;
+    border: 2px solid #fff;
+  }
+  
+  .enemy {
+    width: 40px;
+    height: 70px;
+    background: #ef4444;
+    position: absolute;
+    border-radius: 8px;
+    border: 2px solid #fff;
+  }
+  
+  #score {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    color: #fff;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  #controls {
+    position: absolute;
+    bottom: 30px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 40px;
+  }
+  
+  .btn {
+    width: 80px;
+    height: 80px;
+    background: rgba(255,255,255,0.2);
+    border: 2px solid #fff;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  #gameOver {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.9);
+    color: #fff;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    display: none;
+  }
+  
+  #restart {
+    background: #2563eb;
+    border: none;
+    color: #fff;
+    padding: 12px 30px;
+    border-radius: 10px;
+    font-size: 18px;
+    margin-top: 15px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div id="gameArea">
+  <div class="road"></div>
+  <div id="score">Score: 0</div>
+  <div id="player"></div>
+  
+  <div id="controls">
+    <div class="btn" id="leftBtn">←</div>
+    <div class="btn" id="rightBtn">→</div>
+  </div>
+  
+  <div id="gameOver">
+    <h2>💥 CRASHED!</h2>
+    <p id="finalScore">Score: 0</p>
+    <button id="restart" onclick="restartGame()">Play Again</button>
+  </div>
+</div>
+
+<script>
+  const player = document.getElementById('player');
+  const gameArea = document.getElementById('gameArea');
+  let playerX = 150;
+  let speed = 5;
+  let score = 0;
+  let gameRunning = true;
+  let enemies = [];
+  
+  // Move player
+  document.getElementById('leftBtn').addEventListener('touchstart', () => moveLeft());
+  document.getElementById('rightBtn').addEventListener('touchstart', () => moveRight());
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'ArrowLeft') moveLeft();
+    if(e.key === 'ArrowRight') moveRight();
+  });
+  
+  function moveLeft() {
+    if(playerX > 110 && gameRunning) playerX -= 30;
+  }
+  function moveRight() {
+    if(playerX < 190 && gameRunning) playerX += 30;
+  }
+  
+  // Create enemy cars
+  function createEnemy() {
+    const enemy = document.createElement('div');
+    enemy.classList.add('enemy');
+    enemy.style.left = Math.random() > 0.5 ? '130px' : '190px';
+    enemy.style.top = '-100px';
+    gameArea.appendChild(enemy);
+    enemies.push(enemy);
+  }
+  
+  // Game loop
+  function gameLoop() {
+    if(!gameRunning) return;
+    
+    player.style.left = playerX + 'px';
+    
+    // Move enemies
+    enemies.forEach((enemy, i) => {
+      let enemyTop = parseInt(enemy.style.top) + speed;
+      enemy.style.top = enemyTop + 'px';
+      
+      // Remove enemy if off screen
+      if(enemyTop > window.innerHeight) {
+        enemy.remove();
+        enemies.splice(i, 1);
+        score++;
+        document.getElementById('score').innerText = 'Score: ' + score;
+        if(score % 5 === 0) speed += 0.5; // Game gets harder
+      }
+      
+      // Collision detection
+      let playerRect = player.getBoundingClientRect();
+      let enemyRect = enemy.getBoundingClientRect();
+      if(playerRect.left < enemyRect.right &&
+         playerRect.right > enemyRect.left &&
+         playerRect.top < enemyRect.bottom &&
+         playerRect.bottom > enemyRect.top) {
+        gameOver();
+      }
+    });
+    
+    // Move road lines
+    document.querySelectorAll('.line').forEach(line => {
+      let top = parseInt(line.style.top) + speed;
+      line.style.top = top + 'px';
+      if(top > window.innerHeight) line.style.top = '-80px';
+    });
+    
+    requestAnimationFrame(gameLoop);
+  }
+  
+  // Create road lines
+  for(let i = 0; i < 10; i++) {
+    const line = document.createElement('div');
+    line.classList.add('line');
+    line.style.top = i * 100 + 'px';
+    gameArea.appendChild(line);
+  }
+  
+  // Spawn enemies
+  setInterval(() => {
+    if(gameRunning) createEnemy();
+  }, 1500);
+  
+  function gameOver() {
+    gameRunning = false;
+    document.getElementById('finalScore').innerText = 'Score: ' + score;
+    document.getElementById('gameOver').style.display = 'block';
+  }
+  
+  function restartGame() {
+    enemies.forEach(e => e.remove());
+    enemies = [];
+    score = 0;
+    speed = 5;
+    gameRunning = true;
+    document.getElementById('score').innerText = 'Score: 0';
+    document.getElementById('gameOver').style.display = 'none';
+    gameLoop();
+  }
+  
+  gameLoop();
+</script>
+
+</body>
+                    </html>
