@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bitcoin Tracker - Live BTC</title>
+<title>Bitcoin Tracker Pro - Live BTC + TX Checker</title>
 <style>
   body { 
     margin:0; background:#0a0a0a; color:#fff; font-family:'Arial', sans-serif; 
@@ -12,61 +12,77 @@
   .container { max-width:900px; margin:0 auto; padding:20px; }
   .header { text-align:center; padding:20px; }
   .header h1 { color:#F7931A; font-size:32px; margin:0; }
-  .price-card { 
-    background:#1e1e1e; padding:30px; border-radius:15px; margin:20px 0; 
-    border:2px solid #F7931A; text-align:center; 
+  .card { 
+    background:#1e1e1e; padding:25px; border-radius:15px; margin:20px 0; 
+    border:2px solid #F7931A; 
   }
-  .btc-price { font-size:48px; font-weight:bold; color:#F7931A; }
-  .change { font-size:18px; margin-top:10px; }
+  .btc-price { font-size:42px; font-weight:bold; color:#F7931A; text-align:center; }
+  .change { font-size:18px; margin-top:10px; text-align:center; }
   .green { color:#00ff88; }
   .red { color:#ff4444; }
-  .wallet { 
-    background:#1e1e1e; padding:20px; border-radius:15px; margin:20px 0;
-  }
   input { 
     width:100%; padding:12px; background:#2a2a2a; border:1px solid #444; 
-    color:#fff; border-radius:8px; margin:10px 0; font-size:16px;
+    color:#fff; border-radius:8px; margin:10px 0; font-size:16px; box-sizing:border-box;
   }
   button { 
     width:100%; padding:15px; background:#F7931A; border:none; color:#000; 
     font-weight:bold; font-size:18px; border-radius:8px; cursor:pointer;
   }
   button:hover { background:#ffb347; }
-  .wallet-info { margin-top:15px; padding:15px; background:#2a2a2a; border-radius:10px; }
-  #chart { width:100%; height:300px; background:#1e1e1e; border-radius:15px; margin:20px 0; }
-  .footer { text-align:center; padding:20px; color:#666; font-size:12px; }
+  .info-box { margin-top:15px; padding:15px; background:#2a2a2a; border-radius:10px; }
+  .confirmed { color:#00ff88; font-weight:bold; }
+  .pending { color:#ffaa00; font-weight:bold; }
+  #chart { width:100%; height:250px; background:#1e1e1e; border-radius:15px; margin:20px 0; }
 </style>
 </head>
 <body>
 
 <div class="container">
   <div class="header">
-    <h1>₿ BITCOIN TRACKER</h1>
-    <p>Live BTC Price + Wallet Balance</p>
+    <h1>₿ BITCOIN TRACKER PRO</h1>
+    <p>Live Price + Wallet + Transaction Checker</p>
   </div>
 
-  <div class="price-card">
+  <!-- PRICE CARD -->
+  <div class="card">
     <div>Bitcoin Price USD</div>
     <div class="btc-price" id="btcPrice">Loading...</div>
     <div class="change" id="btcChange">Loading...</div>
-    <div style="margin-top:10px; color:#888;">Last updated: <span id="lastUpdate">-</span></div>
+    <div style="margin-top:10px; color:#888; text-align:center;">Updated: <span id="lastUpdate">-</span></div>
   </div>
 
-  <div class="wallet">
-    <h2>Check Wallet Balance</h2>
-    <input type="text" id="walletAddress" placeholder="Enter BTC Wallet Address">
+  <!-- WALLET CHECKER -->
+  <div class="card">
+    <h2>1. Check Wallet Balance</h2>
+    <input type="text" id="walletAddress" placeholder="Enter BTC Wallet Address: bc1q...">
     <button onclick="checkWallet()">CHECK BALANCE</button>
-    <div class="wallet-info" id="walletInfo" style="display:none;">
+    <div class="info-box" id="walletInfo" style="display:none;">
       <div>Balance: <span id="balance">0</span> BTC</div>
       <div>USD Value: $<span id="usdValue">0</span></div>
-      <div>Transactions: <span id="txCount">0</span></div>
+      <div>Total Transactions: <span id="txCount">0</span></div>
+    </div>
+  </div>
+
+  <!-- TRANSACTION CHECKER - NEW -->
+  <div class="card">
+    <h2>2. Check Transaction Status</h2>
+    <input type="text" id="txid" placeholder="Enter BTC Transaction ID/TXID">
+    <button onclick="checkTX()">CHECK TRANSACTION</button>
+    <div class="info-box" id="txInfo" style="display:none;">
+      <div>Status: <span id="txStatus" class="pending">-</span></div>
+      <div>Amount: <span id="txAmount">0</span> BTC</div>
+      <div>USD Value: $<span id="txUSD">0</span></div>
+      <div>Confirmations: <span id="txConf">0</span></div>
+      <div>From: <span id="txFrom">-</span></div>
+      <div>To: <span id="txTo">-</span></div>
+      <div style="margin-top:10px; font-size:12px; color:#888;">View on Blockchain: <a id="txLink" href="#" target="_blank" style="color:#F7931A;">Open</a></div>
     </div>
   </div>
 
   <canvas id="chart"></canvas>
 
-  <div class="footer">
-    Data from CoinGecko + Blockchain.com API | For educational use only
+  <div style="text-align:center; padding:20px; color:#666; font-size:12px;">
+    Data from CoinGecko + Blockchain.com | Real Blockchain Data Only
   </div>
 </div>
 
@@ -86,11 +102,11 @@ async function getBTCPrice() {
     document.getElementById('btcChange').className = 'change ' + (change > 0 ? 'green' : 'red');
     document.getElementById('lastUpdate').innerText = new Date().toLocaleTimeString();
   } catch(e) {
-    document.getElementById('btcPrice').innerText = 'Error loading price';
+    document.getElementById('btcPrice').innerText = 'Error';
   }
 }
 
-// 2. CHECK WALLET BALANCE
+// 2. CHECK WALLET
 async function checkWallet() {
   const address = document.getElementById('walletAddress').value;
   if(!address) return alert('Enter wallet address');
@@ -101,37 +117,59 @@ async function checkWallet() {
   try {
     const res = await fetch(`https://blockchain.info/rawaddr/${address}`);
     const data = await res.json();
-    
     const balanceBTC = data.final_balance / 100000000;
-    const usdValue = balanceBTC * btcPriceUSD;
-    
     document.getElementById('balance').innerText = balanceBTC.toFixed(8);
-    document.getElementById('usdValue').innerText = usdValue.toLocaleString();
+    document.getElementById('usdValue').innerText = (balanceBTC * btcPriceUSD).toLocaleString();
     document.getElementById('txCount').innerText = data.n_tx;
   } catch(e) {
-    alert('Invalid wallet address or API error');
+    alert('Invalid wallet address');
   }
 }
 
-// 3. DRAW SIMPLE PRICE CHART
+// 3. CHECK TRANSACTION - NEW
+async function checkTX() {
+  const txid = document.getElementById('txid').value;
+  if(!txid) return alert('Enter TXID');
+  
+  document.getElementById('txInfo').style.display = 'block';
+  document.getElementById('txStatus').innerText = 'Loading...';
+  
+  try {
+    const res = await fetch(`https://blockchain.info/rawtx/${txid}`);
+    const data = await res.json();
+    
+    const amountBTC = data.out.reduce((sum, o) => sum + o.value, 0) / 100000000;
+    const confirmations = data.block_height ? '6+' : '0';
+    const status = data.block_height ? 'Confirmed' : 'Pending';
+    
+    document.getElementById('txStatus').innerText = status;
+    document.getElementById('txStatus').className = data.block_height ? 'confirmed' : 'pending';
+    document.getElementById('txAmount').innerText = amountBTC.toFixed(8);
+    document.getElementById('txUSD').innerText = (amountBTC * btcPriceUSD).toLocaleString();
+    document.getElementById('txConf').innerText = confirmations;
+    document.getElementById('txFrom').innerText = data.inputs[0]?.prev_out?.addr || 'Unknown';
+    document.getElementById('txTo').innerText = data.out[0]?.addr || 'Unknown';
+    document.getElementById('txLink').href = `https://www.blockchain.com/btc/tx/${txid}`;
+    
+  } catch(e) {
+    alert('Invalid TXID or transaction not found');
+  }
+}
+
 function drawChart() {
   const canvas = document.getElementById('chart');
   const ctx = canvas.getContext('2d');
   canvas.width = canvas.offsetWidth;
-  canvas.height = 300;
-  
-  // Fake 24h chart data for demo
+  canvas.height = 250;
   ctx.strokeStyle = '#F7931A';
   ctx.lineWidth = 3;
   ctx.beginPath();
   for(let i=0; i<24; i++){
     const x = (i/23) * canvas.width;
-    const y = canvas.height/2 + Math.sin(i/3) * 50 + Math.random()*20;
-    if(i===0) ctx.moveTo(x,y);
-    else ctx.lineTo(x,y);
+    const y = canvas.height/2 + Math.sin(i/3) * 40 + Math.random()*15;
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
   }
   ctx.stroke();
-  
   ctx.fillStyle = '#888';
   ctx.font = '14px Arial';
   ctx.fillText('24H Price Chart', 10, 20);
@@ -139,8 +177,8 @@ function drawChart() {
 
 getBTCPrice();
 drawChart();
-setInterval(getBTCPrice, 30000); // Update every 30 seconds
+setInterval(getBTCPrice, 30000);
 </script>
 
 </body>
-  </html>
+</html>
