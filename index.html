@@ -7,42 +7,51 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
     body { background: #0a0f1e; color: white; padding: 20px; min-height: 100vh; }
-    
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-    .menu { font-size: 28px; cursor: pointer; }
-    .avatar { width: 40px; height: 40px; background: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; }
-    
-    .greeting { font-size: 24px; font-weight: 700; margin-bottom: 5px; }
-    .subtext { color: #94a3b8; margin-bottom: 20px; font-size: 14px; }
-    
-    .btn-row { display: flex; gap: 10px; margin-bottom: 25px; }
-    .btn { padding: 12px 20px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; font-size: 14px; }
-    .btn-blue { background: #3b82f6; color: white; }
-    .btn-dark { background: #1e293b; color: white; }
-    
-    .overview { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
-    
-    .card {
+
+   .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+   .menu { font-size: 28px; }
+   .avatar { width: 40px; height: 40px; background: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; }
+
+   .greeting { font-size: 24px; font-weight: 700; margin-bottom: 5px; }
+   .subtext { color: #94a3b8; margin-bottom: 20px; font-size: 14px; }
+
+   .btn-row { display: flex; gap: 10px; margin-bottom: 25px; }
+   .btn { padding: 12px 20px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; font-size: 14px; }
+   .btn-blue { background: #3b82f6; color: white; }
+   .btn-dark { background: #1e293b; color: white; }
+
+   .overview { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+
+   .card {
       background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
       border-radius: 20px; padding: 25px; margin-bottom: 25px;
       box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
     }
-    .card-top { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
-    .profile-pic { width: 50px; height: 50px; border-radius: 50%; background: #ccc; object-fit: cover; }
-    
-    .balance-section .label { font-size: 14px; opacity: 0.8; }
-    .balance-section .currency { font-size: 22px; font-weight: 700; margin: 3px 0; }
-    .balance-section .amount { font-size: 36px; font-weight: 800; color: #22c55e; text-shadow: 0 0 10px #22c55e; }
-    .balance-section .name { font-size: 16px; margin-top: 5px; opacity: 0.9; }
-    
-    .card-bottom { display: flex; justify-content: space-between; font-size: 13px; opacity: 0.9; }
-    .card-bottom div div:first-child { opacity: 0.7; margin-bottom: 3px; }
-    
-    .section-title { font-size: 18px; font-weight: 600; margin-bottom: 10px; }
-    .link { color: #3b82f6; text-decoration: none; font-weight: 600; }
-    
-    .logout { width: 100%; padding: 15px; background: #ef4444; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; margin-top: 30px; cursor: pointer; }
-    .logout:hover { background: #dc2626; }
+   .card-top { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+   .profile-pic { width: 50px; height: 50px; border-radius: 50%; background: #ccc; object-fit: cover; }
+   .balance-section.label { font-size: 14px; opacity: 0.8; }
+   .balance-section.currency { font-size: 22px; font-weight: 700; margin: 3px 0; }
+   .balance-section.amount { font-size: 36px; font-weight: 800; color: #22c55e; text-shadow: 0 0 10px #22c55e; }
+   .balance-section.name { font-size: 16px; margin-top: 5px; opacity: 0.9; }
+   .card-bottom { display: flex; justify-content: space-between; font-size: 13px; opacity: 0.9; }
+
+   .section-title { font-size: 18px; font-weight: 600; margin: 20px 0 12px 0; }
+   .link { color: #3b82f6; text-decoration: none; font-weight: 600; }
+
+   .transaction-list { background: #1e293b; border-radius: 15px; padding: 15px; }
+   .transaction { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #334155; }
+   .transaction:last-child { border-bottom: none; }
+   .tx-left { display: flex; gap: 12px; align-items: center; }
+   .tx-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+   .tx-green { background: #14532d; color: #22c55e; }
+   .tx-red { background: #7f1d1d; color: #ef4444; }
+   .tx-name { font-weight: 600; font-size: 14px; }
+   .tx-date { font-size: 12px; color: #94a3b8; }
+   .tx-amount { font-weight: 700; font-size: 15px; }
+   .amount-in { color: #22c55e; }
+   .amount-out { color: #ef4444; }
+
+   .logout { width: 100%; padding: 15px; background: #ef4444; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; margin-top: 25px; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -72,14 +81,42 @@
       </div>
     </div>
     <div class="card-bottom">
-      <div>
-        <div>Last Login</div>
-        <div id="lastLogin">Loading...</div>
+      <div><div>Last Login</div><div id="lastLogin">Loading...</div></div>
+      <div><div>Account Email</div><div id="email">Loading...</div></div>
+    </div>
+  </div>
+
+  <div class="section-title">Recent Transactions</div>
+  <div class="transaction-list">
+    <div class="transaction">
+      <div class="tx-left">
+        <div class="tx-icon tx-green">↓</div>
+        <div>
+          <div class="tx-name">Deposit</div>
+          <div class="tx-date">08 Aug 2026</div>
+        </div>
       </div>
-      <div>
-        <div>Account Email</div>
-        <div id="email">Loading...</div>
+      <div class="tx-amount amount-in">+$500,000</div>
+    </div>
+    <div class="transaction">
+      <div class="tx-left">
+        <div class="tx-icon tx-red">↑</div>
+        <div>
+          <div class="tx-name">Wire Transfer</div>
+          <div class="tx-date">07 Aug 2026</div>
+        </div>
       </div>
+      <div class="tx-amount amount-out">-$250,000</div>
+    </div>
+    <div class="transaction">
+      <div class="tx-left">
+        <div class="tx-icon tx-green">↓</div>
+        <div>
+          <div class="tx-name">Investment Return</div>
+          <div class="tx-date">05 Aug 2026</div>
+        </div>
+      </div>
+      <div class="tx-amount amount-in">+$1,200,000</div>
     </div>
   </div>
 
@@ -107,8 +144,8 @@
     const userId = "P2IAFNLfzMxtzsNxOOpwWK4Jji2";
 
     const hour = new Date().getHours();
-    let greet = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
-    
+    let greet = hour < 12? "Good morning" : hour < 18? "Good afternoon" : "Good evening";
+
     async function loadData() {
       try {
         const docSnap = await getDoc(doc(db, "users", userId));
@@ -116,7 +153,7 @@
           const data = docSnap.data();
           const name = data.accountName || "User";
           const balance = data.accounts[0].balance;
-          
+
           document.getElementById("greeting").innerText = `${greet} ${name}`;
           document.getElementById("avatar").innerText = name.charAt(0).toUpperCase();
           document.getElementById("cardName").innerText = name;
