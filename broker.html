@@ -3,164 +3,86 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TRUESOUL BROKER</title>
+<title>TrueSoulFX Broker</title>
+<script src="https://js.paystack.co/v1/inline.js"></script> <!-- PAYSTACK ADDED -->
 <style>
-body { margin:0; background:#0B0E11; color:#EAECEF; font-family:Arial; }
-.header { background:#181A20; padding:15px; display:flex; justify-content:space-between; border-bottom:1px solid #2B3139; }
-.logo { color:#F0B90B; font-weight:bold; font-size:18px; }
-.balance { background:#181A20; padding:20px; margin:15px; border-radius:8px; }
-.btn { background:#F0B90B; color:#000; border:none; padding:12px; border-radius:4px; font-weight:bold; width:48%; cursor:pointer; }
-.btn-sell { background:#F6465D; color:#fff; }
-.btn-deposit { background:#00C853; color:#fff; width:100%; margin-top:10px; }
-.input { width:100%; padding:10px; background:#2B3139; border:1px solid #444; color:#fff; border-radius:4px; margin:10px 0; box-sizing:border-box; }
-.price { color:#0ECB81; font-size:20px; }
+body { font-family: Arial, sans-serif; background: #0a0a0a; color: #fff; margin: 0; padding: 20px; }
+.container { max-width: 400px; margin: auto; background: #1a1a1a; padding: 20px; border-radius: 10px; }
+input, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 5px; border: none; }
+button { background: #00d4ff; color: #000; font-weight: bold; cursor: pointer; }
+.balance { font-size: 24px; color: #00ff88; text-align: center; margin: 20px 0; }
 </style>
-<script src="https://js.paystack.co/v1/inline.js"></script>
 </head>
 <body>
-
-<div class="header">
-  <div class="logo">TRUESOUL</div>
-  <div id="userEmail">Guest</div>
-</div>
-
-<div id="loginBox" style="padding:20px;">
-  <h2>Login / Register</h2>
-  <input class="input" id="email" placeholder="Email">
-  <input class="input" id="password" type="password" placeholder="Password">
-  <button class="btn" onclick="register()">REGISTER</button>
-  <button class="btn" onclick="login()">LOGIN</button>
-</div>
-
-<div id="brokerBox" style="display:none;">
-  <div class="balance">
-    <div>Portfolio</div>
-    <h1>$<span id="usdtBal">0.00</span> USDT</h1>
-    <div>BTC: <span id="btcBal">0.00000</span></div>
-    <button class="btn-deposit" onclick="deposit()">DEPOSIT ₦ NAIRA</button>
-  </div>
+<div class="container">
+  <h2>TrueSoulFX Broker</h2>
   
-  <div style="padding:15px;">
-    <h3>BTC/USDT: $<span class="price" id="btcPrice">Loading...</span></h3>
-    <input class="input" id="tradeAmount" type="number" placeholder="Amount in USDT">
-    <div style="display:flex; gap:10px;">
-      <button class="btn" onclick="buy()">BUY BTC</button>
-      <button class="btn btn-sell" onclick="sell()">SELL BTC</button>
-    </div>
-  </div>
-  <button class="btn" style="margin:15px; width:calc(100% - 30px);" onclick="logout()">LOGOUT</button>
+  <div class="balance">Balance: ₦<span id="balance">0.00</span></div>
+
+  <h3>Deposit Funds</h3>
+  <input type="email" id="email" placeholder="Enter your email" value="maroejiata02@gmail.com">
+  <input type="number" id="amount" placeholder="Amount in Naira">
+  <button onclick="payWithPaystack()">Deposit Now</button>
+
+  <h3>Reset User</h3>
+  <button onclick="resetUser()">Reset Balance to 0</button>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, set, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+<script>
+const PUBLIC_KEY = "pk_test_f4fb7830b3df14c1739a0z"; // YOUR KEY
+let balance = parseFloat(localStorage.getItem('balance')) || 0;
+document.getElementById('balance').innerText = balance.toFixed(2);
 
-const firebaseConfig = {
-  apiKey: "AIzaSyA3lpkv0zgWaeXupRi0EwasM93v540tbhc",
-  authDomain: "truesoul1-broker.firebaseapp.com",
-  databaseURL: "https://truesoul1-broker-default-rtdb.firebaseio.com",
-  projectId: "truesoul1-broker"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-let currentUser = null;
-
-window.register = async () => {
-  const email = document.getElementById('email').value;
-  const pass = document.getElementById('password').value;
-  const userId = email.replace(/[.@]/g, '_');
-  await set(ref(db, 'users/' + userId), {
-    email: email, password: pass,
-    assets: {usdt: 10000, btc: 0, eth: 0},
-    history: []
-  });
-  alert('Registered! $10,000 USDT credited');
-  loadUser(userId);
+function updateBalance() {
+  localStorage.setItem('balance', balance);
+  document.getElementById('balance').innerText = balance.toFixed(2);
 }
 
-window.login = async () => {
-  const email = document.getElementById('email').value;
-  const pass = document.getElementById('password').value;
-  const userId = email.replace(/[.@]/g, '_');
-  const snap = await get(ref(db, 'users/' + userId));
-  if(snap.exists() && snap.val().password === pass){
-    loadUser(userId);
-  } else alert('Invalid login');
-}
+// PAYSTACK PAYMENT FUNCTION
+function payWithPaystack() {
+  let email = document.getElementById('email').value;
+  let amount = document.getElementById('amount').value * 100; // Paystack uses kobo
 
-function loadUser(userId){
-  currentUser = userId;
-  document.getElementById('loginBox').style.display = 'none';
-  document.getElementById('brokerBox').style.display = 'block';
-  document.getElementById('userEmail').innerText = userId;
-  
-  onValue(ref(db, 'users/' + userId), (snap) => {
-    const data = snap.val();
-    document.getElementById('usdtBal').innerText = data.assets.usdt.toFixed(2);
-    document.getElementById('btcBal').innerText = data.assets.btc.toFixed(8);
-  });
-}
+  if(!email || !amount) { alert("Enter email and amount"); return; }
 
-window.logout = () => { currentUser = null; location.reload(); }
-
-async function getPrice(){
-  try {
-    const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd');
-    const data = await res.json();
-    document.getElementById('btcPrice').innerText = parseFloat(data.bitcoin.usd).toFixed(2);
-    return parseFloat(data.bitcoin.usd);
-  } catch(e){ return 65000; }
-}
-
-window.buy = async () => {
-  const amount = parseFloat(document.getElementById('tradeAmount').value);
-  const price = await getPrice();
-  const snap = await get(ref(db, 'users/' + currentUser));
-  const user = snap.val();
-  if(user.assets.usdt >= amount){
-    user.assets.usdt -= amount;
-    user.assets.btc += amount / price;
-    await update(ref(db, 'users/' + currentUser), {assets: user.assets});
-    alert('Bought BTC!');
-  } else alert('Insufficient USDT');
-}
-
-window.sell = async () => {
-  const amount = parseFloat(document.getElementById('tradeAmount').value);
-  const price = await getPrice();
-  const btcAmount = amount / price;
-  const snap = await get(ref(db, 'users/' + currentUser));
-  const user = snap.val();
-  if(user.assets.btc >= btcAmount){
-    user.assets.btc -= btcAmount;
-    user.assets.usdt += amount;
-    await update(ref(db, 'users/' + currentUser), {assets: user.assets});
-    alert('Sold BTC!');
-  } else alert('Insufficient BTC');
-}
-
-window.deposit = () => {
-  const email = document.getElementById('userEmail').innerText.replace('_', '@') + ".com";
-  const handler = PaystackPop.setup({
-    key: 'pk_test_YOUR_PAYSTACK_TEST_KEY', // CHANGE THIS TO YOUR PAYSTACK KEY
+  let handler = PaystackPop.setup({
+    key: PUBLIC_KEY,
     email: email,
-    amount: 100000, // 1000 Naira
+    amount: amount,
     currency: "NGN",
+    ref: ''+Math.floor((Math.random() * 1000000000) + 1),
     callback: function(response){
-      alert('Payment Successful! +10 USDT Credited');
-      get(ref(db, 'users/' + currentUser)).then(snap => {
-        const user = snap.val();
-        user.assets.usdt += 10; // 1000 Naira = 10 USDT
-        update(ref(db, 'users/' + currentUser), {assets: user.assets});
-      })
+      alert('Payment successful! Ref: ' + response.reference);
+      balance += amount/100; // convert back to naira
+      updateBalance();
+    },
+    onClose: function(){
+      alert('Payment cancelled');
     }
   });
   handler.openIframe();
 }
 
-getPrice();
-setInterval(getPrice, 5000);
+// RESET USER FUNCTION
+function resetUser() {
+  if(confirm("Are you sure you want to reset balance to 0?")) {
+    balance = 0;
+    updateBalance();
+    alert("User reset successfully");
+  }
+}
+
+// LOAD PRICE FUNCTION - Example
+async function loadPrice() {
+  try {
+    let res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
+    let data = await res.json();
+    console.log("BTC Price: ", data.price);
+  } catch(e) {
+    console.log("Price load error", e);
+  }
+}
+loadPrice();
 </script>
 </body>
 </html>
