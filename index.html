@@ -1,223 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cash Flow Banking</title>
-<style>
-:root{--bg:#0B0F1A;--card:#121827;--border:#1F2A3D;--text:#E5E7EB;--muted:#94A3B8;--green:#10B981;--blue:#3B82F6}
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
-body{background:var(--bg);color:var(--text)}
-.container{max-width:480px;margin:0 auto;padding:0 20px}
-.header{display:flex;justify-content:space-between;align-items:center;padding:20px 0;border-bottom:1px solid var(--border)}
-.logo{font-size:20px;font-weight:800;color:var(--green);display:flex;gap:8px;align-items:center}
-.logo::before{content:'$';width:32px;height:32px;background:linear-gradient(135deg,var(--green),var(--blue));border-radius:10px;display:flex;align-items:center;justify-content:center;color:#000;font-weight:900}
-.btn-logout{background:var(--card);border:1px solid var(--border);color:var(--text);padding:8px 16px;border-radius:10px;font-weight:600;cursor:pointer}
-.auth-wrap{display:flex;align-items:center;justify-content:center;min-height:85vh}
-.auth-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px;width:100%}
-.auth-title{font-size:26px;font-weight:800;margin-bottom:8px;text-align:center}
-.auth-sub{color:var(--muted);text-align:center;margin-bottom:24px;font-size:14px}
-input{width:100%;padding:14px 16px;background:#0F172A;border:1px solid var(--border);border-radius:12px;color:var(--text);margin-bottom:14px;font-size:15px}
-.btn{width:100%;padding:15px;border:none;border-radius:12px;font-weight:700;font-size:16px;cursor:pointer;background:linear-gradient(135deg,var(--blue),#2563EB);color:#fff}
-.link{color:var(--green);text-align:center;margin-top:16px;font-size:14px;cursor:pointer;font-weight:600}
-.hidden{display:none}
-.welcome-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin:20px 0}
-.actions{display:flex;gap:12px;margin-top:16px}
-.btn-action{flex:1;padding:12px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
-.btn-deposit{background:linear-gradient(135deg,var(--green),#059669);color:#fff}
-.btn-transfer{background:var(--card);border:1px solid var(--border);color:var(--text)}
-.balance-box{background:linear-gradient(135deg,#1E3A8A,#3B82F6);border-radius:20px;padding:24px;margin:20px 0}
-.balance-amount{font-size:36px;font-weight:800;margin:8px 0}
-.account-card{background:var(--card);border:1px solid var(--border);padding:16px;border-radius:14px;margin-bottom:10px;display:flex;justify-content:space-between}
-</style>
-</head>
-<body>
-<div class="container">
-  <div class="header">
-    <div class="logo">Cash Flow Banking</div>
-    <button id="logoutBtn" onclick="logout()" class="btn-logout hidden">Logout</button>
-  </div>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cash Flow Banking</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script type="module">
+    // 1. IMPORT FIREBASE
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  <div id="authPage" class="auth-wrap">
-    <div class="auth-card">
-      <div class="auth-title" id="authTitle">Welcome Back</div>
-      <div class="auth-sub" id="authSub">Sign in to your account</div>
-      <input type="text" id="fullName" placeholder="Full Name" class="hidden">
-      <input type="email" id="email" placeholder="Email">
-      <input type="password" id="password" placeholder="Password">
-      <button class="btn" id="authBtn">Sign In</button>
-      <div class="link" id="toggleAuth">Don't have an account? Sign Up</div>
-    </div>
-  </div>
+    // 2. PASTE YOUR FIREBASE CONFIG HERE
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
 
-  <div id="dashboardPage" class="hidden">
-    <div class="welcome-card">
-      <div style="font-size:20px;font-weight:700;margin-bottom:4px" id="welcomeName">Good evening</div>
-      <div style="color:var(--muted);font-size:13px">Here's your financial overview</div>
-      <div class="actions">
-        <button class="btn-action btn-deposit" onclick="alert('Deposit coming soon')">+ Deposit</button>
-        <button class="btn-action btn-transfer" onclick="showTransfer()">Transfer →</button>
-      </div>
-    </div>
+    // 3. INIT FIREBASE
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-    <div style="display:flex;justify-content:space-between;margin:20px 0">
-      <div style="font-weight:700;font-size:16px">Overview</div>
-      <div style="color:var(--green);font-weight:600;cursor:pointer" onclick="showTxns()">View All</div>
-    </div>
+    // 4. LOAD USER DATA FROM FIRESTORE
+    async function loadUserData() {
+      try {
+        // This is your doc ID from the screenshot
+        const docRef = doc(db, "users", "cn2IAFNLfzMxtzsNx00pwWK4Jji2");
+        const docSnap = await getDoc(docRef);
 
-    <div class="balance-box">
-      <div style="font-size:12px;opacity:0.9;text-transform:uppercase">Available Balance</div>
-      <div class="balance-amount">USD <span id="balance">5,000</span></div>
-      <div style="font-size:13px;opacity:0.9" id="userDisplay">User</div>
-    </div>
+        if (docSnap.exists()) {
+          const user = docSnap.data();
+          const account = user.accounts[0];
+          
+          // KEY FIX: Read balance from Firestore instead of hardcoding
+          const balance = account.balance; // This is 8000000
+          const name = account.name || "User";
+          const email = account.email || "";
 
-    <div style="font-weight:700;font-size:16px;margin-bottom:12px">Accounts</div>
-    <div id="accountList"></div>
-  </div>
-
-  <div id="transfer1Page" class="hidden">
-    <div style="display:flex;align-items:center;gap:16px;padding:20px 0"><button onclick="closeTransfer()" style="font-size:24px;color:var(--green);background:none;border:none">←</button><h2 style="flex:1;text-align:center">Transfer Money</h2></div>
-    <div style="margin-bottom:16px">
-      <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Amount</div>
-      <input type="number" id="amountInput" placeholder="Enter amount" min="5">
-    </div>
-    <button class="btn" onclick="goToStep2()">Continue</button>
-  </div>
-
-  <div id="transfer2Page" class="hidden">
-    <div style="display:flex;align-items:center;gap:16px;padding:20px 0"><button onclick="backToStep1()" style="font-size:24px;color:var(--green);background:none;border:none">←</button><h2 style="flex:1;text-align:center">Recipient</h2></div>
-    <input type="text" id="recAccount" placeholder="10 digit account number" maxlength="10">
-    <input type="text" id="recName" placeholder="Full name">
-    <div style="background:var(--card);padding:16px;border-radius:12px;border:1px solid var(--border);margin:16px 0">
-      <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Amount</span><span style="font-weight:800;font-size:18px;color:var(--green)" id="confirmAmt">$0</span></div>
-    </div>
-    <button class="btn" onclick="sendMoney()">Send Money Now</button>
-  </div>
-
-  <div id="txnPage" class="hidden">
-    <div style="display:flex;align-items:center;gap:16px;padding:20px 0"><button onclick="closeTxns()" style="font-size:24px;color:var(--green);background:none;border:none">←</button><h2 style="flex:1;text-align:center">Transactions</h2></div>
-    <div id="txnList"></div>
-  </div>
-</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBmKHRkTXg5G-qaVqMIbn_80eKHieB_YrA",
-  authDomain: "cash-flow-banking.firebaseapp.com",
-  projectId: "cash-flow-banking"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-let currentUser = null;
-let isLogin = true;
-let transferAmt = 0;
-
-document.getElementById('toggleAuth').onclick = () => {
-  isLogin =!isLogin;
-  document.getElementById('authTitle').innerText = isLogin? 'Welcome Back' : 'Create Account';
-  document.getElementById('authSub').innerText = isLogin? 'Sign in to your account' : 'Join us today';
-  document.getElementById('authBtn').innerText = isLogin? 'Sign In' : 'Sign Up';
-  document.getElementById('fullName').classList.toggle('hidden');
-}
-
-document.getElementById('authBtn').onclick = async () => {
-  const name = document.getElementById('fullName').value;
-  const email = document.getElementById('email').value;
-  const pass = document.getElementById('password').value;
-  if(!email ||!pass) return alert('Fill all fields');
-  if(!isLogin &&!name) return alert('Enter full name');
-  
-  try{
-    if(isLogin){
-      await signInWithEmailAndPassword(auth, email, pass);
-    }else{
-      const cred = await createUserWithEmailAndPassword(auth, email, pass);
-      const accNum = '91' + Math.floor(Math.random()*90000000 + 10000000);
-      await setDoc(doc(db, "users", cred.user.uid), {
-        name: name, // SAVE NAME
-        email: email,
-        accountNumber: accNum,
-        balance: 5000,
-        transactions: []
-      });
-      alert(`Account Created!\nAccount Number: ${accNum}\nBalance: $5,000`);
+          // Update the page
+          document.getElementById('greeting').textContent = `Good evening, ${name.split(' ')[0]}`;
+          document.getElementById('balance').textContent = `USD ${balance.toLocaleString()}`;
+          document.getElementById('email').textContent = email;
+          
+        } else {
+          document.getElementById('balance').textContent = "User not found";
+        }
+      } catch (error) {
+        console.error("Error loading data: ", error);
+        document.getElementById('balance').textContent = "Error loading balance";
+      }
     }
-  }catch(e){ alert(e.message) }
-}
 
-onAuthStateChanged(auth, async (user) => {
-  if(user){
-    currentUser = user;
-    document.getElementById('authPage').classList.add('hidden');
-    document.getElementById('dashboardPage').classList.remove('hidden');
-    document.getElementById('logoutBtn').classList.remove('hidden');
-    loadUserData(user.uid);
-  }
-});
+    window.onload = loadUserData;
+  </script>
+</head>
+<body class="bg-[#0B0F1A] text-white min-h-screen p-6">
+  
+  <div class="max-w-md mx-auto">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 id="greeting" class="text-2xl font-bold">Good evening, Sa...</h1>
+      <p id="email" class="text-gray-400 text-sm">test@test.com</p>
+    </div>
 
-async function loadUserData(uid){
-  const snap = await getDoc(doc(db, "users", uid));
-  if(snap.exists()){
-    const data = snap.data();
-    // v2 FIX: IF NO NAME, USE EMAIL
-    const displayName = data.name || data.email.split('@')[0] || 'User';
-    document.getElementById('welcomeName').innerText = `Good evening, ${displayName}`;
-    document.getElementById('userDisplay').innerText = displayName;
-    document.getElementById('balance').innerText = data.balance.toLocaleString();
-    
-    document.getElementById('accountList').innerHTML = `
-      <div class="account-card">
-        <div>Checking Account<br><span style="font-size:12px;color:var(--muted)">****${data.accountNumber.slice(-4)}</span></div>
-        <div style="color:var(--green);font-weight:700">$${data.balance.toLocaleString()}</div>
+    <!-- Balance Card -->
+    <div class="bg-gradient-to-br from-blue-600 to-purple-700 p-6 rounded-3xl shadow-2xl">
+      <p class="text-blue-100 text-sm">Total Balance</p>
+      <h2 id="balance" class="text-4xl font-bold mt-2">USD 0</h2>
+      <p class="text-blue-100 text-xs mt-4">Account: •••• 2222</p>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-4 gap-4 mt-8">
+      <div class="text-center">
+        <div class="bg-gray-800 p-4 rounded-2xl">📤</div>
+        <p class="text-xs mt-2">Send</p>
       </div>
-    `;
-  }
-}
+      <div class="text-center">
+        <div class="bg-gray-800 p-4 rounded-2xl">📥</div>
+        <p class="text-xs mt-2">Receive</p>
+      </div>
+      <div class="text-center">
+        <div class="bg-gray-800 p-4 rounded-2xl">💳</div>
+        <p class="text-xs mt-2">Cards</p>
+      </div>
+      <div class="text-center">
+        <div class="bg-gray-800 p-4 rounded-2xl">📊</div>
+        <p class="text-xs mt-2">Stats</p>
+      </div>
+    </div>
+  </div>
 
-window.showTransfer = () => {document.getElementById('dashboardPage').classList.add('hidden'); document.getElementById('transfer1Page').classList.remove('hidden');}
-window.closeTransfer = () => {document.getElementById('transfer1Page').classList.add('hidden'); document.getElementById('dashboardPage').classList.remove('hidden');}
-window.backToStep1 = () => {document.getElementById('transfer2Page').classList.add('hidden'); document.getElementById('transfer1Page').classList.remove('hidden');}
-window.showTxns = () => {document.getElementById('dashboardPage').classList.add('hidden'); document.getElementById('txnPage').classList.remove('hidden');}
-window.closeTxns = () => {document.getElementById('txnPage').classList.add('hidden'); document.getElementById('dashboardPage').classList.remove('hidden');}
-
-window.goToStep2 = () => {
-  const amt = parseFloat(document.getElementById('amountInput').value);
-  if(!amt || amt < 5) return alert('Minimum $5');
-  transferAmt = amt;
-  document.getElementById('confirmAmt').innerText = `$${amt.toLocaleString()}`;
-  document.getElementById('transfer1Page').classList.add('hidden');
-  document.getElementById('transfer2Page').classList.remove('hidden');
-}
-
-window.sendMoney = async () => {
-  const recAcc = document.getElementById('recAccount').value;
-  const recName = document.getElementById('recName').value;
-  if(!recAcc ||!recName) return alert('Enter recipient details');
-  
-  const ref = doc(db, "users", currentUser.uid);
-  const snap = await getDoc(ref);
-  const data = snap.data();
-  if(data.balance < transferAmt) return alert('Insufficient balance');
-  
-  await updateDoc(ref, {balance: data.balance - transferAmt});
-  alert(`$${transferAmt.toLocaleString()} sent to ${recName}`);
-  loadUserData(currentUser.uid);
-  document.getElementById('transfer2Page').classList.add('hidden');
-  document.getElementById('dashboardPage').classList.remove('hidden');
-}
-
-window.logout = async () => {
-  await signOut(auth);
-  document.getElementById('dashboardPage').classList.add('hidden');
-  document.getElementById('authPage').classList.remove('hidden');
-  document.getElementById('logoutBtn').classList.add('hidden');
-}
-</script>
 </body>
-  </html>
+</html>
