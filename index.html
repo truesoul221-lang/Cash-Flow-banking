@@ -1,99 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InvestPro</title>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial; }
-  body { background: #0a0e1a; color: #fff; padding: 15px; min-height: 100vh; }
-  
-  .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-  .menu { font-size: 24px; cursor: pointer; }
-  .avatar { width: 40px; height: 40px; background: #2563eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-  
-  h2 { font-size: 22px; margin-bottom: 5px; }
-  .subtitle { color: #94a3b8; font-size: 14px; margin-bottom: 20px; }
-  
-  .btn-row { display: flex; gap: 10px; margin-bottom: 25px; }
-  .btn { padding: 12px 20px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
-  .btn-blue { background: #2563eb; color: #fff; }
-  .btn-dark { background: #1e293b; color: #fff; }
-  
-  .overview-card { 
-    background: linear-gradient(135deg, #2563eb, #1d4ed8); 
-    border-radius: 20px; 
-    padding: 20px; 
-    margin-bottom: 25px;
-  }
-  .overview-top { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
-  .profile-pic { width: 50px; height: 50px; border-radius: 50%; background: #ccc; }
-  .balance-text { color: #bfdbfe; font-size: 12px; }
-  .balance-amount { font-size: 32px; font-weight: bold; }
-  .email { color: #bfdbfe; font-size: 14px; }
-  .overview-bottom { display: flex; justify-content: space-between; font-size: 12px; color: #bfdbfe; margin-top: 15px; }
-  
-  .section { margin-bottom: 20px; }
-  .section h3 { margin-bottom: 10px; }
-  .link { color: #2563eb; text-decoration: none; }
-  
-  .logout { width: 100%; padding: 15px; background: #ef4444; color: #fff; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
-  
-  .popup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; }
-  .popup-content { background: #1e293b; padding: 20px; border-radius: 15px; width: 90%; max-width: 350px; }
-  .popup input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; background: #0a0e1a; color: #fff; }
-</style>
-</head>
-<body>
-
-<div class="topbar">
-  <div class="menu">☰</div>
-  <div class="avatar">A</div>
-</div>
-
-<h2>Good evening test</h2>
-<p class="subtitle">At a glance summary of your account!</p>
-
-<div class="btn-row">
-  <button class="btn btn-blue" onclick="showDeposit()">Deposit →</button>
-  <button class="btn btn-dark">Transfer Fund</button>
-</div>
-
-<h3>Overview</h3>
-<div class="overview-card">
-  <div class="overview-top">
-    <img src="https://i.pravatar.cc/50" class="profile-pic">
-    <div>
-      <div class="balance-text">Available balance</div>
-      <div class="balance-amount">USD <span id="balance">8,000,000</span></div>
-      <div class="email">test@test.com</div>
-    </div>
-  </div>
-  <div class="overview-bottom">
-    <div>Last Login<br>09 Jun 26, 18:52 pm</div>
-    <div>Your IP address<br>127.1.1.0</div>
-  </div>
-</div>
-
-<div class="section">
-  <h3>Checking Account</h3>
-  <a href="#" class="link">Transfer Fund</a>
-</div>
-
-<button class="logout">Logout</button>
-
-<!-- Deposit Popup -->
-<div class="popup" id="depositPopup">
-  <div class="popup-content">
-    <h3>Deposit Funds</h3>
-    <input type="number" id="depositAmount" placeholder="Enter amount">
-    <button class="btn btn-blue" onclick="deposit()">Confirm Deposit</button>
-    <button class="btn btn-dark" onclick="closePopup()">Cancel</button>
-  </div>
-</div>
-
 <script>
   const firebaseConfig = {
     apiKey: "AIzaSyDummyKeyForDemo",
@@ -110,21 +14,28 @@
 
   let balance = 8000000;
 
+  // LOAD BALANCE FROM FIREBASE
   userDoc.get().then((doc) => {
     if (doc.exists) {
       balance = doc.data().balance;
+      console.log("Loaded balance:", balance);
     } else {
       userDoc.set({ balance: balance });
     }
     updateUI();
+  }).catch((error) => {
+    console.log("Error:", error);
   });
 
   function updateUI() {
     document.getElementById("balance").innerText = balance.toLocaleString();
   }
 
+  // THIS IS THE FIX - USE UPDATE NOT SET
   function saveBalance() {
-    userDoc.set({ balance: balance });
+    userDoc.update({ balance: balance }).catch(() => {
+      userDoc.set({ balance: balance }); // if doc doesn't exist yet
+    });
   }
 
   function showDeposit() {
@@ -138,7 +49,7 @@
     let amount = parseFloat(document.getElementById("depositAmount").value);
     if (amount > 0) {
       balance += amount;
-      saveBalance();
+      saveBalance(); // Save to cloud
       updateUI();
       document.getElementById("depositAmount").value = "";
       closePopup();
@@ -146,6 +57,3 @@
     }
   }
 </script>
-
-</body>
-</html>
