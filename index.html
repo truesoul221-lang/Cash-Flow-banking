@@ -1,166 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cash Flow Banking</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
-    body { background: #0a0f1e; color: white; padding: 20px; min-height: 100vh; }
-   .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-   .menu { font-size: 28px; }
-   .avatar { width: 40px; height: 40px; background: #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; }
-   .greeting { font-size: 24px; font-weight: 700; margin-bottom: 5px; }
-   .subtext { color: #94a3b8; margin-bottom: 20px; font-size: 14px; }
-   .btn-row { display: flex; gap: 10px; margin-bottom: 25px; }
-   .btn { padding: 12px 20px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; font-size: 14px; }
-   .btn-blue { background: #3b82f6; color: white; }
-   .btn-dark { background: #1e293b; color: white; }
-   .overview { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
-   .card {
-      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-      border-radius: 20px; padding: 25px; margin-bottom: 25px;
-      box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
-    }
-   .card-top { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
-   .profile-pic { width: 50px; height: 50px; border-radius: 50%; background: #ccc; object-fit: cover; }
-   .label { font-size: 14px; opacity: 0.8; }
-   .currency { font-size: 22px; font-weight: 700; margin: 3px 0; }
-   .amount { font-size: 36px; font-weight: 800; color: #22c55e; text-shadow: 0 0 10px #22c55e; }
-   .name { font-size: 16px; margin-top: 5px; opacity: 0.9; }
-   .card-bottom { display: flex; justify-content: space-between; font-size: 13px; opacity: 0.9; }
-   .section-title { font-size: 18px; font-weight: 600; margin: 20px 0 12px 0; }
-   .link { color: #3b82f6; text-decoration: none; font-weight: 600; }
-   .transaction-list { background: #1e293b; border-radius: 15px; padding: 15px; }
-   .transaction { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #334155; }
-   .transaction:last-child { border-bottom: none; }
-   .tx-left { display: flex; gap: 12px; align-items: center; }
-   .tx-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-   .tx-green { background: #14532d; color: #22c55e; }
-   .tx-red { background: #7f1d1d; color: #ef4444; }
-   .tx-name { font-weight: 600; font-size: 14px; }
-   .tx-date { font-size: 12px; color: #94a3b8; }
-   .tx-amount { font-weight: 700; font-size: 15px; }
-   .amount-in { color: #22c55e; }
-   .amount-out { color: #ef4444; }
-   .logout { width: 100%; padding: 15px; background: #ef4444; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; margin-top: 25px; cursor: pointer; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InvestPro</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<style>
+  body { font-family: Arial; background: #0a0a0a; color: #fff; text-align: center; padding: 20px; }
+  .card { background: #1a1a1a; padding: 20px; border-radius: 15px; margin: 10px auto; max-width: 400px; }
+  .balance { font-size: 32px; color: #00ff88; font-weight: bold; }
+  input { padding: 10px; width: 80%; border-radius: 8px; border: none; margin: 10px 0; }
+  button { padding: 12px 20px; border: none; border-radius: 8px; background: #00ff88; color: #000; font-weight: bold; cursor: pointer; margin: 5px; }
+  button:hover { background: #00cc70; }
+</style>
 </head>
 <body>
-  <div class="header">
-    <div class="menu">☰</div>
-    <div id="avatar" class="avatar">M</div>
-  </div>
 
-  <div id="greeting" class="greeting">Good morning</div>
-  <div class="subtext">At a glance summary of your account!</div>
+<h1>InvestPro</h1>
 
-  <div class="btn-row">
-    <button class="btn btn-blue" onclick="deposit()">Deposit →</button>
-    <button class="btn btn-dark">Transfer Fund</button>
-  </div>
+<div class="card">
+  <h2>Balance</h2>
+  <div class="balance" id="balance">$8,000,000.00</div>
+</div>
 
-  <div class="overview">Overview</div>
+<div class="card">
+  <h3>Deposit</h3>
+  <input type="number" id="depositAmount" placeholder="Enter amount">
+  <button onclick="deposit()">Deposit →</button>
+</div>
 
-  <div class="card">
-    <div class="card-top">
-      <img src="https://i.pravatar.cc/100" class="profile-pic" />
-      <div>
-        <div class="label">Available balance</div>
-        <div class="currency">USD</div>
-        <div id="balance" class="amount">$8,000,000</div>
-        <div id="cardName" class="name">Loading...</div>
-      </div>
-    </div>
-    <div class="card-bottom">
-      <div><div>Last Login</div><div id="lastLogin">Loading...</div></div>
-      <div><div>Account Email</div><div id="email">Loading...</div></div>
-    </div>
-  </div>
+<div class="card">
+  <h3>Withdraw</h3>
+  <input type="number" id="withdrawAmount" placeholder="Enter amount">
+  <button onclick="withdraw()">Withdraw ←</button>
+</div>
 
-  <div class="section-title">Recent Transactions</div>
-  <div id="txList" class="transaction-list"></div>
+<script>
+  // 1. YOUR FIREBASE CONFIG - DON'T CHANGE THIS
+  const firebaseConfig = {
+    apiKey: "AIzaSyDummyKeyForDemo",
+    authDomain: "investpro-demo.firebaseapp.com",
+    projectId: "investpro-demo",
+    storageBucket: "investpro-demo.appspot.com",
+    messagingSenderId: "123456789",
+    appId: "1:123456789:web:abcdef123456"
+  };
 
-  <div class="section-title">Checking Account</div>
-  <a href="#" class="link">Transfer Fund</a>
+  // 2. CONNECT TO FIREBASE
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const userDoc = db.collection("users").doc("mainUser");
 
-  <button class="logout">Logout</button>
+  let balance = 8000000; // Starting $8,000,000
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
-    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCuVQe58hRBF4jYB2BJLDRV8MqIMnz_yfc",
-      authDomain: "cash-flow-banking-2.firebaseapp.com",
-      projectId: "cash-flow-banking-2",
-      storageBucket: "cash-flow-banking-2.firebasestorage.app",
-      messagingSenderId: "517775896753",
-      appId: "1:517775896753:web:40319058b329e3666af290",
-      measurementId: "G-PSLV9LLFQG"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const userId = "P2IAFNLfzMxtzsNxOOpwWK4Jji2";
-    let userData = {};
-
-    const hour = new Date().getHours();
-    let greet = hour < 12? "Good morning" : hour < 18? "Good afternoon" : "Good evening";
-
-    async function loadData() {
-      const docSnap = await getDoc(doc(db, "users", userId));
-      if (docSnap.exists()) {
-        userData = docSnap.data();
-        const name = userData.accountName || "User";
-        const balance = userData.accounts[0].balance;
-
-        document.getElementById("greeting").innerText = `${greet} ${name}`;
-        document.getElementById("avatar").innerText = name.charAt(0).toUpperCase();
-        document.getElementById("cardName").innerText = name;
-        document.getElementById("balance").innerText = `$${balance.toLocaleString()}`;
-        document.getElementById("email").innerText = userData.accountEmail || "-";
-        document.getElementById("lastLogin").innerText = userData.lastLogin || "-";
-
-        // Load transactions
-        let txHTML = "";
-        userData.accounts[0].transactions.slice().reverse().forEach(tx => {
-          const icon = tx.type === "Deposit"? "↓" : "↑";
-          const color = tx.type === "Deposit"? "tx-green" : "tx-red";
-          const amountColor = tx.type === "Deposit"? "amount-in" : "amount-out";
-          const sign = tx.type === "Deposit"? "+" : "-";
-          txHTML += `
-          <div class="transaction">
-            <div class="tx-left">
-              <div class="tx-icon ${color}">${icon}</div>
-              <div>
-                <div class="tx-name">${tx.type}</div>
-                <div class="tx-date">${tx.date}</div>
-              </div>
-            </div>
-            <div class="tx-amount ${amountColor}">${sign}$${tx.amount.toLocaleString()}</div>
-          </div>`;
-        });
-        document.getElementById("txList").innerHTML = txHTML;
-      }
+  // 3. LOAD BALANCE FROM FIREBASE ON START
+  userDoc.get().then((doc) => {
+    if (doc.exists) {
+      balance = doc.data().balance;
+    } else {
+      // First time, create the document with 8M
+      userDoc.set({ balance: balance });
     }
+    updateUI();
+  });
 
-    window.deposit = async function() {
-      const amount = prompt("Enter amount to deposit:");
-      if(!amount || isNaN(amount)) return alert("Invalid amount");
+  function updateUI() {
+    document.getElementById("balance").innerText = "$" + balance.toLocaleString();
+  }
 
-      const newBalance = userData.accounts[0].balance + parseFloat(amount);
-      const newTx = { type: "Deposit", amount: parseFloat(amount), date: new Date().toLocaleDateString('en-US', {day: '2-digit', month: 'short', year: 'numeric'}) };
+  // 4. SAVE TO FIREBASE
+  function saveBalance() {
+    userDoc.set({ balance: balance });
+  }
 
-      userData.accounts[0].balance = newBalance;
-      userData.accounts[0].transactions.push(newTx);
-
-      await updateDoc(doc(db, "users", userId), userData);
-      alert(`Deposited $${parseFloat(amount).toLocaleString()} successfully!`);
-      loadData();
+  function deposit() {
+    let amount = parseFloat(document.getElementById("depositAmount").value);
+    if (amount > 0) {
+      balance += amount;
+      saveBalance();
+      updateUI();
+      document.getElementById("depositAmount").value = "";
+      alert("Deposited $" + amount.toLocaleString());
     }
+  }
 
-    loadData();
-  </script>
+  function withdraw() {
+    let amount = parseFloat(document.getElementById("withdrawAmount").value);
+    if (amount > 0 && amount <= balance) {
+      balance -= amount;
+      saveBalance();
+      updateUI();
+      document.getElementById("withdrawAmount").value = "";
+      alert("Withdrew $" + amount.toLocaleString());
+    } else {
+      alert("Not enough balance");
+    }
+  }
+</script>
+
 </body>
 </html>
