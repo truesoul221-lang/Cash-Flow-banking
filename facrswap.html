@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Naija Face Swap Prank</title>
+<style>
+  body { background:#000; color:#fff; font-family:Arial; text-align:center; padding:10px; }
+  h1 { color:#ff0000; }
+  video, canvas { width:90%; max-width:400px; border-radius:20px; border:3px solid #ff0000; margin:10px; }
+ .call-screen { background:#111; padding:15px; border-radius:20px; display:none; }
+  input, button { padding:12px; margin:5px; border-radius:10px; border:none; }
+ .btn { background:#008751; color:#fff; cursor:pointer; }
+ .rec { background:#ff0000; }
+  a { color:#008751; font-weight:bold; }
+</style>
+</head>
+<body>
+
+<h1>🇳🇬 Face Swap Prank</h1>
+<p>Upload any face and wear am 😂</p>
+
+<input type="text" id="callerName" placeholder="Fake caller: Davido, President, Mummy">
+<br>
+<input type="file" id="faceUpload" accept="image/*">
+<br>
+<button class="btn" onclick="startCall()">📞 Start Fake Call</button>
+
+<div class="call-screen" id="callScreen">
+  <h2 id="callerDisplay">Calling...</h2>
+  <video id="video" autoplay playsinline style="display:none;"></video>
+  <canvas id="canvas"></canvas>
+
+  <button class="btn" onclick="startRec()">🔴 Record</button>
+  <button class="rec" onclick="stopRec()">⏹️ Stop & Save</button>
+  <button class="btn" onclick="endCall()">End Call</button>
+  <div id="download" style="margin-top:10px;"></div>
+</div>
+
+<script>
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let stream, recorder, chunks = [], faceImg = new Image();
+
+document.getElementById('faceUpload').onchange = e => {
+  const file = e.target.files[0];
+  if(file) faceImg.src = URL.createObjectURL(file);
+}
+
+async function startCall() {
+  const name = document.getElementById('callerName').value || "Unknown";
+  document.getElementById('callerDisplay').innerText = "📞 " + name + " is calling...";
+  document.getElementById('callScreen').style.display = "block";
+
+  stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+  video.srcObject = stream;
+
+  video.onloadedmetadata = () => {
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    draw();
+  }
+}
+
+function draw() {
+  if(video.readyState === 4) {
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    if(faceImg.src) {
+      // Put the uploaded face on top - center am
+      ctx.globalAlpha = 0.85;
+      let size = canvas.width/2;
+      ctx.drawImage(faceImg, canvas.width/2 - size/2, canvas.height/3, size, size);
+      ctx.globalAlpha = 1;
+    }
+  }
+  requestAnimationFrame(draw);
+}
+
+function startRec() {
+  chunks = [];
+  const canvasStream = canvas.captureStream(30);
+  recorder = new MediaRecorder(canvasStream);
+  recorder.ondataavailable = e => chunks.push(e.data);
+  recorder.start();
+  alert("Recording started 🔴");
+}
+
+function stopRec() {
+  recorder.stop();
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, {type: 'video/webm'});
+    const url = URL.createObjectURL(blob);
+    document.getElementById('download').innerHTML = `<a href="${url}" download="faceswap.mp4">⬇️ Download Prank Video</a>`;
+  }
+}
+
+function endCall() {
+  if(stream) stream.getTracks().forEach(track => track.stop());
+  document.getElementById('callScreen').style.display = "none";
+}
+</script>
+
+</body>
+  </html>
