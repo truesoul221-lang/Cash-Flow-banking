@@ -3,43 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MovieFlix - Free Movies</title>
+<title>MovieFlix</title>
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: #141414; color: #fff; font-family: Arial; }
-  
-  header { background: #000; padding: 15px 20px; position: sticky; top: 0; z-index: 100; }
+  header { background: #000; padding: 15px 20px; position: sticky; top: 0; }
   header h1 { color: #e50914; font-size: 24px; }
   #search { background: #333; border: none; color: #fff; padding: 10px; border-radius: 5px; width: 100%; margin-top: 10px; }
-  
-  /* AD BANNER STYLE */
-  .ad-banner {
-    background: linear-gradient(90deg, #e50914, #ff6b00);
-    padding: 15px;
-    text-align: center;
-    margin: 10px 20px;
-    border-radius: 10px;
-    font-weight: bold;
-  }
+  .ad-banner { background: linear-gradient(90deg, #e50914, #ff6b00); padding: 15px; text-align: center; margin: 10px 20px; border-radius: 10px; font-weight: bold; }
   .ad-banner a { color: #fff; text-decoration: none; }
-  
   .movies-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; padding: 20px; }
   .movie-card { background: #222; border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
   .movie-card:hover { transform: scale(1.08); }
   .movie-card img { width: 100%; height: 220px; object-fit: cover; }
   .movie-info { padding: 10px; }
-  
-  /* AD BETWEEN MOVIES */
-  .ad-box {
-    grid-column: 1 / -1;
-    background: #1f1f1f;
-    padding: 20px;
-    border: 2px dashed #e50914;
-    text-align: center;
-    border-radius: 10px;
-  }
-  
-  #playerModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 200; justify-content: center; align-items: center; flex-direction: column; }
+  .episode-tag { background: #e50914; color: #fff; font-size: 10px; padding: 3px 6px; border-radius: 4px; display: inline-block; margin-bottom: 5px; }
+  #playerModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 200; justify-content: center; align-items: center; }
   #playerModal iframe { width: 95%; height: 50%; max-width: 900px; border: none; border-radius: 10px; }
   #closeBtn { position: absolute; top: 20px; right: 30px; font-size: 40px; color: #fff; cursor: pointer; }
 </style>
@@ -51,7 +30,6 @@
   <input type="text" id="search" placeholder="Search movies...">
 </header>
 
-<!-- TOP AD BANNER -->
 <div class="ad-banner">
   <a href="https://wa.me/234XXXXXXXXXX" target="_blank">🔥 ADVERTISE HERE - WhatsApp Us! 🔥</a>
 </div>
@@ -61,21 +39,31 @@
 <div id="playerModal">
   <span id="closeBtn">&times;</span>
   <iframe id="videoPlayer" allowfullscreen allow="autoplay"></iframe>
-  
-  <!-- AD BEFORE VIDEO PLAYS -->
-  <div style="color:#fff; text-align:center; margin-top:10px;">Ad: This video will play in 3 seconds...</div>
 </div>
 
 <script>
   const movies = [
-    { title: "Night of the Living Dead", year: "1968", youtubeId: "tPEE9ZwTUK0" },
-    { title: "The General", year: "1926", youtubeId: "vU29ZUyvmSI" },
-    { title: "His Girl Friday", year: "1940", youtubeId: "jNQXAC9IVRw" },
-    { title: "Detective Story", year: "1951", youtubeId: "hFZFjoX2cG4" },
-    { title: "Plan 9 From Outer Space", year: "1957", youtubeId: "6m8W6q3nF3Y" },
-    { title: "Charade", year: "1963", youtubeId: "aUmtRVD4g5E" },
-    { title: "Nollywood Drama", year: "2023", youtubeId: "fJ9rUzIMcZQ" },
-    { title: "Action Thriller", year: "2022", youtubeId: "L0MK7qz13bU" }
+    // YOUR 2 HOUR MOVIE SPLIT INTO 2
+    { 
+      title: "Sweet Movie Title", 
+      year: "2024", 
+      youtubeId: "9bzhuKo0UiY",
+      startTime: 0, // Part 1 starts at 0 seconds
+      episode: "Episode 1"
+    },
+    { 
+      title: "Sweet Movie Title", 
+      year: "2024", 
+      youtubeId: "9bzhuKo0UiY",
+      startTime: 3600, // Part 2 starts at 1 hour = 3600 seconds
+      episode: "Episode 2"
+    },
+    
+    // OTHER MOVIES
+    { title: "Night of the Living Dead", year: "1968", youtubeId: "tPEE9ZwTUK0", startTime: 0, episode: "" },
+    { title: "The General", year: "1926", youtubeId: "vU29ZUyvmSI", startTime: 0, episode: "" },
+    { title: "His Girl Friday", year: "1940", youtubeId: "jNQXAC9IVRw", startTime: 0, episode: "" },
+    { title: "Nollywood Drama", year: "2023", youtubeId: "fJ9rUzIMcZQ", startTime: 0, episode: "" }
   ];
   
   const grid = document.getElementById('moviesGrid');
@@ -86,34 +74,25 @@
   
   function displayMovies(movieList) {
     grid.innerHTML = '';
-    movieList.forEach((movie, index) => {
-      // ADD AD EVERY 4 MOVIES
-      if(index % 4 === 0 && index !== 0) {
-        const adBox = document.createElement('div');
-        adBox.className = 'ad-box';
-        adBox.innerHTML = `<p>📢 YOUR AD HERE 📢<br>Contact: 080XXXXXXXX</p>`;
-        grid.appendChild(adBox);
-      }
-      
+    movieList.forEach(movie => {
       const card = document.createElement('div');
       card.className = 'movie-card';
       card.innerHTML = `
         <img src="https://img.youtube.com/vi/${movie.youtubeId}/mqdefault.jpg">
         <div class="movie-info">
+          ${movie.episode ? `<span class="episode-tag">${movie.episode}</span>` : ''}
           <h3>${movie.title}</h3>
           <p>${movie.year}</p>
         </div>
       `;
-      card.onclick = () => playMovie(movie.youtubeId);
+      card.onclick = () => playMovie(movie.youtubeId, movie.startTime);
       grid.appendChild(card);
     });
   }
   
-  function playMovie(id) {
+  function playMovie(id, startSeconds) {
+    player.src = `https://www.youtube.com/embed/${id}?autoplay=1&start=${startSeconds}`;
     modal.style.display = 'flex';
-    setTimeout(() => {
-      player.src = `https://www.youtube.com/embed/${id}?autoplay=1`;
-    }, 3000); // 3 second ad delay
   }
   
   closeBtn.onclick = () => {
