@@ -7,20 +7,28 @@
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: #141414; color: #fff; font-family: Arial; }
-  header { background: #000; padding: 15px 20px; position: sticky; top: 0; }
+  header { background: #000; padding: 15px 20px; position: sticky; top: 0; z-index: 100; }
   header h1 { color: #e50914; font-size: 24px; }
   #search { background: #333; border: none; color: #fff; padding: 10px; border-radius: 5px; width: 100%; margin-top: 10px; }
-  .ad-banner { background: linear-gradient(90deg, #e50914, #ff6b00); padding: 15px; text-align: center; margin: 10px 20px; border-radius: 10px; font-weight: bold; }
-  .ad-banner a { color: #fff; text-decoration: none; }
+  
+  .ad-banner { background: linear-gradient(90deg, #e50914, #ff6b00); padding: 15px; text-align: center; margin: 10px 20px; border-radius: 10px; font-weight: bold; animation: pulse 2s infinite; }
+  .ad-banner a { color: #fff; text-decoration: none; font-size: 14px; }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.02)} }
+  
   .movies-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; padding: 20px; }
   .movie-card { background: #222; border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
   .movie-card:hover { transform: scale(1.08); }
   .movie-card img { width: 100%; height: 220px; object-fit: cover; }
   .movie-info { padding: 10px; }
   .episode-tag { background: #e50914; color: #fff; font-size: 10px; padding: 3px 6px; border-radius: 4px; display: inline-block; margin-bottom: 5px; }
-  #playerModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 200; justify-content: center; align-items: center; }
+  
+  .ad-box { grid-column: 1 / -1; background: #1f1f1f; padding: 25px; border: 2px dashed #e50914; text-align: center; border-radius: 10px; }
+  .ad-box a { color: #e50914; text-decoration: none; font-weight: bold; font-size: 16px; }
+  
+  #playerModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 200; justify-content: center; align-items: center; flex-direction: column; }
   #playerModal iframe { width: 95%; height: 50%; max-width: 900px; border: none; border-radius: 10px; }
   #closeBtn { position: absolute; top: 20px; right: 30px; font-size: 40px; color: #fff; cursor: pointer; }
+  .ad-countdown { color: #aaa; text-align: center; margin-top: 10px; }
 </style>
 </head>
 <body>
@@ -30,36 +38,23 @@
   <input type="text" id="search" placeholder="Search movies...">
 </header>
 
+<!-- TOP AD BANNER -->
 <div class="ad-banner">
-  <a href="https://wa.me/234XXXXXXXXXX" target="_blank">🔥 ADVERTISE HERE - WhatsApp Us! 🔥</a>
+  <a href="https://wa.me/2347067087764" target="_blank">🔥 ADVERTISE HERE - WhatsApp 07067087764 🔥</a>
 </div>
 
 <div class="movies-grid" id="moviesGrid"></div>
 
 <div id="playerModal">
   <span id="closeBtn">&times;</span>
+  <div class="ad-countdown" id="adCountdown">Ad: Movie starts in 3s...</div>
   <iframe id="videoPlayer" allowfullscreen allow="autoplay"></iframe>
 </div>
 
 <script>
   const movies = [
-    // YOUR 2 HOUR MOVIE SPLIT INTO 2
-    { 
-      title: "Sweet Movie Title", 
-      year: "2024", 
-      youtubeId: "9bzhuKo0UiY",
-      startTime: 0, // Part 1 starts at 0 seconds
-      episode: "Episode 1"
-    },
-    { 
-      title: "Sweet Movie Title", 
-      year: "2024", 
-      youtubeId: "9bzhuKo0UiY",
-      startTime: 3600, // Part 2 starts at 1 hour = 3600 seconds
-      episode: "Episode 2"
-    },
-    
-    // OTHER MOVIES
+    { title: "Sweet Movie Title", year: "2024", youtubeId: "9bzhuKo0UiY", startTime: 0, episode: "Episode 1" },
+    { title: "Sweet Movie Title", year: "2024", youtubeId: "9bzhuKo0UiY", startTime: 3600, episode: "Episode 2" },
     { title: "Night of the Living Dead", year: "1968", youtubeId: "tPEE9ZwTUK0", startTime: 0, episode: "" },
     { title: "The General", year: "1926", youtubeId: "vU29ZUyvmSI", startTime: 0, episode: "" },
     { title: "His Girl Friday", year: "1940", youtubeId: "jNQXAC9IVRw", startTime: 0, episode: "" },
@@ -71,10 +66,18 @@
   const player = document.getElementById('videoPlayer');
   const closeBtn = document.getElementById('closeBtn');
   const search = document.getElementById('search');
+  const adCountdown = document.getElementById('adCountdown');
   
   function displayMovies(movieList) {
     grid.innerHTML = '';
-    movieList.forEach(movie => {
+    movieList.forEach((movie, index) => {
+      if(index % 4 === 0 && index !== 0) {
+        const adBox = document.createElement('div');
+        adBox.className = 'ad-box';
+        adBox.innerHTML = `<a href="https://wa.me/2347067087764" target="_blank">📢 ADVERTISE HERE 📢<br><span style="font-size:12px; color:#aaa;">WhatsApp: 07067087764</span></a>`;
+        grid.appendChild(adBox);
+      }
+      
       const card = document.createElement('div');
       card.className = 'movie-card';
       card.innerHTML = `
@@ -91,8 +94,20 @@
   }
   
   function playMovie(id, startSeconds) {
-    player.src = `https://www.youtube.com/embed/${id}?autoplay=1&start=${startSeconds}`;
     modal.style.display = 'flex';
+    let count = 3;
+    adCountdown.style.display = 'block';
+    adCountdown.textContent = `Ad: Movie starts in ${count}s...`;
+    
+    const timer = setInterval(() => {
+      count--;
+      adCountdown.textContent = `Ad: Movie starts in ${count}s...`;
+      if(count <= 0) {
+        clearInterval(timer);
+        adCountdown.style.display = 'none';
+        player.src = `https://www.youtube.com/embed/${id}?autoplay=1&start=${startSeconds}`;
+      }
+    }, 1000);
   }
   
   closeBtn.onclick = () => {
