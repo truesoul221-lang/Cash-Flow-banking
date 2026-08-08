@@ -1,140 +1,139 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Cash Flow Banking</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
-    body { 
-      background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070') no-repeat center center fixed;
-      background-size: cover;
-      color: white;
-      min-height: 100vh;
-    }
-    .navbar { background: #0a0e1a; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
-    .logo { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: bold; }
-    .logo-icon { background: #dc2626; padding: 8px; border-radius: 8px; }
-    .badge { background: rgba(127, 29, 29, 0.5); border: 1px solid rgba(220, 38, 38, 0.5); padding: 8px 15px; border-radius: 20px; font-size: 12px; margin: 20px; display: inline-block; }
-    .container { padding: 30px 20px; max-width: 600px; }
-    h1 { font-size: 36px; line-height: 1.2; margin-bottom: 20px; }
-    h1 span { color: #f97316; }
-    p { color: #d1d5db; line-height: 1.6; margin-bottom: 30px; }
-    .btn-red { background: #dc2626; color: white; padding: 16px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; width: 100%; margin-bottom: 12px; cursor: pointer; }
-    .btn-outline { background: transparent; color: white; padding: 16px; border: 1px solid #4b5563; border-radius: 8px; font-size: 16px; width: 100%; cursor: pointer; }
-    .card { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 30px; border-radius: 15px; margin: 20px; }
-    input, textarea { width: 100%; padding: 14px; margin: 10px 0; background: rgba(255,255,255,0.1); border: 1px solid #4b5563; border-radius: 8px; color: white; font-size: 16px; }
-    input::placeholder, textarea::placeholder { color: #9ca3af; }
-    .balance { font-size: 48px; font-weight: bold; color: #22c55e; margin: 20px 0; }
-    #dashboard, #createAcc, #login, #chatBox { display: none; }
-    
-    /* LIVE CHAT BUTTON */
-    .chat-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #dc2626;
-      color: white;
-      border: none;
-      border-radius: 50px;
-      padding: 15px 20px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(220, 38, 38, 0.5);
-      z-index: 999;
-    }
-    #chatBox {
-      position: fixed;
-      bottom: 80px;
-      right: 20px;
-      width: 320px;
-      background: #1f2937;
-      border-radius: 15px;
-      padding: 20px;
-      z-index: 999;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-    }
-  </style>
-  <script>
-    function showCreate() { document.getElementById('home').style.display = 'none'; document.getElementById('createAcc').style.display = 'block'; }
-    function showLogin() { document.getElementById('home').style.display = 'none'; document.getElementById('login').style.display = 'block'; }
-    function login() { document.getElementById('login').style.display = 'none'; document.getElementById('dashboard').style.display = 'block'; }
-    function backHome() { document.getElementById('login').style.display = 'none'; document.getElementById('createAcc').style.display = 'none'; document.getElementById('dashboard').style.display = 'none'; document.getElementById('home').style.display = 'block'; }
-    
-    function toggleChat() {
-      var chat = document.getElementById('chatBox');
-      chat.style.display = chat.style.display === 'block' ? 'none' : 'block';
-    }
-    
-    function sendEmail() {
-      var name = document.getElementById('chatName').value;
-      var msg = document.getElementById('chatMsg').value;
-      var subject = "Live Chat from " + name;
-      var body = "Name: " + name + "%0A%0AMessage: " + msg;
-      window.location.href = "mailto:maroejiata02@gmail.com?subject=" + subject + "&body=" + body;
-      alert("Opening your email app to send message to maroejiata02@gmail.com");
-      toggleChat();
-    }
-  </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CashNow Banking</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+body{background:#0f172a;color:#fff;min-height:100vh}
+.container{max-width:400px;margin:0 auto;padding:20px}
+.header{text-align:center;padding:40px 0}
+.header h1{font-size:32px;color:#22c55e;margin-bottom:8px}
+.auth-box{background:#1e293b;border-radius:16px;padding:24px;margin-top:20px}
+input{width:100%;padding:14px;background:#334155;border:1px solid #475569;border-radius:8px;color:#fff;margin-bottom:12px;font-size:16px}
+button{width:100%;padding:14px;background:#22c55e;border:none;border-radius:8px;color:#000;font-weight:700;font-size:16px;cursor:pointer}
+button:hover{opacity:0.9}
+.dashboard{display:none}
+.balance-card{background:linear-gradient(135deg,#22c55e,#16a34a);border-radius:16px;padding:24px;margin-bottom:20px}
+.balance{font-size:36px;font-weight:800}
+.accounts{background:#1e293b;border-radius:16px;padding:20px}
+.account-item{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #334155}
+.hidden{display:none}
+.link{color:#22c55e;text-align:center;margin-top:12px;cursor:pointer}
+</style>
 </head>
 <body>
-  <div class="navbar">
-    <div class="logo"><div class="logo-icon">🏦</div>CashFlowCU</div>
-    <div>☰</div>
-  </div>
-
-  <!-- HOME PAGE -->
-  <div id="home">
-    <div class="badge">🛡️ FDIC Insured · FCA Authorised · Licensed</div>
-    <div class="container">
-      <h1>Your Financial<br>Future,<br><span>Engineered to Last</span></h1>
-      <p>Cash Flow Banking blends the trust of traditional banking with the precision of modern technology.</p>
-      <button class="btn-red" onclick="showCreate()">Open an Account →</button>
-      <button class="btn-outline" onclick="showLogin()">Sign In ></button>
-    </div>
-  </div>
-
-  <!-- CREATE ACCOUNT -->
-  <div id="createAcc" class="card">
-    <h2>Create Account</h2>
-    <input type="text" placeholder="Full Name">
-    <input type="email" placeholder="Email">
-    <input type="password" placeholder="Password">
-    <button class="btn-red" onclick="login()">Create Account</button>
-    <button class="btn-outline" onclick="backHome()">Back</button>
-  </div>
-
-  <!-- LOGIN -->
-  <div id="login" class="card">
-    <h2>Welcome Back</h2>
-    <input type="text" placeholder="Username">
-    <input type="password" placeholder="Password">
-    <button class="btn-red" onclick="login()">Sign In</button>
-    <button class="btn-outline" onclick="backHome()">Back</button>
-  </div>
-
-  <!-- DASHBOARD -->
-  <div id="dashboard" class="card">
-    <h2>Your Dashboard</h2>
-    <p>Available Balance</p>
-    <div class="balance">$8,000,000.00</div>
-    <button class="btn-red">Send Money</button>
-    <button class="btn-outline">Deposit</button>
-    <button class="btn-outline">Withdraw</button>
-    <button class="btn-outline" onclick="backHome()">Logout</button>
-  </div>
-
-  <!-- LIVE CHAT BUTTON -->
-  <button class="chat-btn" onclick="toggleChat()">💬 Live Chat</button>
+<div class="container">
+  <div class="header"><h1>💰 CashNow</h1><p>Your Money, Your Way</p></div>
   
-  <!-- LIVE CHAT BOX -->
-  <div id="chatBox">
-    <h3>💬 Support Chat</h3>
-    <p style="font-size: 12px; color: #9ca3af;">We reply to maroejiata02@gmail.com</p>
-    <input type="text" id="chatName" placeholder="Your Name">
-    <textarea id="chatMsg" rows="4" placeholder="Type your message..."></textarea>
-    <button class="btn-red" onclick="sendEmail()">Send Message</button>
-    <button class="btn-outline" onclick="toggleChat()">Close</button>
+  <div id="auth" class="auth-box">
+    <h2 id="authTitle">Login</h2>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button id="authBtn">Login</button>
+    <p class="link" id="toggleAuth">Don't have an account? Sign up</p>
   </div>
+
+  <div id="dashboard" class="dashboard">
+    <div class="balance-card">
+      <p>Total Balance</p>
+      <div class="balance" id="totalBalance">$8,000,000.00</div>
+    </div>
+    <div class="accounts">
+      <h3>Your Accounts</h3>
+      <div id="accountsList"></div>
+      <button onclick="addAccount()">+ Add Account</button>
+    </div>
+    <button onclick="logout()" style="background:#ef4444;margin-top:20px">Logout</button>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  // YOUR FIREBASE CONFIG
+  const firebaseConfig = {
+    apiKey: "AIzaSyBmKHRkTXg5G-qaVqMIbn_80eKHieB_YrA",
+    authDomain: "cash-flow-banking.firebaseapp.com",
+    projectId: "cash-flow-banking",
+    storageBucket: "cash-flow-banking.firebasestorage.app",
+    messagingSenderId: "432592240036",
+    appId: "1:432592240036:web:7468c8e7a9277164785531",
+    measurementId: "G-9KSSLXX7TH"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let isLogin = true;
+  const authDiv = document.getElementById('auth');
+  const dashDiv = document.getElementById('dashboard');
+
+  document.getElementById('toggleAuth').onclick = () => {
+    isLogin = !isLogin;
+    document.getElementById('authTitle').innerText = isLogin ? 'Login' : 'Sign Up';
+    document.getElementById('authBtn').innerText = isLogin ? 'Login' : 'Sign Up';
+    document.getElementById('toggleAuth').innerText = isLogin ? "Don't have an account? Sign up" : "Already have an account? Login";
+  }
+
+  document.getElementById('authBtn').onclick = async () => {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    try {
+      if(isLogin){
+        await signInWithEmailAndPassword(auth, email, password);
+      } else {
+        const userCred = await createUserWithEmailAndPassword(auth, email, password);
+        // New users get $8,000,000
+        await setDoc(doc(db, "users", userCred.user.uid), {
+          accounts: [{name: "Main Account", balance: 8000000, id: Date.now()}]
+        });
+      }
+    } catch(e){ alert(e.message) }
+  }
+
+  onAuthStateChanged(auth, async (user) => {
+    if(user){
+      authDiv.classList.add('hidden');
+      dashDiv.style.display = 'block';
+      loadAccounts(user.uid);
+    } else {
+      authDiv.classList.remove('hidden');
+      dashDiv.style.display = 'none';
+    }
+  });
+
+  async function loadAccounts(uid){
+    const docSnap = await getDoc(doc(db, "users", uid));
+    if(docSnap.exists()){
+      const data = docSnap.data();
+      let total = 0;
+      let html = '';
+      data.accounts.forEach(acc => {
+        total += acc.balance;
+        html += `<div class="account-item"><span>${acc.name}</span><span>$${acc.balance.toLocaleString()}</span></div>`;
+      });
+      document.getElementById('accountsList').innerHTML = html;
+      document.getElementById('totalBalance').innerText = `$${total.toLocaleString()}.00`;
+    }
+  }
+
+  window.addAccount = async () => {
+    const name = prompt("Account name:");
+    if(!name) return;
+    const user = auth.currentUser;
+    const docSnap = await getDoc(doc(db, "users", user.uid));
+    const accounts = docSnap.data().accounts;
+    accounts.push({name, balance: 0, id: Date.now()});
+    await updateDoc(doc(db, "users", user.uid), {accounts});
+    loadAccounts(user.uid);
+  }
+
+  window.logout = () => signOut(auth);
+</script>
 </body>
 </html>
