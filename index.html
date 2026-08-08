@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cash Flow Banking</title>
 <style>
-:root{--bg:#0B0F1A;--card:#121827;--border:#1F2A3D;--text:#E5E7EB;--muted:#94A3B8;--green:#10B981;--blue:#3B82F6;--gold:#F59E0B}
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif}
-body{background:var(--bg);color:var(--text);min-height:100vh}
+:root{--bg:#0B0F1A;--card:#121827;--border:#1F2A3D;--text:#E5E7EB;--muted:#94A3B8;--green:#10B981;--blue:#3B82F6}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+body{background:var(--bg);color:var(--text)}
 .container{max-width:480px;margin:0 auto;padding:0 20px}
 .header{display:flex;justify-content:space-between;align-items:center;padding:20px 0;border-bottom:1px solid var(--border)}
 .logo{font-size:20px;font-weight:800;color:var(--green);display:flex;gap:8px;align-items:center}
@@ -18,31 +18,17 @@ body{background:var(--bg);color:var(--text);min-height:100vh}
 .auth-title{font-size:26px;font-weight:800;margin-bottom:8px;text-align:center}
 .auth-sub{color:var(--muted);text-align:center;margin-bottom:24px;font-size:14px}
 input{width:100%;padding:14px 16px;background:#0F172A;border:1px solid var(--border);border-radius:12px;color:var(--text);margin-bottom:14px;font-size:15px}
-input:focus{outline:none;border-color:var(--blue)}
-.btn{width:100%;padding:15px;border:none;border-radius:12px;font-weight:700;font-size:16px;cursor:pointer}
-.btn-main{background:linear-gradient(135deg,var(--blue),#2563EB);color:#fff}
-.btn-main:active{transform:scale(0.98)}
+.btn{width:100%;padding:15px;border:none;border-radius:12px;font-weight:700;font-size:16px;cursor:pointer;background:linear-gradient(135deg,var(--blue),#2563EB);color:#fff}
 .link{color:var(--green);text-align:center;margin-top:16px;font-size:14px;cursor:pointer;font-weight:600}
 .hidden{display:none}
 .welcome-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin:20px 0}
-.welcome-title{font-size:20px;font-weight:700;margin-bottom:4px}
-.welcome-sub{color:var(--muted);font-size:13px}
 .actions{display:flex;gap:12px;margin-top:16px}
 .btn-action{flex:1;padding:12px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
 .btn-deposit{background:linear-gradient(135deg,var(--green),#059669);color:#fff}
 .btn-transfer{background:var(--card);border:1px solid var(--border);color:var(--text)}
 .balance-box{background:linear-gradient(135deg,#1E3A8A,#3B82F6);border-radius:20px;padding:24px;margin:20px 0}
-.balance-label{font-size:12px;opacity:0.9;text-transform:uppercase;letter-spacing:1px}
 .balance-amount{font-size:36px;font-weight:800;margin:8px 0}
 .account-card{background:var(--card);border:1px solid var(--border);padding:16px;border-radius:14px;margin-bottom:10px;display:flex;justify-content:space-between}
-.page-title{display:flex;align-items:center;gap:16px;padding:20px 0;border-bottom:1px solid var(--border);margin-bottom:20px}
-.page-title h2{flex:1;text-align:center}
-.back{font-size:24px;color:var(--green);cursor:pointer;background:none;border:none}
-.form-group{margin-bottom:16px}
-.label{font-size:12px;color:var(--muted);margin-bottom:8px;text-transform:uppercase}
-.txn{background:var(--card);border:1px solid var(--border);padding:16px;border-radius:14px;margin-bottom:10px;display:flex;gap:12px;align-items:center}
-.txn-icon{width:44px;height:44px;border-radius:12px;background:#EF444420;display:flex;align-items:center;justify-content:center}
-.txn-amount{font-weight:800;color:#EF4444;margin-left:auto}
 </style>
 </head>
 <body>
@@ -52,7 +38,6 @@ input:focus{outline:none;border-color:var(--blue)}
     <button id="logoutBtn" onclick="logout()" class="btn-logout hidden">Logout</button>
   </div>
 
-  <!-- LOGIN / SIGNUP -->
   <div id="authPage" class="auth-wrap">
     <div class="auth-card">
       <div class="auth-title" id="authTitle">Welcome Back</div>
@@ -60,16 +45,15 @@ input:focus{outline:none;border-color:var(--blue)}
       <input type="text" id="fullName" placeholder="Full Name" class="hidden">
       <input type="email" id="email" placeholder="Email">
       <input type="password" id="password" placeholder="Password">
-      <button class="btn btn-main" id="authBtn">Sign In</button>
+      <button class="btn" id="authBtn">Sign In</button>
       <div class="link" id="toggleAuth">Don't have an account? Sign Up</div>
     </div>
   </div>
 
-  <!-- DASHBOARD -->
   <div id="dashboardPage" class="hidden">
     <div class="welcome-card">
-      <div class="welcome-title" id="welcomeName">Good evening</div>
-      <div class="welcome-sub">Here's your financial overview</div>
+      <div style="font-size:20px;font-weight:700;margin-bottom:4px" id="welcomeName">Good evening</div>
+      <div style="color:var(--muted);font-size:13px">Here's your financial overview</div>
       <div class="actions">
         <button class="btn-action btn-deposit" onclick="alert('Deposit coming soon')">+ Deposit</button>
         <button class="btn-action btn-transfer" onclick="showTransfer()">Transfer →</button>
@@ -82,7 +66,7 @@ input:focus{outline:none;border-color:var(--blue)}
     </div>
 
     <div class="balance-box">
-      <div class="balance-label">Available Balance</div>
+      <div style="font-size:12px;opacity:0.9;text-transform:uppercase">Available Balance</div>
       <div class="balance-amount">USD <span id="balance">5,000</span></div>
       <div style="font-size:13px;opacity:0.9" id="userDisplay">User</div>
     </div>
@@ -91,55 +75,27 @@ input:focus{outline:none;border-color:var(--blue)}
     <div id="accountList"></div>
   </div>
 
-  <!-- TRANSFER STEP 1 -->
   <div id="transfer1Page" class="hidden">
-    <div class="page-title">
-      <button onclick="closeTransfer()" class="back">←</button>
-      <h2>Transfer Money</h2>
-    </div>
-    <div class="form-group">
-      <div class="label">From Account</div>
-      <div style="background:var(--card);padding:16px;border-radius:12px;border:1px solid var(--border)">
-        Checking Account<br>
-        <span style="font-size:12px;color:var(--muted)">Available: USD <span id="availBal">5,000</span></span>
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="label">Amount</div>
+    <div style="display:flex;align-items:center;gap:16px;padding:20px 0"><button onclick="closeTransfer()" style="font-size:24px;color:var(--green);background:none;border:none">←</button><h2 style="flex:1;text-align:center">Transfer Money</h2></div>
+    <div style="margin-bottom:16px">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Amount</div>
       <input type="number" id="amountInput" placeholder="Enter amount" min="5">
     </div>
-    <button class="btn btn-main" onclick="goToStep2()">Continue</button>
+    <button class="btn" onclick="goToStep2()">Continue</button>
   </div>
 
-  <!-- TRANSFER STEP 2 -->
   <div id="transfer2Page" class="hidden">
-    <div class="page-title">
-      <button onclick="backToStep1()" class="back">←</button>
-      <h2>Recipient Details</h2>
+    <div style="display:flex;align-items:center;gap:16px;padding:20px 0"><button onclick="backToStep1()" style="font-size:24px;color:var(--green);background:none;border:none">←</button><h2 style="flex:1;text-align:center">Recipient</h2></div>
+    <input type="text" id="recAccount" placeholder="10 digit account number" maxlength="10">
+    <input type="text" id="recName" placeholder="Full name">
+    <div style="background:var(--card);padding:16px;border-radius:12px;border:1px solid var(--border);margin:16px 0">
+      <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Amount</span><span style="font-weight:800;font-size:18px;color:var(--green)" id="confirmAmt">$0</span></div>
     </div>
-    <div class="form-group">
-      <div class="label">Account Number</div>
-      <input type="text" id="recAccount" placeholder="10 digit account number" maxlength="10">
-    </div>
-    <div class="form-group">
-      <div class="label">Account Name</div>
-      <input type="text" id="recName" placeholder="Full name">
-    </div>
-    <div style="background:var(--card);padding:16px;border-radius:12px;border:1px solid var(--border);margin-bottom:16px">
-      <div style="display:flex;justify-content:space-between">
-        <span style="color:var(--muted)">Amount</span>
-        <span style="font-weight:800;font-size:18px;color:var(--green)" id="confirmAmt">$0</span>
-      </div>
-    </div>
-    <button class="btn btn-main" onclick="sendMoney()">Send Money Now</button>
+    <button class="btn" onclick="sendMoney()">Send Money Now</button>
   </div>
 
-  <!-- TRANSACTIONS -->
   <div id="txnPage" class="hidden">
-    <div class="page-title">
-      <button onclick="closeTxns()" class="back">←</button>
-      <h2>Transactions</h2>
-    </div>
+    <div style="display:flex;align-items:center;gap:16px;padding:20px 0"><button onclick="closeTxns()" style="font-size:24px;color:var(--green);background:none;border:none">←</button><h2 style="flex:1;text-align:center">Transactions</h2></div>
     <div id="txnList"></div>
   </div>
 </div>
@@ -152,10 +108,7 @@ import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstati
 const firebaseConfig = {
   apiKey: "AIzaSyBmKHRkTXg5G-qaVqMIbn_80eKHieB_YrA",
   authDomain: "cash-flow-banking.firebaseapp.com",
-  projectId: "cash-flow-banking",
-  storageBucket: "cash-flow-banking.firebasestorage.app",
-  messagingSenderId: "432592240036",
-  appId: "1:432592240036:web:7468c8e7a9277164785531"
+  projectId: "cash-flow-banking"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -165,7 +118,6 @@ let currentUser = null;
 let isLogin = true;
 let transferAmt = 0;
 
-// TOGGLE LOGIN/SIGNUP
 document.getElementById('toggleAuth').onclick = () => {
   isLogin =!isLogin;
   document.getElementById('authTitle').innerText = isLogin? 'Welcome Back' : 'Create Account';
@@ -174,7 +126,6 @@ document.getElementById('toggleAuth').onclick = () => {
   document.getElementById('fullName').classList.toggle('hidden');
 }
 
-// AUTH
 document.getElementById('authBtn').onclick = async () => {
   const name = document.getElementById('fullName').value;
   const email = document.getElementById('email').value;
@@ -189,10 +140,10 @@ document.getElementById('authBtn').onclick = async () => {
       const cred = await createUserWithEmailAndPassword(auth, email, pass);
       const accNum = '91' + Math.floor(Math.random()*90000000 + 10000000);
       await setDoc(doc(db, "users", cred.user.uid), {
-        name: name,
+        name: name, // SAVE NAME
         email: email,
         accountNumber: accNum,
-        balance: 5000, // EVERYONE STARTS WITH $5000
+        balance: 5000,
         transactions: []
       });
       alert(`Account Created!\nAccount Number: ${accNum}\nBalance: $5,000`);
@@ -200,7 +151,6 @@ document.getElementById('authBtn').onclick = async () => {
   }catch(e){ alert(e.message) }
 }
 
-// CHECK LOGIN
 onAuthStateChanged(auth, async (user) => {
   if(user){
     currentUser = user;
@@ -215,30 +165,21 @@ async function loadUserData(uid){
   const snap = await getDoc(doc(db, "users", uid));
   if(snap.exists()){
     const data = snap.data();
-    document.getElementById('welcomeName').innerText = `Good evening, ${data.name}`;
-    document.getElementById('userDisplay').innerText = data.name;
+    // v2 FIX: IF NO NAME, USE EMAIL
+    const displayName = data.name || data.email.split('@')[0] || 'User';
+    document.getElementById('welcomeName').innerText = `Good evening, ${displayName}`;
+    document.getElementById('userDisplay').innerText = displayName;
     document.getElementById('balance').innerText = data.balance.toLocaleString();
-    document.getElementById('availBal').innerText = data.balance.toLocaleString();
+    
     document.getElementById('accountList').innerHTML = `
       <div class="account-card">
         <div>Checking Account<br><span style="font-size:12px;color:var(--muted)">****${data.accountNumber.slice(-4)}</span></div>
         <div style="color:var(--green);font-weight:700">$${data.balance.toLocaleString()}</div>
       </div>
     `;
-    
-    let txnHtml = '';
-    data.transactions.slice().reverse().forEach(t => {
-      txnHtml += `<div class="txn">
-        <div class="txn-icon">⬆️</div>
-        <div><div style="font-weight:600">${t.title}</div><div style="font-size:12px;color:var(--muted)">${t.date}</div></div>
-        <div class="txn-amount">-$${t.amount.toLocaleString()}</div>
-      </div>`;
-    });
-    document.getElementById('txnList').innerHTML = txnHtml || '<p style="text-align:center;color:var(--muted);padding:40px">No transactions yet</p>';
   }
 }
 
-// NAVIGATION
 window.showTransfer = () => {document.getElementById('dashboardPage').classList.add('hidden'); document.getElementById('transfer1Page').classList.remove('hidden');}
 window.closeTransfer = () => {document.getElementById('transfer1Page').classList.add('hidden'); document.getElementById('dashboardPage').classList.remove('hidden');}
 window.backToStep1 = () => {document.getElementById('transfer2Page').classList.add('hidden'); document.getElementById('transfer1Page').classList.remove('hidden');}
@@ -258,25 +199,14 @@ window.sendMoney = async () => {
   const recAcc = document.getElementById('recAccount').value;
   const recName = document.getElementById('recName').value;
   if(!recAcc ||!recName) return alert('Enter recipient details');
-  if(recAcc.length < 10) return alert('Account number must be 10 digits');
   
   const ref = doc(db, "users", currentUser.uid);
   const snap = await getDoc(ref);
   const data = snap.data();
   if(data.balance < transferAmt) return alert('Insufficient balance');
   
-  const newBalance = data.balance - transferAmt;
-  const newTxns = [...data.transactions, {
-    title: 'Bank Transfer',
-    amount: transferAmt,
-    date: new Date().toLocaleString('en-US', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'})
-  }];
-  
-  await updateDoc(ref, {balance: newBalance, transactions: newTxns});
+  await updateDoc(ref, {balance: data.balance - transferAmt});
   alert(`$${transferAmt.toLocaleString()} sent to ${recName}`);
-  document.getElementById('amountInput').value = '';
-  document.getElementById('recAccount').value = '';
-  document.getElementById('recName').value = '';
   loadUserData(currentUser.uid);
   document.getElementById('transfer2Page').classList.add('hidden');
   document.getElementById('dashboardPage').classList.remove('hidden');
@@ -290,4 +220,4 @@ window.logout = async () => {
 }
 </script>
 </body>
-        </html>
+  </html>
