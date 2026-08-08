@@ -1,130 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ADMIN PANEL - TRUESOUL BROKER</title>
+<title>ADMIN PANEL</title>
 <style>
-  body { margin:0; background:#0B0E11; color:#EAECEF; font-family:Arial; padding:20px; }
-  .header { background:#181A20; padding:20px; border-radius:8px; border:1px solid #F0B90B; margin-bottom:20px; }
-  .header h1 { color:#F0B90B; margin:0; }
-  .stats { display:flex; gap:15px; margin:20px 0; flex-wrap:wrap; }
-  .stat-card { background:#181A20; padding:15px; border-radius:8px; flex:1; border:1px solid #2B3139; min-width:150px; }
-  .stat-num { font-size:24px; color:#00D395; font-weight:bold; }
-  table { width:100%; background:#181A20; border-radius:8px; border-collapse:collapse; overflow-x:auto; display:block; }
-  th { background:#2B3139; padding:12px; text-align:left; color:#F0B90B; }
-  td { padding:12px; border-bottom:1px solid #2B3139; }
-  .btn { padding:6px 12px; background:#F6465D; border:none; color:#fff; border-radius:4px; cursor:pointer; }
-  .btn-green { background:#00D395; color:#000; }
-  input { padding:8px; background:#2B3139; border:1px solid #444; color:#fff; border-radius:4px; margin:5px; }
+body{background:#0B0E11;color:#fff;font-family:Arial;padding:20px}
+.header{background:#181A20;padding:20px;border:1px solid #F0B90B;border-radius:8px;margin-bottom:20px}
+.stat{background:#181A20;padding:15px;border-radius:8px;display:inline-block;margin:10px;min-width:150px}
+table{width:100%;background:#181A20;border-radius:8px;margin-top:20px;border-collapse:collapse} 
+th{background:#2B3139;padding:12px;color:#F0B90B;text-align:left}
+td{padding:12px;border-bottom:1px solid #2B3139}
+.btn{background:#F0B90B;color:#000;border:none;padding:8px 12px;border-radius:4px;cursor:pointer;font-weight:bold}
+.btn-red{background:#F6465D;color:#fff}
+.input{padding:8px;background:#2B3139;border:1px solid #444;color:#fff;border-radius:4px;margin:5px}
 </style>
 </head>
 <body>
+<div class="header"><h1 style="color:#F0B90B">🔒 TRUESOUL ADMIN PANEL</h1><p>Manage all users and balances</p></div>
 
-<div class="header">
-  <h1>🔒 TRUESOUL ADMIN PANEL</h1>
-  <p>Manage all users and balances</p>
-</div>
+<div><div class="stat">Total Users: <span id="totalUsers">0</span></div>
+<div class="stat">Total USDT: $<span id="totalUSDT">0</span></div></div>
 
-<div class="stats">
-  <div class="stat-card">
-    <div>Total Users</div>
-    <div class="stat-num" id="totalUsers">0</div>
-  </div>
-  <div class="stat-card">
-    <div>Total USDT</div>
-    <div class="stat-num">$<span id="totalUSDT">0</span></div>
-  </div>
-</div>
-
-<div style="background:#181A20; padding:15px; border-radius:8px; margin-bottom:20px;">
+<div style="background:#181A20;padding:15px;border-radius:8px;margin-top:20px">
   <h3>Edit User Balance</h3>
-  <input type="text" id="editUser" placeholder="Enter Username">
-  <input type="number" id="addUSDT" placeholder="Add $USDT">
-  <button class="btn-green" onclick="addBalance()">ADD BALANCE</button>
-  <button class="btn" onclick="resetUser()">RESET USER</button>
+  <input class="input" id="adminUser" placeholder="Enter Username">
+  <input class="input" id="adminAmount" type="number" placeholder="Add $USDT">
+  <button class="btn" onclick="addBalance()">ADD BALANCE</button>
+  <button class="btn btn-red" onclick="resetUser()">RESET USER</button>
 </div>
 
-<table>
-  <thead>
-    <tr>
-      <th>Username</th>
-      <th>USDT Balance</th>
-      <th>BTC</th>
-      <th>ETH</th>
-      <th>Orders</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody id="userTable">
-    <tr><td colspan="6">No users yet. Create account on broker.html first</td></tr>
-  </tbody>
-</table>
+<table><thead><tr><th>Username</th><th>USDT Balance</th><th>BTC</th></tr></thead><tbody id="userTable"></tbody></table>
 
-<script>
-function loadAdmin(){
-  let users = [];
-  for(let i=0; i<localStorage.length; i++){
-    const key = localStorage.key(i);
-    if(key.includes('brokerUserPro')){
-      users.push(JSON.parse(localStorage.getItem(key)));
-    }
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, onValue, update, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA3lpkv0zgWaeXupRi0EwasM93v540tbhc",
+  authDomain: "truesoul1-broker.firebaseapp.com",
+  databaseURL: "https://truesoul1-broker-default-rtdb.firebaseio.com",
+  projectId: "truesoul1-broker"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+onValue(ref(db, 'users'), (snap) => {
+  const users = snap.val() || {};
+  let html = ''; let totalUSDT = 0; let count = 0;
+  for(let id in users){
+    const u = users[id];
+    totalUSDT += u.assets.usdt; count++;
+    html += `<tr><td>${u.email}</td><td>$${u.assets.usdt.toFixed(2)}</td><td>${u.assets.btc.toFixed(8)}</td></tr>`;
   }
-  
-  let totalUSDT = 0;
-  let html = '';
-  
-  users.forEach(user => {
-    if(!user.assets) user.assets = {usdt:10000, btc:0, eth:0};
-    totalUSDT += user.assets.usdt;
-    
-    html += `<tr>
-      <td>${user.username}</td>
-      <td>$${user.assets.usdt.toFixed(2)}</td>
-      <td>${user.assets.btc.toFixed(8)}</td>
-      <td>${user.assets.eth.toFixed(8)}</td>
-      <td>${user.history ? user.history.length : 0}</td>
-      <td><button class="btn" onclick="deleteUser()">DELETE</button></td>
-    </tr>`;
-  });
-  
-  document.getElementById('userTable').innerHTML = html || '<tr><td colspan="6">No users yet</td></tr>';
-  document.getElementById('totalUsers').innerText = users.length;
+  document.getElementById('userTable').innerHTML = html;
+  document.getElementById('totalUsers').innerText = count;
   document.getElementById('totalUSDT').innerText = totalUSDT.toFixed(2);
+});
+
+window.addBalance = async () => {
+  const user = document.getElementById('adminUser').value.replace(/[.@]/g, '_');
+  const amount = parseFloat(document.getElementById('adminAmount').value);
+  const snap = await get(ref(db, 'users/' + user));
+  if(snap.exists()){
+    const u = snap.val();
+    u.assets.usdt += amount;
+    await update(ref(db, 'users/' + user), {assets: u.assets});
+    alert('Balance Added!');
+  } else alert('User not found');
 }
 
-function addBalance(){
-  const username = document.getElementById('editUser').value;
-  const amount = parseFloat(document.getElementById('addUSDT').value);
-  const user = JSON.parse(localStorage.getItem('brokerUserPro'));
-  
-  if(user && user.username == username){
-    user.assets.usdt += amount;
-    localStorage.setItem('brokerUserPro', JSON.stringify(user));
-    alert(`Added $${amount} to ${username}`);
-    loadAdmin();
-  } else alert('User not found on this device');
+window.resetUser = async () => {
+  const user = document.getElementById('adminUser').value.replace(/[.@]/g, '_');
+  await set(ref(db, 'users/' + user + '/assets'), {usdt: 10000, btc: 0, eth: 0});
+  alert('User Reset to $10,000');
 }
-
-function deleteUser(){
-  localStorage.removeItem('brokerUserPro');
-  loadAdmin();
-}
-
-function resetUser(){
-  const username = document.getElementById('editUser').value;
-  const user = JSON.parse(localStorage.getItem('brokerUserPro'));
-  if(user && user.username == username){
-    user.assets = {usdt:10000, btc:0, eth:0};
-    user.history = [];
-    localStorage.setItem('brokerUserPro', JSON.stringify(user));
-    alert('User reset to $10,000');
-    loadAdmin();
-  }
-}
-
-loadAdmin();
 </script>
-
 </body>
 </html>
