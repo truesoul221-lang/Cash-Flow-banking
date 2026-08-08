@@ -1,0 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+:root { --bank-navy: #0A0F1E; --bank-red: #D90429; --bank-white: #FFFFFF; }
+body { margin: 0; font-family: 'Inter', sans-serif; background: linear-gradient(rgba(10, 15, 30, 0.85), rgba(10, 15, 30, 0.85)), url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070') center/cover fixed; color: var(--bank-white); }
+.navbar { background: var(--bank-navy); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+.logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 20px; }
+.logo-icon { background: var(--bank-red); padding: 8px; border-radius: 6px; }
+.btn-primary { background: var(--bank-red); color: var(--bank-white); padding: 14px 28px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; font-size: 16px; }
+.hero { text-align: center; padding: 80px 20px; }
