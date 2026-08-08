@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InvestPro</title>
+<title>Cash Flow</title> <!-- CHANGED THIS -->
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial; }
   body { background: #0a0e1a; color: #fff; padding: 15px; min-height: 100vh; }
@@ -11,6 +11,8 @@
   .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
   .menu { font-size: 24px; cursor: pointer; }
   .avatar { width: 40px; height: 40px; background: #2563eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+  
+  .logo { font-size: 24px; font-weight: bold; color: #2563eb; margin-bottom: 10px; } /* ADDED */
   
   h2 { font-size: 22px; margin-bottom: 5px; }
   .subtitle { color: #94a3b8; font-size: 14px; margin-bottom: 20px; }
@@ -51,6 +53,8 @@
   <div class="avatar">A</div>
 </div>
 
+<div class="logo">Cash Flow</div> <!-- ADDED THIS -->
+
 <h2>Good evening test</h2>
 <p class="subtitle">At a glance summary of your account!</p>
 
@@ -65,10 +69,10 @@
     <img src="https://i.pravatar.cc/50" class="profile-pic">
     <div>
       <div class="balance-text">Available balance</div>
-      <div class="balance-amount">USD <span id="balance">10,000,000</span></div>
+      <div class="balance-amount">USD <span id="balance">10,000,050</span></div>
       <div class="email">test@test.com</div>
     </div>
-  </
+  </div>
   <div class="overview-bottom">
     <div>Last Login<br>09 Jun 26, 18:52 pm</div>
     <div>Your IP address<br>127.1.1.0</div>
@@ -93,11 +97,10 @@
 </div>
 
 <script>
-  // TEMP: Using localStorage instead of Firebase so it doesn't go blank
-  let balance = localStorage.getItem("investpro_balance");
+  let balance = localStorage.getItem("cashflow_balance");
   
   if(balance === null) {
-    balance = 10000000; // Start at 10M like your screenshot
+    balance = 10000050; // Your current balance
   } else {
     balance = parseFloat(balance);
   }
@@ -109,7 +112,7 @@
   }
 
   function saveBalance() {
-    localStorage.setItem("investpro_balance", balance); // Saves to your browser
+    localStorage.setItem("cashflow_balance", balance);
   }
 
   function showDeposit() {
@@ -133,4 +136,4 @@
 </script>
 
 </body>
-  </html>
+</html>
