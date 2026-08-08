@@ -21,7 +21,6 @@ input:focus{outline:none;border-color:#2563eb}
 .btn{width:100%;padding:15px;border:none;border-radius:12px;font-weight:700;font-size:16px;cursor:pointer;transition:0.2s}
 .btn-primary{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff}
 .btn-primary:active{transform:scale(0.98)}
-.btn-secondary{background:#1a2332;color:#fff;border:1px solid #2a3441}
 .link-text{color:#00d4aa;text-align:center;margin-top:16px;font-size:14px;cursor:pointer;font-weight:600}
 .hidden{display:none}
 .greet-box{background:#111827;border:1px solid #1f2937;border-radius:16px;padding:20px;margin:20px 0}
@@ -205,10 +204,10 @@ input:focus{outline:none;border-color:#2563eb}
           fullname: fullname,
           email: email,
           accountNumber: accountNum,
-          accounts: [{name: "Checking Account", balance: 5000, id: Date.now()}],
+          accounts: [{name: "Checking Account", balance: 5000, id: Date.now()}], // NEW USERS GET $5000
           transactions: []
         });
-        alert(`Account created successfully!\nYour Account Number: ${accountNum}`);
+        alert(`Account created successfully!\nYour Account Number: ${accountNum}\nStarting Balance: $5,000`);
       }
     } catch(e){ alert(e.message) }
   }
@@ -228,13 +227,23 @@ input:focus{outline:none;border-color:#2563eb}
     }
   });
 
+  // v28 FIX: AUTO GIVE $5000 TO OLD ACCOUNTS
   async function loadAccounts(uid){
-    const docSnap = await getDoc(doc(db, "users", uid));
+    const docRef = doc(db, "users", uid);
+    const docSnap = await getDoc(docRef);
     if(docSnap.exists()){
       const data = docSnap.data();
+      let accounts = data.accounts;
+      
+      // IF BALANCE IS 0, GIVE $5000
+      if(accounts[0].balance === 0){
+        accounts[0].balance = 5000;
+        await updateDoc(docRef, {accounts});
+      }
+      
       let total = 0;
       let html = '';
-      data.accounts.forEach(acc => {
+      accounts.forEach(acc => {
         total += acc.balance;
         html += `<div class="account-item"><div><div class="account-name">${acc.name}</div><div style="font-size:12px;color:#9ca3af">****${data.accountNumber.slice(-4)}</div></div><div class="account-balance">$${acc.balance.toLocaleString()}</div></div>`;
       });
@@ -325,4 +334,4 @@ input:focus{outline:none;border-color:#2563eb}
   }
 </script>
 </body>
-  </html>
+            </html>
