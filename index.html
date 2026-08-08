@@ -18,6 +18,7 @@ body{background:#0d1117;color:#fff;min-height:100vh}
 .btn-purple{background:#6d28d9;color:#fff}
 .btn-gray{background:#2a3441;color:#fff}
 .btn-green{background:#00d4aa;color:#000}
+.btn-blue{background:#2563eb;color:#fff;width:100%;padding:14px}
 .balance-card{background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 100%);border-radius:16px;padding:20px;margin:20px 0;display:flex;gap:16px;align-items:center}
 .avatar{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#fbbf24,#f59e0b);display:flex;align-items:center;justify-content:center;font-size:24px}
 .balance-info{flex:1}
@@ -28,10 +29,10 @@ body{background:#0d1117;color:#fff;min-height:100vh}
 .account-section{margin-top:24px}
 .account-title{font-size:16px;font-weight:700;color:#ffd700;margin-bottom:8px}
 .auth-box{background:#151b23;border-radius:16px;padding:24px;margin-top:40px}
-input{width:100%;padding:14px;background:#0d1117;border:1px solid #2a3441;border-radius:10px;color:#fff;margin-bottom:12px;font-size:16px}
+input,select{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441;border-radius:10px;color:#fff;margin-bottom:12px;font-size:16px}
 .hidden{display:none}
 .link-text{color:#22c55e;text-align:center;margin-top:14px;font-size:14px;cursor:pointer}
-/* OPay Style Deposit Page */
+/* OPay Style Pages */
 .topbar{display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid #2a3441;margin-bottom:16px}
 .topbar h2{flex:1;text-align:center;font-size:18px;font-weight:700}
 .deposit-card{background:#151b23;border-radius:16px;padding:16px;margin-bottom:12px}
@@ -41,10 +42,27 @@ input{width:100%;padding:14px;background:#0d1117;border:1px solid #2a3441;border
 .deposit-title{font-weight:700;font-size:15px;margin-bottom:2px}
 .deposit-sub{font-size:12px;color:#8892a6}
 .copy-btn{padding:10px 16px;background:#00d4aa;color:#000;border:none;border-radius:10px;font-weight:700;cursor:pointer}
-.share-btn{padding:10px 16px;background:#00d4aa;color:#000;border:none;border-radius:10px;font-weight:700;cursor:pointer}
-.account-number{font-size:24px;font-weight:800;letter-spacing:2px;margin:12px 0}
+.account-number{font-size:24px;font-weight:800;letter-spacing:2px;margin:12px 0;color:#3b82f6}
 .divider{display:flex;align-items:center;gap:10px;color:#8892a6;font-size:12px;margin:16px 0}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:#2a3441}
+/* Transfer Page Style */
+.transfer-form{background:#1a202c;border:1px solid #2a3441;border-radius:12px;padding:16px;margin-bottom:16px}
+.form-label{font-size:12px;color:#8892a6;margin-bottom:8px}
+.form-value{font-size:15px;font-weight:600}
+.limit-text{font-size:11px;color:#8892a6;margin-bottom:8px}
+/* Transaction History */
+.txn-header{display:flex;justify-content:space-between;align-items:center;margin:16px 0}
+.txn-filters{display:flex;gap:10px;margin-bottom:16px}
+.filter-btn{background:#1a202c;border:1px solid #2a3441;padding:8px 12px;border-radius:8px;font-size:12px;color:#fff}
+.txn-item{display:flex;align-items:center;gap:12px;padding:14px;background:#151b23;border-radius:12px;margin-bottom:10px}
+.txn-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px}
+.txn-info{flex:1}
+.txn-title{font-weight:600;font-size:14px}
+.txn-date{font-size:11px;color:#8892a6}
+.txn-amount{font-weight:700;font-size:15px}
+.txn-status{font-size:10px;padding:4px 8px;border-radius:6px;background:#22c55e20;color:#22c55e}
+.amount-in{color:#22c55e}
+.amount-out{color:#ef4444}
 </style>
 </head>
 <body>
@@ -75,11 +93,14 @@ input{width:100%;padding:14px;background:#0d1117;border:1px solid #2a3441;border
       <div class="greet-sub">At a glance summary of your account!</div>
       <div class="btn-row">
         <button class="btn btn-purple" onclick="showDepositPage()">Deposit →</button>
-        <button class="btn btn-gray" onclick="alert('Transfer coming next')">Transfer Fund</button>
+        <button class="btn btn-gray" onclick="showTransferPage()">Transfer Fund</button>
       </div>
     </div>
 
-    <div style="font-weight:700;margin:16px 0">Overview</div>
+    <div style="font-weight:700;margin:16px 0;display:flex;justify-content:space-between">
+      Overview
+      <span style="color:#00d4aa;font-size:12px;cursor:pointer" onclick="showTransactions()">View Transactions</span>
+    </div>
 
     <div class="balance-card">
       <div class="avatar">👤</div>
@@ -101,13 +122,12 @@ input{width:100%;padding:14px;background:#0d1117;border:1px solid #2a3441;border
     </div>
   </div>
 
-  <!-- OPay Style Add Money Page -->
+  <!-- ADD MONEY PAGE -->
   <div id="depositPage" class="hidden">
     <div class="topbar">
       <button onclick="closeDepositPage()" style="background:none;border:none;color:#fff;font-size:24px;cursor:pointer">←</button>
       <h2>Add Money</h2>
     </div>
-
     <div class="deposit-card">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
         <div class="deposit-icon">🏦</div>
@@ -120,47 +140,57 @@ input{width:100%;padding:14px;background:#0d1117;border:1px solid #2a3441;border
       <div class="account-number" id="userAccountNum">912 857 8595</div>
       <div style="display:flex;gap:10px">
         <button class="copy-btn" onclick="copyAccount()">Copy Number</button>
-        <button class="share-btn" onclick="alert('Share details')">Share Details</button>
+        <button class="copy-btn" onclick="alert('Share details')">Share Details</button>
       </div>
     </div>
-
     <div class="divider">OR</div>
+    <div class="deposit-item" onclick="quickDeposit(1000)"><div class="deposit-icon">💵</div><div class="deposit-text"><div class="deposit-title">Cash Deposit</div><div class="deposit-sub">Fund your account instantly +$1,000</div></div><span>›</span></div>
+    <div class="deposit-item" onclick="quickDeposit(5000)"><div class="deposit-icon">💳</div><div class="deposit-text"><div class="deposit-title">Top-up with Card/Account</div><div class="deposit-sub">Add money directly from your bank card +$5,000</div></div><span>›</span></div>
+  </div>
 
-    <div class="deposit-item" onclick="quickDeposit(1000)">
-      <div class="deposit-icon">💵</div>
-      <div class="deposit-text">
-        <div class="deposit-title">Cash Deposit</div>
-        <div class="deposit-sub">Fund your account instantly +$1,000</div>
-      </div>
-      <span>›</span>
+  <!-- TRANSFER PAGE -->
+  <div id="transferPage" class="hidden">
+    <div class="topbar">
+      <button onclick="closeTransferPage()" style="background:none;border:none;color:#fff;font-size:24px;cursor:pointer">←</button>
+      <h2>Cash Flow Banking Transfer</h2>
     </div>
+    <div class="form-label">Select Account</div>
+    <div class="transfer-form">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="color:#f59e0b;font-size:20px">$</span>
+        <div style="flex:1">
+          <div class="form-value">Checking Account (USD)</div>
+          <div class="deposit-sub">Available Balance: USD <span id="availBalance">8,000,000</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="form-label">Amount to Transfer</div>
+    <div class="limit-text" id="dailyLimit">Daily Transfer Limit: USD0.00 OF USD50,000,000.00</div>
+    <input type="number" id="transferAmount" placeholder="Enter amount">
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:#8892a6;margin-bottom:16px">
+      <span>Minimum: 5.00 USD</span><span>1 USD = 1 USD</span>
+    </div>
+    <button class="btn-blue" onclick="makeTransfer()">Continue to next step</button>
+    <p style="text-align:center;font-size:11px;color:#8892a6;margin-top:16px">Note: our transfer fee is included.</p>
+  </div>
 
-    <div class="deposit-item" onclick="quickDeposit(5000)">
-      <div class="deposit-icon">💳</div>
-      <div class="deposit-text">
-        <div class="deposit-title">Top-up with Card/Account</div>
-        <div class="deposit-sub">Add money directly from your bank card +$5,000</div>
-      </div>
-      <span>›</span>
+  <!-- TRANSACTIONS PAGE -->
+  <div id="transactionsPage" class="hidden">
+    <div class="topbar">
+      <button onclick="closeTransactions()" style="background:none;border:none;color:#fff;font-size:24px;cursor:pointer">←</button>
+      <h2>Transactions</h2>
+      <span style="color:#00d4aa;font-size:14px;cursor:pointer">Download</span>
     </div>
-
-    <div class="deposit-item" onclick="quickDeposit(500)">
-      <div class="deposit-icon">📱</div>
-      <div class="deposit-text">
-        <div class="deposit-title">Bank USSD</div>
-        <div class="deposit-sub">With other banks' USSD code +$500</div>
-      </div>
-      <span>›</span>
+    <div class="txn-filters">
+      <select class="filter-btn"><option>All Categories</option></select>
+      <select class="filter-btn"><option>All Status</option></select>
     </div>
-
-    <div class="deposit-item" onclick="alert('QR coming soon')">
-      <div class="deposit-icon">⬜</div>
-      <div class="deposit-text">
-        <div class="deposit-title">Scan my QR Code</div>
-        <div class="deposit-sub">Show QR code to any Cash Flow user</div>
-      </div>
-      <span>›</span>
+    <div style="font-size:14px;margin-bottom:16px">
+      <span style="font-weight:700" id="currentMonth">Aug</span>
+      <span style="color:#8892a6;margin-left:10px">In $<span id="totalIn">0</span></span>
+      <span style="color:#8892a6;margin-left:10px">Out $<span id="totalOut">0</span></span>
     </div>
+    <div id="transactionsList"></div>
   </div>
 </div>
 
@@ -188,6 +218,8 @@ input{width:100%;padding:14px;background:#0d1117;border:1px solid #2a3441;border
   const authDiv = document.getElementById('auth');
   const dashDiv = document.getElementById('dashboard');
   const depositPage = document.getElementById('depositPage');
+  const transferPage = document.getElementById('transferPage');
+  const transactionsPage = document.getElementById('transactionsPage');
 
   document.getElementById('toggleAuth').onclick = () => {
     isLogin =!isLogin;
@@ -206,7 +238,8 @@ input{width:100%;padding:14px;background:#0d1117;border:1px solid #2a3441;border
         const userCred = await createUserWithEmailAndPassword(auth, email, password);
         await setDoc(doc(db, "users", userCred.user.uid), {
           accountNumber: "9128578595",
-          accounts: [{name: "Main Account", balance: 8000000, id: Date.now()}]
+          accounts: [{name: "Main Account", balance: 8000000, id: Date.now()}],
+          transactions: []
         });
       }
     } catch(e){ alert(e.message) }
@@ -221,11 +254,8 @@ input{width:100%;padding:14px;background:#0d1117;border:1px solid #2a3441;border
       document.getElementById('greeting').innerText = `Good evening ${name}`;
       document.getElementById('userName').innerText = name;
       document.getElementById('lastLogin').innerText = new Date().toLocaleString();
-      const docSnap = await getDoc(doc(db, "users", user.uid));
-      if(docSnap.exists() && docSnap.data().accountNumber){
-        document.getElementById('userAccountNum').innerText = docSnap.data().accountNumber.replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
-      }
       loadAccounts(user.uid);
+      loadTransactions(user.uid);
     } else {
       authDiv.classList.remove('hidden');
       dashDiv.classList.add('hidden');
@@ -244,17 +274,58 @@ input{width:100%;padding:14px;background:#0d1117;border:1px solid #2a3441;border
       });
       document.getElementById('accountsList').innerHTML = html;
       document.getElementById('totalBalance').innerText = total.toLocaleString();
+      document.getElementById('availBalance').innerText = total.toLocaleString();
     }
   }
 
-  window.showDepositPage = () => {
-    dashDiv.classList.add('hidden');
-    depositPage.classList.remove('hidden');
+  async function loadTransactions(uid){
+    const docSnap = await getDoc(doc(db, "users", uid));
+    if(docSnap.exists()){
+      const txns = docSnap.data().transactions || [];
+      let html = '';
+      let totalIn = 0, totalOut = 0;
+      txns.slice().reverse().forEach(txn => {
+        if(txn.type === 'in') totalIn += txn.amount; else totalOut += txn.amount;
+        const icon = txn.type === 'in'? '⬇️' : '⬆️';
+        const color = txn.type === 'in'? 'amount-in' : 'amount-out';
+        const sign = txn.type === 'in'? '+' : '-';
+        html += `<div class="txn-item">
+          <div class="txn-icon" style="background:${txn.type==='in'?'#22c55e20':'#ef444420'}">${icon}</div>
+          <div class="txn-info">
+            <div class="txn-title">${txn.title}</div>
+            <div class="txn-date">${txn.date}</div>
+          </div>
+          <div>
+            <div class="txn-amount ${color}">${sign}$${txn.amount.toLocaleString()}</div>
+            <div class="txn-status">Successful</div>
+          </div>
+        </div>`;
+      });
+      document.getElementById('transactionsList').innerHTML = html || '<p style="text-align:center;color:#8892a6">No transactions yet</p>';
+      document.getElementById('totalIn').innerText = totalIn.toLocaleString();
+      document.getElementById('totalOut').innerText = totalOut.toLocaleString();
+    }
   }
-  window.closeDepositPage = () => {
-    depositPage.classList.add('hidden');
-    dashDiv.classList.remove('hidden');
+
+  async function addTransaction(title, amount, type){
+    const docRef = doc(db, "users", currentUser.uid);
+    const docSnap = await getDoc(docRef);
+    const txns = docSnap.data().transactions || [];
+    txns.push({
+      title,
+      amount,
+      type,
+      date: new Date().toLocaleString('en-US', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'})
+    });
+    await updateDoc(docRef, {transactions: txns});
   }
+
+  window.showDepositPage = () => {dashDiv.classList.add('hidden'); depositPage.classList.remove('hidden');}
+  window.closeDepositPage = () => {depositPage.classList.add('hidden'); dashDiv.classList.remove('hidden');}
+  window.showTransferPage = () => {dashDiv.classList.add('hidden'); transferPage.classList.remove('hidden');}
+  window.closeTransferPage = () => {transferPage.classList.add('hidden'); dashDiv.classList.remove('hidden');}
+  window.showTransactions = () => {dashDiv.classList.add('hidden'); transactionsPage.classList.remove('hidden');}
+  window.closeTransactions = () => {transactionsPage.classList.add('hidden'); dashDiv.classList.remove('hidden');}
 
   window.quickDeposit = async (amount) => {
     const docRef = doc(db, "users", currentUser.uid);
@@ -262,16 +333,31 @@ input{width:100%;padding:14px;background:#0d1117;border:1px solid #2a3441;border
     const accounts = docSnap.data().accounts;
     accounts[0].balance += amount;
     await updateDoc(docRef, {accounts});
+    await addTransaction('Cash Deposit', amount, 'in');
     loadAccounts(currentUser.uid);
+    loadTransactions(currentUser.uid);
     alert(`$${amount.toLocaleString()} added successfully!`);
     closeDepositPage();
   }
 
-  window.copyAccount = () => {
-    navigator.clipboard.writeText("9128578595");
-    alert("Account number copied!");
+  window.makeTransfer = async () => {
+    const amount = parseFloat(document.getElementById('transferAmount').value);
+    if(!amount || amount < 5) return alert("Minimum transfer is $5");
+    const docRef = doc(db, "users", currentUser.uid);
+    const docSnap = await getDoc(docRef);
+    const accounts = docSnap.data().accounts;
+    if(accounts[0].balance < amount) return alert("Insufficient balance");
+    accounts[0].balance -= amount;
+    await updateDoc(docRef, {accounts});
+    await addTransaction('Transfer to Bank', amount, 'out');
+    document.getElementById('transferAmount').value = '';
+    loadAccounts(currentUser.uid);
+    loadTransactions(currentUser.uid);
+    alert(`$${amount.toLocaleString()} transferred successfully!`);
+    closeTransferPage();
   }
 
+  window.copyAccount = () => {navigator.clipboard.writeText("9128578595"); alert("Account number copied!");}
   window.addAccount = async () => {
     const name = prompt("Account name:");
     if(!name) return;
@@ -281,8 +367,7 @@ input{width:100%;padding:14px;background:#0d1117;border:1px solid #2a3441;border
     await updateDoc(doc(db, "users", currentUser.uid), {accounts});
     loadAccounts(currentUser.uid);
   }
-
   window.logout = async () => await signOut(auth);
 </script>
 </body>
-  </html>
+      </html>
