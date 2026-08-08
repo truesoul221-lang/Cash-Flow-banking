@@ -66,7 +66,7 @@ input{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441;border
     <p class="link-text" id="toggleAuth">Don't have an account? Sign up</p>
   </div>
 
-  <div id="dashboard" class=">
+  <div id="dashboard" class="hidden">
     <div class="greet-box">
       <div class="greet" id="greeting">Good evening</div>
       <div class="greet-sub">At a glance summary of your account!</div>
@@ -96,7 +96,6 @@ input{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441;border
     </div>
   </div>
 
-  <!-- TRANSFER STEP 1 -->
   <div id="transferStep1" class="hidden">
     <div class="topbar">
       <button onclick="closeTransferStep1()" style="background:none;border:none;color:#fff;font-size:24px;cursor:pointer">←</button>
@@ -112,7 +111,6 @@ input{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441;border
     <button class="btn-blue" onclick="goToTransferStep2()">Continue</button>
   </div>
 
-  <!-- TRANSFER STEP 2 -->
   <div id="transferStep2" class="hidden">
     <div class="topbar">
       <button onclick="backToTransferStep1()" style="background:none;border:none;color:#fff;font-size:24px;cursor:pointer">←</button>
@@ -131,7 +129,6 @@ input{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441;border
     <button class="btn-blue" onclick="showPinModal()">Send Money</button>
   </div>
 
-  <!-- TRANSACTIONS -->
   <div id="transactionsPage" class="hidden">
     <div class="topbar">
       <button onclick="closeTransactions()" style="background:none;border:none;color:#fff;font-size:24px;cursor:pointer">←</button>
@@ -140,7 +137,6 @@ input{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441;border
     <div id="transactionsList"></div>
   </div>
 
-  <!-- PIN MODAL -->
   <div id="pinModal" class="hidden pin-modal">
     <div class="pin-box">
       <h3 style="text-align:center;margin-bottom:8px">Enter Transaction PIN</h3>
@@ -176,7 +172,7 @@ input{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441;border
   const auth = getAuth(app);
   const db = getFirestore(app);
   
-  // GLOBAL VARIABLES - THIS FIXES THE $0 BUG
+  // GLOBAL VARIABLES - FIXES $0 BUG
   let currentUser = null;
   let transferAmountTemp = 0;
   let transferDataTemp = {};
@@ -283,7 +279,7 @@ input{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441;border
     if(transferAmountTemp <= 0) return alert("Amount error. Go back");
     
     transferDataTemp = {recipientAccount, recipientName};
-    document.getElementById('pinAmount').innerText = `$${transferAmountTemp.toLocaleString()}`; // THIS WILL NOW SHOW CORRECT AMOUNT
+    document.getElementById('pinAmount').innerText = `$${transferAmountTemp.toLocaleString()}`; // CORRECT AMOUNT NOW
     document.getElementById('pinModal').classList.remove('hidden');
     document.getElementById('pin1').focus();
     
@@ -345,4 +341,4 @@ input{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441;border
   window.logout = async () => await signOut(auth);
 </script>
 </body>
-          </html>
+                                                    </html>
