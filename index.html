@@ -9,41 +9,36 @@
   body { background: #0a0e1a; color: #fff; }
   
   /* LOGIN SCREEN */
- .auth-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
- .logo-big { font-size: 36px; font-weight: bold; color: #2563eb; margin-bottom: 10px; }
- .auth-box { background: #1e293b; padding: 30px 20px; border-radius: 20px; width: 100%; max-width: 350px; }
- .auth-box h2 { text-align: center; margin-bottom: 20px; }
- .auth-box input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 10px; border: none; background: #0a0e1a; color: #fff; font-size: 15px; }
- .auth-btn { width: 100%; padding: 14px; background: #2563eb; color: #fff; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
- .switch { text-align: center; margin-top: 15px; color: #94a3b8; font-size: 14px; }
- .switch span { color: #2563eb; cursor: pointer; font-weight: bold; }
- .hidden { display: none; }
+.auth-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+.logo-big { font-size: 36px; font-weight: bold; color: #2563eb; margin-bottom: 10px; }
+.auth-box { background: #1e293b; padding: 30px 20px; border-radius: 20px; width: 100%; max-width: 350px; }
+.auth-box h2 { text-align: center; margin-bottom: 20px; }
+.auth-box input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 10px; border: none; background: #0a0e1a; color: #fff; font-size: 15px; }
+.auth-btn { width: 100%; padding: 14px; background: #2563eb; color: #fff; border: none; border-radius: 10px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
+.switch { text-align: center; margin-top: 15px; color: #94a3b8; font-size: 14px; }
+.switch span { color: #2563eb; cursor: pointer; font-weight: bold; }
+.hidden { display: none; }
 
   /* DASHBOARD */
- .dashboard { display: none; padding: 15px; min-height: 100vh; }
- .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
- .menu { font-size: 24px; cursor: pointer; }
- .avatar { width: 40px; height: 40px; background: #2563eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; }
- .logo { font-size: 24px; font-weight: bold; color: #2563eb; margin-bottom: 10px; }
+.dashboard { display: none; padding: 15px; min-height: 100vh; }
+.topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.avatar { width: 40px; height: 40px; background: #2563eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px; }
+.logo { font-size: 24px; font-weight: bold; color: #2563eb; margin-bottom: 10px; }
   h2 { font-size: 22px; margin-bottom: 5px; }
- .subtitle { color: #94a3b8; font-size: 14px; margin-bottom: 20px; }
- .btn-row { display: flex; gap: 10px; margin-bottom: 25px; }
- .btn { padding: 12px 20px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 15px; }
- .btn-blue { background: #2563eb; color: #fff; }
- .btn-dark { background: #1e293b; color: #fff; }
- .overview-card { background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 20px; padding: 20px; margin-bottom: 25px; box-shadow: 0 8px 20px rgba(37,99,235,0.3); }
- .overview-top { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
- .profile-pic { width: 50px; height: 50px; border-radius: 50%; }
- .balance-text { color: #bfdbfe; font-size: 12px; }
- .balance-amount { font-size: 32px; font-weight: bold; color: #22c55e; text-shadow: 0 0 10px rgba(34,197,94,0.4); }
- .email { color: #bfdbfe; font-size: 14px; }
- .logout { width: 100%; padding: 15px; background: #ef4444; color: #fff; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 20px; }
+.subtitle { color: #94a3b8; font-size: 14px; margin-bottom: 20px; }
+.btn-row { display: flex; gap: 10px; margin-bottom: 25px; }
+.btn { padding: 12px 20px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 15px; }
+.btn-blue { background: #2563eb; color: #fff; }
+.overview-card { background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 20px; padding: 20px; margin-bottom: 25px; }
+.balance-amount { font-size: 32px; font-weight: bold; color: #22c55e; text-shadow: 0 0 10px rgba(34,197,94,0.4); }
+.email { color: #bfdbfe; font-size: 14px; }
+.logout { width: 100%; padding: 15px; background: #ef4444; color: #fff; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 20px; }
   
   /* ADD MONEY POPUP */
- .popup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; z-index: 999; }
- .popup-content { background: #0a0e1a; padding: 20px; border-radius: 20px 20px 0 0; width: 100%; max-width: 450px; position: absolute; bottom: 0; }
- .card { background: #1e293b; border-radius: 15px; padding: 15px; margin-bottom: 15px; }
- .acc-number { font-size: 28px; font-weight: bold; letter-spacing: 2px; margin: 15px 0; color: #a855f7; }
+.popup { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; z-index: 999; }
+.popup-content { background: #0a0e1a; padding: 20px; border-radius: 20px 20px 0 0; width: 100%; max-width: 450px; position: absolute; bottom: 0; }
+.card { background: #1e293b; border-radius: 15px; padding: 15px; margin-bottom: 15px; }
+.acc-number { font-size: 28px; font-weight: bold; letter-spacing: 2px; margin: 15px 0; color: #a855f7; }
 </style>
 </head>
 <body>
@@ -75,8 +70,8 @@
 <!-- DASHBOARD SCREEN -->
 <div class="dashboard" id="dashboard">
   <div class="topbar">
-    <div class="menu">☰</div>
     <div class="avatar" id="avatar">M</div>
+    <button onclick="logout()" style="background:#ef4444; border:none; color:#fff; padding:8px 12px; border-radius:8px;">Logout</button>
   </div>
 
   <div class="logo">Cash Flow</div>
@@ -85,22 +80,16 @@
 
   <div class="btn-row">
     <button class="btn btn-blue" onclick="showAddMoney()">Deposit →</button>
-    <button class="btn btn-dark">Transfer Fund</button>
   </div>
 
   <h3>Overview</h3>
   <div class="overview-card">
-    <div class="overview-top">
-      <img src="https://i.pravatar.cc/50" class="profile-pic">
-      <div>
-        <div class="balance-text">Available balance</div>
-        <div class="balance-amount">USD <span id="balance">10,000,050</span></div>
-        <div class="email" id="userEmail">maroejiata02@gmail.com</div>
-      </div>
+    <div>
+      <div style="color:#bfdbfe; font-size:12px;">Available balance</div>
+      <div class="balance-amount">USD <span id="balance">0</span></div>
+      <div class="email" id="userEmail">email@gmail.com</div>
     </div>
   </div>
-
-  <button class="logout" onclick="logout()">Logout</button>
 </div>
 
 
@@ -114,17 +103,27 @@
     <div class="card">
       <div><b>Bank Transfer</b></div>
       <div style="color:#94a3b8; font-size:12px;">Cash Flow Account Number</div>
-      <div class="acc-number">804 392 1675</div>
+      <div class="acc-number" id="myAccount">804 392 1675</div>
       <button class="btn btn-blue" style="width:100%" onclick="copyNumber()">Copy Number</button>
     </div>
   </div>
 </div>
 
 <script>
-  // Check if user is logged in
-  let currentUser = JSON.parse(localStorage.getItem("cashflow_user"));
-  if(currentUser) {
-    showDashboard(currentUser);
+  // Get all users from storage
+  function getUsers() {
+    return JSON.parse(localStorage.getItem("cashflow_users")) || [];
+  }
+  function saveUsers(users) {
+    localStorage.setItem("cashflow_users", JSON.stringify(users));
+  }
+
+  // Check if someone is logged in
+  let loggedInEmail = localStorage.getItem("cashflow_loggedin");
+  if(loggedInEmail) {
+    let users = getUsers();
+    let user = users.find(u => u.email === loggedInEmail);
+    if(user) showDashboard(user);
   }
 
   function showSignup() {
@@ -141,22 +140,32 @@
     let email = document.getElementById("signupEmail").value;
     let pass = document.getElementById("signupPass").value;
     
-    if(name && email && pass) {
-      let user = {name, email, pass, balance: 10000050};
-      localStorage.setItem("cashflow_user", JSON.stringify(user));
-      alert("Account created!");
-      showDashboard(user);
-    } else {
-      alert("Fill all fields");
-    }
+    if(!name ||!email ||!pass) return alert("Fill all fields");
+    
+    let users = getUsers();
+    if(users.find(u => u.email === email)) return alert("Email already exists");
+    
+    // NEW: Each person gets RANDOM starting balance
+    let randomBalance = Math.floor(Math.random() * 50000) + 5000; // $5,000 - $55,000
+    let randomAccount = "8" + Math.floor(Math.random() * 900000000); // Random 10 digit account
+    
+    let newUser = {name, email, pass, balance: randomBalance, account: randomAccount};
+    users.push(newUser);
+    saveUsers(users);
+    
+    alert("Account created with $" + randomBalance.toLocaleString());
+    localStorage.setItem("cashflow_loggedin", email);
+    showDashboard(newUser);
   }
 
   function login() {
     let email = document.getElementById("loginEmail").value;
     let pass = document.getElementById("loginPass").value;
-    let user = JSON.parse(localStorage.getItem("cashflow_user"));
+    let users = getUsers();
+    let user = users.find(u => u.email === email && u.pass === pass);
     
-    if(user && user.email === email && user.pass === pass) {
+    if(user) {
+      localStorage.setItem("cashflow_loggedin", email);
       showDashboard(user);
     } else {
       alert("Wrong email or password");
@@ -170,10 +179,11 @@
     document.getElementById("userEmail").innerText = user.email;
     document.getElementById("avatar").innerText = user.name[0].toUpperCase();
     document.getElementById("balance").innerText = user.balance.toLocaleString();
+    document.getElementById("myAccount").innerText = user.account;
   }
 
   function logout() {
-    localStorage.removeItem("cashflow_user");
+    localStorage.removeItem("cashflow_loggedin");
     location.reload();
   }
 
@@ -184,8 +194,9 @@
     document.getElementById("addMoneyPopup").style.display = "none";
   }
   function copyNumber() {
-    navigator.clipboard.writeText("8043921675");
-    alert("Account number copied!");
+    let acc = document.getElementById("myAccount").innerText;
+    navigator.clipboard.writeText(acc.replace(/\s/g, ''));
+    alert("Account number " + acc + " copied!");
   }
 </script>
 
