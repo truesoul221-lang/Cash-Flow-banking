@@ -38,7 +38,6 @@
   <input type="text" id="search" placeholder="Search movies...">
 </header>
 
-<!-- TOP AD BANNER -->
 <div class="ad-banner">
   <a href="https://wa.me/2347067087764" target="_blank">🔥 ADVERTISE HERE - WhatsApp 07067087764 🔥</a>
 </div>
@@ -53,12 +52,20 @@
 
 <script>
   const movies = [
+    // YOUR NEW 4 MOVIES FIRST
+    { title: "New Movie 1", year: "2024", youtubeId: "_gq3umAPQrw", startTime: 0, episode: "" },
+    { title: "New Movie 2", year: "2024", youtubeId: "0S0L-iqUM-4", startTime: 0, episode: "" },
+    { title: "New Movie 3", year: "2024", youtubeId: "D3BsfQ1xWpY", startTime: 0, episode: "" },
+    { title: "New Movie 4", year: "2024", youtubeId: "N7vWB8xqqCE", startTime: 0, episode: "" },
+
+    // YOUR 2 EPISODE MOVIE
     { title: "Sweet Movie Title", year: "2024", youtubeId: "9bzhuKo0UiY", startTime: 0, episode: "Episode 1" },
     { title: "Sweet Movie Title", year: "2024", youtubeId: "9bzhuKo0UiY", startTime: 3600, episode: "Episode 2" },
+
+    // OTHER MOVIES
     { title: "Night of the Living Dead", year: "1968", youtubeId: "tPEE9ZwTUK0", startTime: 0, episode: "" },
     { title: "The General", year: "1926", youtubeId: "vU29ZUyvmSI", startTime: 0, episode: "" },
-    { title: "His Girl Friday", year: "1940", youtubeId: "jNQXAC9IVRw", startTime: 0, episode: "" },
-    { title: "Nollywood Drama", year: "2023", youtubeId: "fJ9rUzIMcZQ", startTime: 0, episode: "" }
+    { title: "His Girl Friday", year: "1940", youtubeId: "jNQXAC9IVRw", startTime: 0, episode: "" }
   ];
   
   const grid = document.getElementById('moviesGrid');
