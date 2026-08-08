@@ -17,7 +17,6 @@ body{background:#0d1117;color:#fff;min-height:100vh}
 .btn{padding:10px 16px;border:none;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer}
 .btn-purple{background:#6d28d9;color:#fff}
 .btn-gray{background:#2a3441;color:#fff}
-.btn-green{background:#00d4aa;color:#000}
 .btn-blue{background:#2563eb;color:#fff;width:100%;padding:14px}
 .balance-card{background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 100%);border-radius:16px;padding:20px;margin:20px 0;display:flex;gap:16px;align-items:center}
 .avatar{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#fbbf24,#f59e0b);display:flex;align-items:center;justify-content:center;font-size:24px}
@@ -34,20 +33,9 @@ input,select{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441
 .link-text{color:#22c55e;text-align:center;margin-top:14px;font-size:14px;cursor:pointer}
 .topbar{display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid #2a3441;margin-bottom:16px}
 .topbar h2{flex:1;text-align:center;font-size:18px;font-weight:700}
-.deposit-card{background:#151b23;border-radius:16px;padding:16px;margin-bottom:12px}
-.deposit-item{display:flex;align-items:center;gap:12px;padding:14px;background:#1a202c;border-radius:12px;margin-bottom:10px;cursor:pointer}
-.deposit-icon{width:40px;height:40px;border-radius:10px;background:#2a3441;display:flex;align-items:center;justify-content:center;font-size:20px}
-.deposit-text{flex:1}
-.deposit-title{font-weight:700;font-size:15px;margin-bottom:2px}
-.deposit-sub{font-size:12px;color:#8892a6}
-.copy-btn{padding:10px 16px;background:#00d4aa;color:#000;border:none;border-radius:10px;font-weight:700;cursor:pointer}
-.account-number{font-size:24px;font-weight:800;letter-spacing:2px;margin:12px 0;color:#3b82f6}
-.divider{display:flex;align-items:center;gap:10px;color:#8892a6;font-size:12px;margin:16px 0}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:#2a3441}
 .transfer-form{background:#1a202c;border:1px solid #2a3441;border-radius:12px;padding:16px;margin-bottom:16px}
 .form-label{font-size:12px;color:#8892a6;margin-bottom:8px}
 .form-value{font-size:15px;font-weight:600}
-.limit-text{font-size:11px;color:#8892a6;margin-bottom:8px}
 .txn-item{display:flex;align-items:center;gap:12px;padding:14px;background:#151b23;border-radius:12px;margin-bottom:10px}
 .txn-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px}
 .txn-info{flex:1}
@@ -55,22 +43,20 @@ input,select{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441
 .txn-date{font-size:11px;color:#8892a6}
 .txn-amount{font-weight:700;font-size:15px}
 .txn-status{font-size:10px;padding:4px 8px;border-radius:6px;background:#22c55e20;color:#22c55e}
-.amount-in{color:#22c55e}
 .amount-out{color:#ef4444}
 .recipient-card{background:#1a202c;border:1px solid #2a3441;border-radius:12px;padding:16px;margin-bottom:16px}
+/* PIN Modal */
+.pin-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;z-index:1000}
+.pin-box{background:#151b23;padding:24px;border-radius:16px;width:90%;max-width:350px;border:1px solid #2a3441}
+.pin-inputs{display:flex;gap:10px;justify-content:center;margin:20px 0}
+.pin-digit{width:50px;height:50px;text-align:center;font-size:24px;font-weight:700;background:#1a202c;border:2px solid #2a3441;border-radius:10px;color:#fff}
+.pin-digit:focus{border-color:#2563eb;outline:none}
 </style>
 </head>
 <body>
 <div class="container">
   <div class="header">
-    <div class="logo">
-      <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
-        <rect x="4" y="8" width="32" height="24" rx="6" stroke="url(#g)" stroke-width="2"/>
-        <circle cx="20" cy="20" r="5" fill="url(#g)"/>
-        <defs><linearGradient id="g"><stop offset="0" stop-color="#22c55e"/><stop offset="1" stop-color="#3b82f6"/></linearGradient></defs>
-      </svg>
-      Cash Flow Banking
-    </div>
+    <div class="logo">Cash Flow Banking</div>
     <button onclick="logout()" style="background:#2a3441;border:none;color:#fff;padding:8px 12px;border-radius:8px;font-weight:700;cursor:pointer">Logout</button>
   </div>
   
@@ -87,7 +73,7 @@ input,select{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441
       <div class="greet" id="greeting">Good evening</div>
       <div class="greet-sub">At a glance summary of your account!</div>
       <div class="btn-row">
-        <button class="btn btn-purple" onclick="showDepositPage()">Deposit →</button>
+        <button class="btn btn-purple" onclick="alert('Deposit works')">Deposit →</button>
         <button class="btn btn-gray" onclick="showTransferStep1()">Transfer Fund</button>
       </div>
     </div>
@@ -103,10 +89,6 @@ input,select{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441
         <div class="balance-label">Available balance</div>
         <div class="balance">USD <span id="totalBalance">5,111,000</span></div>
         <div class="balance-name" id="userName">User</div>
-        <div class="info-row">
-          <div>Last Login<br><span id="lastLogin">--</span></div>
-          <div>Your IP address<br>127.0.0.1</div>
-        </div>
       </div>
     </div>
 
@@ -114,28 +96,6 @@ input,select{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441
       <div class="account-title">Checking Account</div>
       <div id="accountsList"></div>
     </div>
-  </div>
-
-  <!-- ADD MONEY PAGE -->
-  <div id="depositPage" class="hidden">
-    <div class="topbar">
-      <button onclick="closeDepositPage()" style="background:none;border:none;color:#fff;font-size:24px;cursor:pointer">←</button>
-      <h2>Add Money</h2>
-    </div>
-    <div class="deposit-card">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-        <div class="deposit-icon">🏦</div>
-        <div>
-          <div class="deposit-title">Bank Transfer</div>
-          <div class="deposit-sub">Add money via mobile or internet banking</div>
-        </div>
-      </div>
-      <div style="font-size:12px;color:#8892a6;margin-bottom:8px">Cash Flow Account Number</div>
-      <div class="account-number" id="userAccountNum">912 857 8595</div>
-      <button class="copy-btn" onclick="copyAccount()">Copy Number</button>
-    </div>
-    <div class="divider">OR</div>
-    <div class="deposit-item" onclick="quickDeposit(1000)"><div class="deposit-icon">💵</div><div class="deposit-text"><div class="deposit-title">Cash Deposit</div><div class="deposit-sub">Fund your account instantly +$1,000</div></div><span>›</span></div>
   </div>
 
   <!-- TRANSFER STEP 1: AMOUNT -->
@@ -147,11 +107,10 @@ input,select{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441
     <div class="form-label">From Account</div>
     <div class="transfer-form">
       <div class="form-value">Checking Account (USD)</div>
-      <div class="deposit-sub">Available: USD <span id="availBalance">5,111,000</span></div>
+      <div style="font-size:12px;color:#8892a6">Available: USD <span id="availBalance">5,111,000</span></div>
     </div>
     <div class="form-label">Amount to Transfer</div>
     <input type="number" id="transferAmount" placeholder="Enter amount">
-    <div style="font-size:11px;color:#8892a6;margin-bottom:16px">Minimum: 5.00 USD</div>
     <button class="btn-blue" onclick="goToTransferStep2()">Continue</button>
   </div>
 
@@ -161,29 +120,17 @@ input,select{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441
       <button onclick="backToTransferStep1()" style="background:none;border:none;color:#fff;font-size:24px;cursor:pointer">←</button>
       <h2>Recipient Details</h2>
     </div>
-    
     <div class="form-label">Recipient Account Number</div>
     <input type="text" id="recipientAccount" placeholder="Enter 10 digit account number" maxlength="10">
-    
     <div class="form-label">Recipient Account Name</div>
     <input type="text" id="recipientName" placeholder="Enter account name">
-    
     <div class="recipient-card">
-      <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between">
         <span style="color:#8892a6">Amount</span>
         <span style="font-weight:700" id="confirmAmount">$0</span>
       </div>
-      <div style="display:flex;justify-content:space-between;margin-bottom:10px">
-        <span style="color:#8892a6">Transfer Fee</span>
-        <span style="font-weight:700">$0.00</span>
-      </div>
-      <div style="display:flex;justify-content:space-between">
-        <span style="color:#8892a6">Total</span>
-        <span style="font-weight:700;color:#00d4aa" id="confirmTotal">$0</span>
-      </div>
     </div>
-    
-    <button class="btn-blue" onclick="makeTransfer()">Send Money</button>
+    <button class="btn-blue" onclick="showPinModal()">Send Money</button>
   </div>
 
   <!-- TRANSACTIONS PAGE -->
@@ -193,6 +140,22 @@ input,select{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441
       <h2>Transactions</h2>
     </div>
     <div id="transactionsList"></div>
+  </div>
+
+  <!-- PIN MODAL -->
+  <div id="pinModal" class="hidden pin-modal">
+    <div class="pin-box">
+      <h3 style="text-align:center;margin-bottom:8px">Enter Transaction PIN</h3>
+      <p style="text-align:center;font-size:12px;color:#8892a6;margin-bottom:16px">Authorize transfer of <span id="pinAmount">$0</span></p>
+      <div class="pin-inputs">
+        <input type="password" class="pin-digit" maxlength="1" id="pin1">
+        <input type="password" class="pin-digit" maxlength="1" id="pin2">
+        <input type="password" class="pin-digit" maxlength="1" id="pin3">
+        <input type="password" class="pin-digit" maxlength="1" id="pin4">
+      </div>
+      <button class="btn-blue" onclick="verifyPin()">Confirm Transfer</button>
+      <p class="link-text" onclick="closePinModal()">Cancel</p>
+    </div>
   </div>
 </div>
 
@@ -216,13 +179,13 @@ input,select{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441
   const db = getFirestore(app);
   let currentUser = null;
   let transferAmountTemp = 0;
+  let transferDataTemp = {};
 
   let isLogin = true;
   document.getElementById('toggleAuth').onclick = () => {
     isLogin =!isLogin;
     document.getElementById('authTitle').innerText = isLogin? 'Welcome to Cash Flow Banking' : 'Create Cash Flow Banking Account';
     document.getElementById('authBtn').innerText = isLogin? 'Login' : 'Sign Up';
-    document.getElementById('toggleAuth').innerText = isLogin? "Don't have an account? Sign up" : "Already have an account? Login";
   }
 
   document.getElementById('authBtn').onclick = async () => {
@@ -235,9 +198,11 @@ input,select{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441
         const userCred = await createUserWithEmailAndPassword(auth, email, password);
         await setDoc(doc(db, "users", userCred.user.uid), {
           accountNumber: "9128578595",
+          transactionPin: "1234", // DEFAULT PIN
           accounts: [{name: "Main Account", balance: 8000000, id: Date.now()}],
           transactions: []
         });
+        alert("Account created! Default PIN is 1234. Change it in settings later");
       }
     } catch(e){ alert(e.message) }
   }
@@ -250,12 +215,8 @@ input,select{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441
       const name = user.email.split('@')[0];
       document.getElementById('greeting').innerText = `Good evening ${name}`;
       document.getElementById('userName').innerText = name;
-      document.getElementById('lastLogin').innerText = new Date().toLocaleString();
       loadAccounts(user.uid);
       loadTransactions(user.uid);
-    } else {
-      document.getElementById('auth').classList.remove('hidden');
-      document.getElementById('dashboard').classList.add('hidden');
     }
   });
 
@@ -281,18 +242,15 @@ input,select{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441
       const txns = docSnap.data().transactions || [];
       let html = '';
       txns.slice().reverse().forEach(txn => {
-        const icon = txn.type === 'in'? '⬇️' : '⬆️';
-        const color = txn.type === 'in'? 'amount-in' : 'amount-out';
-        const sign = txn.type === 'in'? '+' : '-';
         const recipient = txn.recipientName? `To: ${txn.recipientName}` : txn.title;
         html += `<div class="txn-item">
-          <div class="txn-icon" style="background:${txn.type==='in'?'#22c55e20':'#ef444420'}">${icon}</div>
+          <div class="txn-icon" style="background:#ef444420">⬆️</div>
           <div class="txn-info">
             <div class="txn-title">${txn.title}</div>
             <div class="txn-date">${recipient} • ${txn.date}</div>
           </div>
           <div>
-            <div class="txn-amount ${color}">${sign}$${txn.amount.toLocaleString()}</div>
+            <div class="txn-amount amount-out">-$${txn.amount.toLocaleString()}</div>
             <div class="txn-status">Successful</div>
           </div>
         </div>`;
@@ -301,23 +259,6 @@ input,select{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441
     }
   }
 
-  async function addTransaction(title, amount, type, recipientName='', recipientAccount=''){
-    const docRef = doc(db, "users", currentUser.uid);
-    const docSnap = await getDoc(docRef);
-    const txns = docSnap.data().transactions || [];
-    txns.push({
-      title,
-      amount,
-      type,
-      recipientName,
-      recipientAccount,
-      date: new Date().toLocaleString('en-US', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'})
-    });
-    await updateDoc(docRef, {transactions: txns});
-  }
-
-  window.showDepositPage = () => {document.getElementById('dashboard').classList.add('hidden'); document.getElementById('depositPage').classList.remove('hidden');}
-  window.closeDepositPage = () => {document.getElementById('depositPage').classList.add('hidden'); document.getElementById('dashboard').classList.remove('hidden');}
   window.showTransferStep1 = () => {document.getElementById('dashboard').classList.add('hidden'); document.getElementById('transferStep1').classList.remove('hidden');}
   window.closeTransferStep1 = () => {document.getElementById('transferStep1').classList.add('hidden'); document.getElementById('dashboard').classList.remove('hidden');}
   window.goToTransferStep2 = () => {
@@ -325,7 +266,6 @@ input,select{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441
     if(!amount || amount < 5) return alert("Minimum transfer is $5");
     transferAmountTemp = amount;
     document.getElementById('confirmAmount').innerText = `$${amount.toLocaleString()}`;
-    document.getElementById('confirmTotal').innerText = `$${amount.toLocaleString()}`;
     document.getElementById('transferStep1').classList.add('hidden');
     document.getElementById('transferStep2').classList.remove('hidden');
   }
@@ -333,44 +273,74 @@ input,select{width:100%;padding:14px;background:#1a202c;border:1px solid #2a3441
   window.showTransactions = () => {document.getElementById('dashboard').classList.add('hidden'); document.getElementById('transactionsPage').classList.remove('hidden');}
   window.closeTransactions = () => {document.getElementById('transactionsPage').classList.add('hidden'); document.getElementById('dashboard').classList.remove('hidden');}
 
-  window.quickDeposit = async (amount) => {
-    const docRef = doc(db, "users", currentUser.uid);
-    const docSnap = await getDoc(docRef);
-    const accounts = docSnap.data().accounts;
-    accounts[0].balance += amount;
-    await updateDoc(docRef, {accounts});
-    await addTransaction('Cash Deposit', amount, 'in');
-    loadAccounts(currentUser.uid);
-    loadTransactions(currentUser.uid);
-    alert(`$${amount.toLocaleString()} added successfully!`);
-    closeDepositPage();
-  }
-
-  window.makeTransfer = async () => {
+  // PIN FUNCTIONS
+  window.showPinModal = () => {
     const recipientAccount = document.getElementById('recipientAccount').value;
     const recipientName = document.getElementById('recipientName').value;
-    if(!recipientAccount ||!recipientName) return alert("Please enter recipient account number and name");
-    if(recipientAccount.length < 10) return alert("Account number must be 10 digits");
+    if(!recipientAccount ||!recipientName) return alert("Please enter recipient details");
     
+    transferDataTemp = {recipientAccount, recipientName};
+    document.getElementById('pinAmount').innerText = `$${transferAmountTemp.toLocaleString()}`;
+    document.getElementById('pinModal').classList.remove('hidden');
+    document.getElementById('pin1').focus();
+    
+    // Auto jump to next input
+    ['pin1','pin2','pin3','pin4'].forEach((id,i,arr) => {
+      document.getElementById(id).oninput = (e) => {
+        if(e.target.value && arr[i+1]) document.getElementById(arr[i+1]).focus();
+      }
+    })
+  }
+
+  window.closePinModal = () => {
+    document.getElementById('pinModal').classList.add('hidden');
+    ['pin1','pin2','pin3','pin4'].forEach(id => document.getElementById(id).value = '');
+  }
+
+  window.verifyPin = async () => {
+    const pin = ['pin1','pin2','pin3','pin4'].map(id => document.getElementById(id).value).join('');
+    if(pin.length!== 4) return alert("Enter 4 digit PIN");
+    
+    const docSnap = await getDoc(doc(db, "users", currentUser.uid));
+    const userPin = docSnap.data().transactionPin || "1234";
+    
+    if(pin!== userPin) return alert("Incorrect PIN");
+    
+    // PIN CORRECT - PROCEED WITH TRANSFER
+    closePinModal();
+    await makeTransfer();
+  }
+
+  async function makeTransfer() {
     const docRef = doc(db, "users", currentUser.uid);
     const docSnap = await getDoc(docRef);
     const accounts = docSnap.data().accounts;
+    const txns = docSnap.data().transactions || [];
+    
     if(accounts[0].balance < transferAmountTemp) return alert("Insufficient balance");
     accounts[0].balance -= transferAmountTemp;
-    await updateDoc(docRef, {accounts});
-    await addTransaction('Transfer to Bank', transferAmountTemp, 'out', recipientName, recipientAccount);
+    
+    txns.push({
+      title: 'Transfer to Bank',
+      amount: transferAmountTemp,
+      type: 'out',
+      recipientName: transferDataTemp.recipientName,
+      recipientAccount: transferDataTemp.recipientAccount,
+      date: new Date().toLocaleString('en-US', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'})
+    });
+    
+    await updateDoc(docRef, {accounts, transactions: txns});
     document.getElementById('transferAmount').value = '';
     document.getElementById('recipientAccount').value = '';
     document.getElementById('recipientName').value = '';
     loadAccounts(currentUser.uid);
     loadTransactions(currentUser.uid);
-    alert(`$${transferAmountTemp.toLocaleString()} sent to ${recipientName}`);
+    alert(`$${transferAmountTemp.toLocaleString()} sent to ${transferDataTemp.recipientName}`);
     document.getElementById('transferStep2').classList.add('hidden');
     document.getElementById('dashboard').classList.remove('hidden');
   }
 
-  window.copyAccount = () => {navigator.clipboard.writeText("9128578595"); alert("Account number copied!");}
   window.logout = async () => await signOut(auth);
 </script>
 </body>
-      </html>
+</html>
