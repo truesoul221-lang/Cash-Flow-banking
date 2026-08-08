@@ -10,20 +10,21 @@
   .logo { color:#F7931A; font-weight:bold; font-size:20px; }
   .container { max-width:1000px; margin:0 auto; padding:20px; }
   .card { background:#1A1A1A; padding:20px; border-radius:12px; margin:20px 0; }
-  input { width:100%; padding:12px; background:#2a2a2a; border:1px solid #444; color:#fff; border-radius:8px; margin:8px 0; box-sizing:border-box; }
+  input, select { width:100%; padding:12px; background:#2a2a2a; border:1px solid #444; color:#fff; border-radius:8px; margin:8px 0; box-sizing:border-box; }
   button { width:100%; padding:14px; background:#F7931A; border:none; color:#000; font-weight:bold; border-radius:8px; cursor:pointer; margin-top:10px; }
   .btn-buy { background:#00ff88; width:49%; }
   .btn-sell { background:#ff4444; width:49%; }
   .price { font-size:24px; color:#F7931A; }
   .hidden { display:none; }
   .history { font-size:12px; color:#aaa; }
+  .balance-big { font-size:32px; color:#00ff88; font-weight:bold; }
 </style>
 </head>
 <body>
 
 <div class="nav">
   <div class="logo">₿ TRUESOUL BROKER</div>
-  <div id="navBalance" class="hidden">Balance: $<span id="balance">10000.00</span></div>
+  <div id="navBalance" class="hidden">Balance: <span class="balance-big">$<span id="balance">10,000.00</span></span></div>
 </div>
 
 <div class="container">
@@ -40,18 +41,23 @@
   <!-- DASHBOARD -->
   <div id="dashboard" class="hidden">
     <div class="card">
+      <h2>Account Balance</h2>
+      <div class="balance-big">$<span id="mainBalance">10,000.00</span></div>
+    </div>
+
+    <div class="card">
       <h2>Live Market</h2>
-      <div>Bitcoin: <span class="price" id="btcPrice">Loading...</span></div>
-      <div>Ethereum: <span class="price" id="ethPrice">Loading...</span></div>
+      <div>Bitcoin: <span class="price">$<span id="btcPrice">Loading...</span></span></div>
+      <div>Ethereum: <span class="price">$<span id="ethPrice">Loading...</span></span></div>
     </div>
 
     <div class="card">
       <h2>Trade Demo</h2>
-      <select id="coin" style="width:100%; padding:12px; background:#2a2a2a; border:1px solid #444; color:#fff; border-radius:8px;">
+      <select id="coin">
         <option value="bitcoin">Bitcoin BTC</option>
         <option value="ethereum">Ethereum ETH</option>
       </select>
-      <input type="number" id="amount" placeholder="Enter USD Amount">
+      <input type="number" id="amount" placeholder="Enter Amount in $USD">
       <div style="display:flex; gap:10px;">
         <button class="btn-buy" onclick="trade('buy')">BUY</button>
         <button class="btn-sell" onclick="trade('sell')">SELL</button>
@@ -72,14 +78,18 @@
 let prices = {bitcoin:0, ethereum:0};
 let currentUser = null;
 
-// Load user from browser storage
+function formatMoney(num){
+  return num.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+}
+
 function loadUser(){
   currentUser = JSON.parse(localStorage.getItem('brokerUser'));
   if(currentUser){
     document.getElementById('authBox').classList.add('hidden');
     document.getElementById('dashboard').classList.remove('hidden');
     document.getElementById('navBalance').classList.remove('hidden');
-    document.getElementById('balance').innerText = currentUser.balance.toFixed(2);
+    document.getElementById('balance').innerText = formatMoney(currentUser.balance);
+    document.getElementById('mainBalance').innerText = formatMoney(currentUser.balance);
     showHistory();
   }
 }
@@ -90,7 +100,7 @@ function register(){
   if(!u || !p) return alert('Fill all fields');
   const user = {username:u, password:p, balance:10000, history:[]};
   localStorage.setItem('brokerUser', JSON.stringify(user));
-  alert('Account created! Now login');
+  alert('Account created! $10,000 Demo Balance added. Now login');
 }
 
 function login(){
@@ -115,26 +125,27 @@ async function getPrices(){
     const data = await res.json();
     prices.bitcoin = data.bitcoin.usd;
     prices.ethereum = data.ethereum.usd;
-    document.getElementById('btcPrice').innerText = '$' + prices.bitcoin.toLocaleString();
-    document.getElementById('ethPrice').innerText = '$' + prices.ethereum.toLocaleString();
+    document.getElementById('btcPrice').innerText = formatMoney(prices.bitcoin);
+    document.getElementById('ethPrice').innerText = formatMoney(prices.ethereum);
   } catch(e){}
 }
 
 function trade(type){
   const coin = document.getElementById('coin').value;
   const amount = parseFloat(document.getElementById('amount').value);
-  if(!amount) return alert('Enter amount');
-  if(type=='buy' && amount > currentUser.balance) return alert('Insufficient balance');
+  if(!amount) return alert('Enter amount in $USD');
+  if(type=='buy' && amount > currentUser.balance) return alert('Insufficient $ balance');
   
   if(type=='buy') currentUser.balance -= amount;
   if(type=='sell') currentUser.balance += amount;
   
-  const trade = `${new Date().toLocaleTimeString()} - ${type.toUpperCase()} $${amount} ${coin}`;
+  const trade = `${new Date().toLocaleTimeString()} - ${type.toUpperCase()} $${formatMoney(amount)} ${coin}`;
   currentUser.history.unshift(trade);
   
   localStorage.setItem('brokerUser', JSON.stringify(currentUser));
-  document.getElementById('balance').innerText = currentUser.balance.toFixed(2);
-  document.getElementById('tradeResult').innerText = trade + ' - SUCCESS [DEMO]';
+  document.getElementById('balance').innerText = formatMoney(currentUser.balance);
+  document.getElementById('mainBalance').innerText = formatMoney(currentUser.balance);
+  document.getElementById('tradeResult').innerText = `SUCCESS: ${trade}`;
   showHistory();
 }
 
