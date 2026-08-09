@@ -1,78 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>ADMIN PANEL</title>
+<meta charset="UTF-8">
+<title>TrueSoulFX Admin</title>
 <style>
-body{background:#0B0E11;color:#fff;font-family:Arial;padding:20px}
-.header{background:#181A20;padding:20px;border:1px solid #F0B90B;border-radius:8px;margin-bottom:20px}
-.stat{background:#181A20;padding:15px;border-radius:8px;display:inline-block;margin:10px;min-width:150px}
-table{width:100%;background:#181A20;border-radius:8px;margin-top:20px;border-collapse:collapse} 
-th{background:#2B3139;padding:12px;color:#F0B90B;text-align:left}
-td{padding:12px;border-bottom:1px solid #2B3139}
-.btn{background:#F0B90B;color:#000;border:none;padding:8px 12px;border-radius:4px;cursor:pointer;font-weight:bold}
-.btn-red{background:#F6465D;color:#fff}
-.input{padding:8px;background:#2B3139;border:1px solid #444;color:#fff;border-radius:4px;margin:5px}
+body { background: #050505; color: #fff; font-family: 'Segoe UI'; padding: 20px; }
+.container { max-width: 900px; margin: auto; }
+h1 { color: #00d4ff; text-align: center; }
+.request { background: #111; padding: 15px; margin: 12px 0; border-radius: 8px; border-left: 4px solid #ff4444; }
+button { background: #00ff88; color: #000; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+button:hover { opacity: 0.8; }
+.balance { color: #00ff88; font-size: 20px; }
 </style>
 </head>
 <body>
-<div class="header"><h1 style="color:#F0B90B">🔒 TRUESOUL ADMIN PANEL</h1><p>Manage all users and balances</p></div>
-
-<div><div class="stat">Total Users: <span id="totalUsers">0</span></div>
-<div class="stat">Total USDT: $<span id="totalUSDT">0</span></div></div>
-
-<div style="background:#181A20;padding:15px;border-radius:8px;margin-top:20px">
-  <h3>Edit User Balance</h3>
-  <input class="input" id="adminUser" placeholder="Enter Username">
-  <input class="input" id="adminAmount" type="number" placeholder="Add $USDT">
-  <button class="btn" onclick="addBalance()">ADD BALANCE</button>
-  <button class="btn btn-red" onclick="resetUser()">RESET USER</button>
+<div class="container">
+  <h1>TrueSoulFX Admin Panel</h1>
+  <h3>Pending Withdrawals</h3>
+  <div id="withdrawList"></div>
 </div>
-
-<table><thead><tr><th>Username</th><th>USDT Balance</th><th>BTC</th></tr></thead><tbody id="userTable"></tbody></table>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, onValue, update, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyA3lpkv0zgWaeXupRi0EwasM93v540tbhc",
-  authDomain: "truesoul1-broker.firebaseapp.com",
-  databaseURL: "https://truesoul1-broker-default-rtdb.firebaseio.com",
-  projectId: "truesoul1-broker"
-};
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-onValue(ref(db, 'users'), (snap) => {
-  const users = snap.val() || {};
-  let html = ''; let totalUSDT = 0; let count = 0;
-  for(let id in users){
-    const u = users[id];
-    totalUSDT += u.assets.usdt; count++;
-    html += `<tr><td>${u.email}</td><td>$${u.assets.usdt.toFixed(2)}</td><td>${u.assets.btc.toFixed(8)}</td></tr>`;
-  }
-  document.getElementById('userTable').innerHTML = html;
-  document.getElementById('totalUsers').innerText = count;
-  document.getElementById('totalUSDT').innerText = totalUSDT.toFixed(2);
-});
-
-window.addBalance = async () => {
-  const user = document.getElementById('adminUser').value.replace(/[.@]/g, '_');
-  const amount = parseFloat(document.getElementById('adminAmount').value);
-  const snap = await get(ref(db, 'users/' + user));
-  if(snap.exists()){
-    const u = snap.val();
-    u.assets.usdt += amount;
-    await update(ref(db, 'users/' + user), {assets: u.assets});
-    alert('Balance Added!');
-  } else alert('User not found');
+<script>
+function loadWithdrawals() {
+  let withdrawals = JSON.parse(localStorage.getItem('tsfx_withdrawals')) || [];
+  let html = '';
+  if(withdrawals.length === 0) { html = "<p>No pending withdrawals</p>"; }
+  withdrawals.forEach((w, i) => {
+    html += `<div class="request">
+      <b>User Email:</b> ${w.email}<br>
+      <b class="balance">Amount:</b> ₦${w.amount}<br>
+      <b>Bank:</b> ${w.bank}<br>
+      <b>Account:</b> ${w.account}<br>
+      <b>Name:</b> ${w.name}<br>
+      <b>Time:</b> ${w.time}<br>
+      <b>Status:</b> ${w.status}<br><br>
+      <button onclick="approve(${i})">Approve & Mark Paid</button>
+    </div>`;
+  });
+  document.getElementById('withdrawList').innerHTML = html;
 }
-
-window.resetUser = async () => {
-  const user = document.getElementById('adminUser').value.replace(/[.@]/g, '_');
-  await set(ref(db, 'users/' + user + '/assets'), {usdt: 10000, btc: 0, eth: 0});
-  alert('User Reset to $10,000');
+function approve(index) {
+  let withdrawals = JSON.parse(localStorage.getItem('tsfx_withdrawals')) || [];
+  withdrawals.splice(index, 1);
+  localStorage.setItem('tsfx_withdrawals', JSON.stringify(withdrawals));
+  alert("Withdrawal approved and removed");
+  loadWithdrawals();
 }
+loadWithdrawals();
+setInterval(loadWithdrawals, 3000); // auto refresh every 3s
 </script>
 </body>
 </html>
