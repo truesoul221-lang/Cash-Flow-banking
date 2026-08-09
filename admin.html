@@ -2,28 +2,33 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TrueSoulFX Admin</title>
 <style>
 body { background: #050505; color: #fff; font-family: 'Segoe UI'; padding: 20px; }
 .container { max-width: 900px; margin: auto; }
 h1 { color: #00d4ff; text-align: center; }
 .request { background: #111; padding: 15px; margin: 12px 0; border-radius: 8px; border-left: 4px solid #ff4444; }
-button { background: #00ff88; color: #000; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+button { background: #00ff88; color: #000; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-right: 5px; }
 button:hover { opacity: 0.8; }
 .balance { color: #00ff88; font-size: 20px; }
+.refresh { background: #00d4ff; margin-bottom: 15px; }
 </style>
 </head>
 <body>
 <div class="container">
   <h1>TrueSoulFX Admin Panel</h1>
   <h3>Pending Withdrawals</h3>
+  <button class="refresh" onclick="loadWithdrawals()">🔄 Refresh</button>
   <div id="withdrawList"></div>
 </div>
 <script>
 function loadWithdrawals() {
   let withdrawals = JSON.parse(localStorage.getItem('tsfx_withdrawals')) || [];
   let html = '';
-  if(withdrawals.length === 0) { html = "<p>No pending withdrawals</p>"; }
+  if(withdrawals.length === 0) { 
+    html = "<p style='text-align:center; color:#888;'>No pending withdrawals</p>"; 
+  }
   withdrawals.forEach((w, i) => {
     html += `<div class="request">
       <b>User Email:</b> ${w.email}<br>
@@ -33,18 +38,21 @@ function loadWithdrawals() {
       <b>Name:</b> ${w.name}<br>
       <b>Time:</b> ${w.time}<br>
       <b>Status:</b> ${w.status}<br><br>
-      <button onclick="approve(${i})">Approve & Mark Paid</button>
+      <button onclick="approve(${w.id})">Approve & Mark Paid</button>
     </div>`;
   });
   document.getElementById('withdrawList').innerHTML = html;
 }
-function approve(index) {
+
+function approve(id) {
   let withdrawals = JSON.parse(localStorage.getItem('tsfx_withdrawals')) || [];
-  withdrawals.splice(index, 1);
+  let approved = withdrawals.find(w => w.id === id);
+  withdrawals = withdrawals.filter(w => w.id !== id);
   localStorage.setItem('tsfx_withdrawals', JSON.stringify(withdrawals));
-  alert("Withdrawal approved and removed");
+  alert("Withdrawal of ₦" + approved.amount + " approved");
   loadWithdrawals();
 }
+
 loadWithdrawals();
 setInterval(loadWithdrawals, 3000); // auto refresh every 3s
 </script>
