@@ -6,35 +6,69 @@
 <title>TrueSoulFX Broker</title>
 <script src="https://js.paystack.co/v2/inline.js"></script>
 <style>
-body { font-family: Arial, sans-serif; background: #0a0a0a; color: #fff; margin: 0; padding: 20px; text-align: center; }
-.container { max-width: 400px; margin: auto; background: #1a1a1a; padding: 20px; border-radius: 10px; }
-input, button { width: 90%; padding: 12px; margin: 8px 0; border-radius: 5px; border: none; font-size: 16px; }
-button { background: #00d4ff; color: #000; font-weight: bold; cursor: pointer; }
-button:hover { background: #00b8e6; }
-.balance { font-size: 28px; color: #00ff88; margin: 20px 0; font-weight: bold; }
-h2 { color: #00d4ff; }
-h3 { color: #ccc; }
-.reset-btn { background: #ff4444; color: #fff; }
-.reset-btn:hover { background: #cc0000; }
+body { font-family: 'Segoe UI', sans-serif; background: #0a0a0a; color: #fff; margin: 0; padding: 20px; }
+.container { max-width: 420px; margin: auto; background: #111; padding: 20px; border-radius: 12px; box-shadow: 0 0 15px #00d4ff33; }
+input, button, select { width: 94%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #333; background: #222; color: #fff; font-size: 15px; }
+button { background: #00d4ff; color: #000; font-weight: bold; border: none; cursor: pointer; transition: 0.2s; }
+button:hover { opacity: 0.8; }
+.green { background: #00ff88; }
+.red { background: #ff4444; color: #fff; }
+.balance { font-size: 32px; color: #00ff88; margin: 15px 0; text-align: center; font-weight: bold; }
+h2, h3 { text-align: center; color: #00d4ff; }
+.tabs { display: flex; gap: 5px; margin-bottom: 15px; }
+.tabs button { width: 33%; font-size: 13px; }
+.tab { display: none; }
+.tab.active { display: block; }
+p { text-align: center; font-size: 14px; }
 </style>
 </head>
 <body>
 <div class="container">
   <h2>TrueSoulFX Broker</h2>
-  <div class="balance">Balance: ₦<span id="balance">0.00</span></div>
+  <div class="balance">₦<span id="balance">0.00</span></div>
 
-  <h3>Deposit Funds</h3>
-  <input type="email" id="email" placeholder="Enter your email" value="maroejiata02@gmail.com">
-  <input type="number" id="amount" placeholder="Amount in Naira" min="100">
-  <button onclick="payWithPaystack()">Deposit Now</button>
+  <div class="tabs">
+    <button onclick="showTab('deposit')">Deposit</button>
+    <button onclick="showTab('trade')">Trade</button>
+    <button onclick="showTab('withdraw')">Withdraw</button>
+  </div>
 
-  <button class="reset-btn" onclick="resetUser()">Reset Balance to 0</button>
+  <div id="deposit" class="tab active">
+    <h3>Deposit Funds</h3>
+    <input type="email" id="email" placeholder="Your Email" value="maroejiata02@gmail.com">
+    <input type="number" id="amount" placeholder="Amount in Naira ₦" min="100">
+    <button onclick="payWithPaystack()">Deposit Now</button>
+    <button class="red" onclick="resetUser()">Reset Balance</button>
+  </div>
+
+  <div id="trade" class="tab">
+    <h3>Trade Markets</h3>
+    <select id="asset">
+      <option>EUR/USD</option>
+      <option>GBP/USD</option>
+      <option>BTC/USD</option>
+      <option>ETH/USD</option>
+      <option>GOLD</option>
+    </select>
+    <input type="number" id="tradeAmount" placeholder="Trade Amount ₦">
+    <button class="green" onclick="placeTrade('BUY')">BUY</button>
+    <button class="red" onclick="placeTrade('SELL')">SELL</button>
+    <p id="tradeResult"></p>
+  </div>
+
+  <div id="withdraw" class="tab">
+    <h3>Withdraw to Bank</h3>
+    <input type="text" id="bankName" placeholder="Bank Name e.g GTBank">
+    <input type="text" id="accountNo" placeholder="Account Number">
+    <input type="text" id="accountName" placeholder="Account Name">
+    <input type="number" id="withdrawAmount" placeholder="Amount to Withdraw ₦">
+    <button onclick="requestWithdraw()">Request Withdrawal</button>
+    <p id="withdrawStatus"></p>
+  </div>
 </div>
 
 <script>
-// YOUR REAL PAYSTACK TEST KEY
 const PUBLIC_KEY = "pk_test_f4fb7830b3df14c1739a0a315238f297bc9d4990";
-
 let balance = parseFloat(localStorage.getItem('tsfx_balance')) || 0;
 document.getElementById('balance').innerText = balance.toFixed(2);
 
@@ -43,39 +77,61 @@ function updateBalance() {
   document.getElementById('balance').innerText = balance.toFixed(2);
 }
 
+function showTab(tabName) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(tabName).classList.add('active');
+}
+
 function payWithPaystack() {
   let email = document.getElementById('email').value;
   let amount = document.getElementById('amount').value;
-
-  if(!email || !amount || amount < 100) { 
-    alert("Enter valid email and amount min ₦100"); 
-    return; 
-  }
-
+  if(!email || !amount || amount < 100) { alert("Enter valid email and min ₦100"); return; }
   let handler = PaystackPop.setup({
-    key: PUBLIC_KEY,
-    email: email,
-    amount: amount * 100, // Paystack uses kobo
-    currency: "NGN",
-    ref: 'TSFX_'+Date.now(),
-    callback: function(response){
-      alert('Payment successful! Ref: ' + response.reference);
-      balance += parseFloat(amount);
-      updateBalance();
+    key: PUBLIC_KEY, email: email, amount: amount * 100, currency: "NGN", ref: 'TSFX_'+Date.now(),
+    callback: function(response){ 
+      alert('Payment successful! Ref: ' + response.reference); 
+      balance += parseFloat(amount); 
+      updateBalance(); 
     },
-    onClose: function(){
-      alert('Payment cancelled');
-    }
+    onClose: function(){ alert('Payment cancelled'); }
   });
   handler.openIframe();
 }
 
+function placeTrade(type) {
+  let asset = document.getElementById('asset').value;
+  let amount = parseFloat(document.getElementById('tradeAmount').value);
+  if(!amount || amount > balance) { alert("Invalid amount or insufficient balance"); return; }
+  balance -= amount;
+  let win = Math.random() > 0.4; // 60% win rate for demo
+  let profit = win ? amount * 0.85 : -amount;
+  balance += amount + profit;
+  updateBalance();
+  document.getElementById('tradeResult').innerText = `${type} ${asset}: ${profit > 0 ? 'WIN' : 'LOSS'} ₦${profit.toFixed(2)}`;
+}
+
+function requestWithdraw() {
+  let amount = parseFloat(document.getElementById('withdrawAmount').value);
+  if(!amount || amount > balance) { alert("Invalid amount or insufficient balance"); return; }
+  let withdrawData = {
+    email: document.getElementById('email').value,
+    amount: amount,
+    bank: document.getElementById('bankName').value,
+    account: document.getElementById('accountNo').value,
+    name: document.getElementById('accountName').value,
+    time: new Date().toLocaleString(),
+    status: "Pending"
+  };
+  let withdrawals = JSON.parse(localStorage.getItem('tsfx_withdrawals')) || [];
+  withdrawals.push(withdrawData);
+  localStorage.setItem('tsfx_withdrawals', JSON.stringify(withdrawals));
+  balance -= amount;
+  updateBalance();
+  document.getElementById('withdrawStatus').innerText = "Withdrawal request sent! Waiting for admin approval.";
+}
+
 function resetUser() {
-  if(confirm("Are you sure you want to reset balance to 0?")) {
-    balance = 0;
-    updateBalance();
-    alert("Balance reset successful");
-  }
+  if(confirm("Reset balance to 0?")) { balance = 0; updateBalance(); }
 }
 </script>
 </body>
