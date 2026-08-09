@@ -112,13 +112,20 @@ function placeTrade(type) {
 
 function requestWithdraw() {
   let amount = parseFloat(document.getElementById('withdrawAmount').value);
+  let bank = document.getElementById('bankName').value;
+  let account = document.getElementById('accountNo').value;
+  let name = document.getElementById('accountName').value;
+  
   if(!amount || amount > balance) { alert("Invalid amount or insufficient balance"); return; }
+  if(!bank || !account || !name) { alert("Fill all bank details"); return; }
+
   let withdrawData = {
+    id: Date.now(),
     email: document.getElementById('email').value,
     amount: amount,
-    bank: document.getElementById('bankName').value,
-    account: document.getElementById('accountNo').value,
-    name: document.getElementById('accountName').value,
+    bank: bank,
+    account: account,
+    name: name,
     time: new Date().toLocaleString(),
     status: "Pending"
   };
@@ -128,6 +135,10 @@ function requestWithdraw() {
   balance -= amount;
   updateBalance();
   document.getElementById('withdrawStatus').innerText = "Withdrawal request sent! Waiting for admin approval.";
+  document.getElementById('withdrawAmount').value = '';
+  document.getElementById('bankName').value = '';
+  document.getElementById('accountNo').value = '';
+  document.getElementById('accountName').value = '';
 }
 
 function resetUser() {
