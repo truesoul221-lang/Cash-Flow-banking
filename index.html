@@ -3,126 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cash Flow</title>
+<title>Cash Flow Banking</title>
 <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial; }
-  body { background: #f5f7fa; color: #111; }
-.hidden { display: none!important; }
-.auth { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; background: #fff; }
-.logo { font-size: 36px; font-weight: 900; color: #2563eb; }
-.badge { background: #22c55e; color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 12px; margin-bottom: 10px; }
-.auth-box { background: #f5f7fa; padding: 30px 20px; border-radius: 20px; width: 100%; max-width: 360px; margin-top: 20px; }
-.auth-box input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 1px solid #ddd; background: #fff; font-size: 15px; }
-.auth-btn { width: 100%; padding: 14px; background: #2563eb; color: #fff; border: none; border-radius: 12px; font-weight: bold; font-size: 16px; cursor: pointer; }
-.code-inputs { display: flex; gap: 8px; justify-content: center; }
-.code-inputs input { width: 45px; height: 50px; text-align: center; font-size: 20px; font-weight: bold; border-radius: 8px; border: 1px solid #ddd; }
+* {margin:0; padding:0; box-sizing:border-box;}
+body {background:linear-gradient(135deg,#0a0a0a,#1a1a1a); color:#fff; font-family:Arial; text-align:center; padding:40px 20px; min-height:100vh;}
+h1 {color:#00ff88; font-size:36px; margin-bottom:10px;}
+.subtitle {opacity:0.7; margin-bottom:40px;}
+.btn {display:block; background:linear-gradient(90deg,#fe2c55,#ff0050); color:#fff; padding:18px; margin:15px auto; width:90%; max-width:350px; border-radius:15px; text-decoration:none; font-weight:bold; font-size:17px; transition:0.3s;}
+.btn:hover {transform:scale(1.05);}
+.footer {margin-top:50px; opacity:0.5; font-size:12px;}
 </style>
 </head>
 <body>
-
-<div class="auth" id="authScreen">
-  <div class="logo">Cash Flow</div>
-  <div class="badge" id="modeBadge">USER MODE</div>
-
-  <!-- STEP 1: SIGNUP FORM -->
-  <div class="auth-box" id="signupBox">
-    <h3 id="formTitle">Create Account</h3>
-    <input type="text" id="signupName" placeholder="Full Name">
-    <input type="email" id="signupEmail" placeholder="Email">
-    <input type="password" id="signupPass" placeholder="Password">
-    <button class="auth-btn" id="signupBtn" onclick="handleSignup()">Create Account</button>
-  </div>
-
-  <!-- STEP 2: ADMIN CODE VERIFICATION -->
-  <div class="auth-box hidden" id="codeBox">
-    <h3>Admin Verification</h3>
-    <p style="color:#64748b; font-size:13px; text-align:center;">Enter Admin Code to continue</p>
-    <div class="code-inputs">
-      <input maxlength="1" id="c1" onkeyup="moveNext(this,1)">
-      <input maxlength="1" id="c2" onkeyup="moveNext(this,2)">
-      <input maxlength="1" id="c3" onkeyup="moveNext(this,3)">
-      <input maxlength="1" id="c4" onkeyup="moveNext(this,4)">
-      <input maxlength="1" id="c5" onkeyup="moveNext(this,5)">
-      <input maxlength="1" id="c6" onkeyup="moveNext(this,6)">
-    </div>
-    <p style="text-align:center; margin:10px 0; color:#2563eb;">Your Admin Code: <b id="showCode"></b></p>
-    <button class="auth-btn" onclick="verifyAdminCode()">Verify & Create Admin</button>
-  </div>
-
-  <!-- LOGIN -->
-  <div class="auth-box" id="loginBox">
-    <h3>Login</h3>
-    <input type="email" id="loginEmail" placeholder="Email">
-    <input type="password" id="loginPass" placeholder="Password">
-    <button class="auth-btn" onclick="login()">Login</button>
-  </div>
-</div>
-
-<script>
-  let users = JSON.parse(localStorage.getItem("cashflow_users")) || [];
-  let isAdminLink = window.location.search.includes("admin=true");
-  let tempUser = {};
-  let adminCode = "258369"; // <-- CHANGE THIS TO YOUR SECRET CODE
-
-  if(isAdminLink) {
-    document.getElementById("modeBadge").innerText = "ADMIN MODE";
-    document.getElementById("modeBadge").style.background = "#ef4444";
-    document.getElementById("formTitle").innerText = "Create Admin Account";
-    document.getElementById("signupBtn").innerText = "Continue to Verification";
-  }
-
-  function handleSignup() {
-    let name = document.getElementById("signupName").value;
-    let email = document.getElementById("signupEmail").value;
-    let pass = document.getElementById("signupPass").value;
-    if(!name ||!email ||!pass) return alert("Fill all fields");
-    if(users.find(u => u.email === email)) return alert("Email exists");
-
-    tempUser = {name, email, pass};
-
-    if(isAdminLink) {
-      // ADMIN MUST ENTER CODE
-      document.getElementById("showCode").innerText = adminCode;
-      alert("Admin Demo: Your code is " + adminCode);
-      document.getElementById("signupBox").classList.add("hidden");
-      document.getElementById("codeBox").classList.remove("hidden");
-    } else {
-      // FRIENDS SIGNUP DIRECT
-      createUser();
-    }
-  }
-
-  function moveNext(el, i) {
-    if(el.value.length === 1 && i < 6) document.getElementById("c"+i).focus();
-  }
-
-  function verifyAdminCode() {
-    let entered = c1.value + c2.value + c3.value + c4.value + c5.value + c6.value;
-    if(entered == adminCode) {
-      createUser();
-    } else {
-      alert("Wrong Admin Code");
-    }
-  }
-
-  function createUser() {
-    let newUser = {...tempUser, balance: 50000, account: "8" + Math.floor(Math.random() * 900000), isAdmin: isAdminLink};
-    users.push(newUser);
-    localStorage.setItem("cashflow_users", JSON.stringify(users));
-    alert("Account Created Successfully!");
-    location.reload();
-  }
-
-  function login() {
-    let email = document.getElementById("loginEmail").value;
-    let pass = document.getElementById("loginPass").value;
-    let user = users.find(u => u.email === email && u.pass === pass);
-    if(user) {
-      localStorage.setItem("cashflow_loggedin", email);
-      if(user.isAdmin) window.location.href = window.location.pathname + "?admin=true";
-      else window.location.href = window.location.pathname;
-    } else alert("Wrong details");
-  }
-</script>
+  <h1>🚀 Cash Flow Banking</h1>
+  <p class="subtitle">Your Super App is LIVE</p>
+  
+  <a href="vibetok.html" class="btn">📱 VibeTok - TikTok Clone</a>
+  <a href="admin.html" class="btn">⚙️ Admin Panel</a>
+  <a href="bitcoin-tracker.html" class="btn">₿ Bitcoin Tracker</a>
+  <a href="ai.html" class="btn">🤖 AI Assistant</a>
+  <a href="movies.html" class="btn">🎬 Movies</a>
+  
+  <p class="footer">Made by CEO 👑 | Cash Flow Banking 2026</p>
 </body>
 </html>
